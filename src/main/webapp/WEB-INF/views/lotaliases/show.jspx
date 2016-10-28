@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_LotAlias" object="${lotalias}" path="/lotaliases" z="7qA5PGgyb8f4B54JTEJj8EUwpGA=">
+        <field:display field="lot" id="s_com_labsynch_cmpdreg_domain_LotAlias_lot" object="${lotalias}" z="0qmKbETMYYe5Sl++VsGrsuN0hY8="/>
+        <field:display field="lsType" id="s_com_labsynch_cmpdreg_domain_LotAlias_lsType" object="${lotalias}" z="dSSzDUshZxaNtw1RRFbs7GKnDxw="/>
+        <field:display field="lsKind" id="s_com_labsynch_cmpdreg_domain_LotAlias_lsKind" object="${lotalias}" z="TRDtdtqR6KULmYHcuVV0mKtxQo8="/>
+        <field:display field="aliasName" id="s_com_labsynch_cmpdreg_domain_LotAlias_aliasName" object="${lotalias}" z="a8ZWoAXQELR6J5KJ5QHC4MhfxmE="/>
+        <field:display field="preferred" id="s_com_labsynch_cmpdreg_domain_LotAlias_preferred" object="${lotalias}" z="Vfc8kddtkvoF6CSkCHnLRtnyKU0="/>
+        <field:display field="ignored" id="s_com_labsynch_cmpdreg_domain_LotAlias_ignored" object="${lotalias}" z="8gRckBVEYaB12nnJ4Uiq8De7Mro="/>
+        <field:display field="deleted" id="s_com_labsynch_cmpdreg_domain_LotAlias_deleted" object="${lotalias}" z="S1/jBMzlLiaLceVRTseIDTf0R6E="/>
+    </page:show>
+</div>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Lot" items="${lots}" z="yEfouy3pPpz7Zyq4zYQha+xBYaY=">
+        <table:table data="${lots}" id="l_com_labsynch_cmpdreg_domain_Lot" path="/lots" z="5M4oAPEAkgMZQvcxXXZOorTdhgg=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_buid" property="buid" z="BKJxV4/If7QVImURTVgdxmz/j28="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_parent" property="parent" z="an+wY6tWDdN8QzOcd5P+v6YeBOg="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_saltForm" property="saltForm" z="28l826X0SUu505YoyovrriyvmqQ="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" property="asDrawnStruct" z="Pzx6kKgrykssy18Q/nctPrmu0oU="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_lotAsDrawnCdId" property="lotAsDrawnCdId" z="iNqA4JeWWuxFecQXSuyoaiwHp8Y="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_corpName" property="corpName" z="Ej+m/uwLnRTmk/bc3RXVsUHfsnQ="/>
+        </table:table>
+    </page:list>
+</div>

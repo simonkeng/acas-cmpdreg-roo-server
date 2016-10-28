@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_FileList" items="${filelists}" z="3iGJVU2mtJ+JRMR+1oJPzy24qIg=">
+        <table:table data="${filelists}" id="l_com_labsynch_cmpdreg_domain_FileList" path="/filelists" z="TTkXtAXlJqXFvwkMqpxAu53HbTI=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_file" property="file" z="EOaYrPhg4YchvSsLvEyB/tYz5rg="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_lot" property="lot" z="Wipi2BRqZ1jLgDjDTrHUD5vwW6k="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_description" property="description" z="Q7Kto/9UlwcF/DRR4UTFXPBNww0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_name" property="name" z="bplVKid8W6n1payRCdCEM9acLj0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_type" property="type" z="Zm7Sc+WE+npDqK2ecxlr+mGlhlU="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_FileList_size" property="size" z="GdvNFAjTf3hmy6SkjmuO7i9H9P8="/>
+        </table:table>
+    </page:list>
+</div>

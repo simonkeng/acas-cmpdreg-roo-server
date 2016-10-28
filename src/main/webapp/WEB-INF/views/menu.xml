@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gvnix-menu id="_menu" rooMenuBasePath="/">
+
+	<menu-item id="c_filetype" labelCode="menu_category_configs_label" name="FileType">
+		<menu-item hidden="true" id="i_filetype_new" labelCode="menu_item_filetype_new_label" messageCode="global_menu_new" roles="" url="/filetypes?form"/>
+		<menu-item hidden="false" id="i_filetype_list" labelCode="menu_item_filetype_list_label" messageCode="global_menu_list" roles="" url="/filetypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+
+		<menu-item hidden="true" id="i_operator_new" labelCode="menu_item_operator_new_label" messageCode="global_menu_new" roles="" url="/operators?form"/>
+		<menu-item hidden="false" id="i_operator_list" labelCode="menu_item_operator_list_label" messageCode="global_menu_list" roles="" url="/operators?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="true" id="fi_operator_codeequals" labelCode="menu_item_operator_codeequals_label" messageCode="global_menu_find" roles="" url="/operators?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+
+		<menu-item hidden="true" id="i_filelist_new" labelCode="menu_item_filelist_new_label" messageCode="global_menu_new" roles="" url="/filelists?form"/>
+		<menu-item hidden="true" id="i_filelist_list" labelCode="menu_item_filelist_list_label" messageCode="global_menu_list" roles="" url="/filelists?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="true" id="fi_filelist_lot" labelCode="menu_item_filelist_lot_label" messageCode="global_menu_find" roles="" url="/filelists?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="true" id="fi_filelist_urlequals" labelCode="menu_item_filelist_urlequals_label" messageCode="global_menu_find" roles="" url="/filelists?find=ByUrlEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+
+		<menu-item hidden="true" id="i_puritymeasuredby_new" labelCode="menu_item_puritymeasuredby_new_label" messageCode="global_menu_new" roles="" url="/puritymeasuredbys?form"/>
+		<menu-item hidden="false" id="i_puritymeasuredby_list" labelCode="menu_item_puritymeasuredby_list_label" messageCode="global_menu_list" roles="" url="/puritymeasuredbys?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="true" id="i_cmpdregappsetting_new" labelCode="menu_item_cmpdregappsetting_new_label" messageCode="global_menu_new" roles="" url="/cmpdregappsettings?form"/>
+		<menu-item hidden="false" id="i_cmpdregappsetting_list" labelCode="menu_item_cmpdregappsetting_list_label" messageCode="global_menu_list" roles="" url="/cmpdregappsettings?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+
+	</menu-item>
+	<menu-item id="c_salt" labelCode="menu_category_salt_label" name="Salt">
+		<menu-item hidden="false" id="i_salt_new" labelCode="menu_item_salt_new_label" messageCode="global_menu_new" roles="" url="/salts?form"/>
+		<menu-item hidden="false" id="i_salt_list" labelCode="menu_item_salt_list_label" messageCode="global_menu_list" roles="" url="/salts?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_salt_abbrevequals" labelCode="menu_item_salt_abbrevequals_label" messageCode="global_menu_find" roles="" url="/salts?find=ByAbbrevEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_salt_abbrevequalsandnameequals" labelCode="menu_item_salt_abbrevequalsandnameequals_label" messageCode="global_menu_find" roles="" url="/salts?find=ByAbbrevEqualsAndNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_salt_abbrevlike" labelCode="menu_item_salt_abbrevlike_label" messageCode="global_menu_find" roles="" url="/salts?find=ByAbbrevLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_salt_cdid" labelCode="menu_item_salt_cdid_label" messageCode="global_menu_find" roles="" url="/salts?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_salt_nameequals" labelCode="menu_item_salt_nameequals_label" messageCode="global_menu_find" roles="" url="/salts?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+
+	<menu-item id="c_lot" labelCode="menu_category_lot_label" name="Lot">
+		<menu-item hidden="false" id="i_lot_new" labelCode="menu_item_lot_new_label" messageCode="global_menu_new" roles="" url="/lots?form"/>
+		<menu-item hidden="false" id="i_lot_list" labelCode="menu_item_lot_list_label" messageCode="global_menu_list" roles="" url="/lots?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_buid" labelCode="menu_item_lot_buid_label" messageCode="global_menu_find" roles="" url="/lots?find=ByBuid&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_chemistandsynthesisdatebetween" labelCode="menu_item_lot_chemistandsynthesisdatebetween_label" messageCode="global_menu_find" roles="" url="/lots?find=ByChemistAndSynthesisDateBetween&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_corpnameequals" labelCode="menu_item_lot_corpnameequals_label" messageCode="global_menu_find" roles="" url="/lots?find=ByCorpNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_corpnamelike" labelCode="menu_item_lot_corpnamelike_label" messageCode="global_menu_find" roles="" url="/lots?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_isvirtualnot" labelCode="menu_item_lot_isvirtualnot_label" messageCode="global_menu_find" roles="" url="/lots?find=ByIsVirtualNot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_notebookpageequals" labelCode="menu_item_lot_notebookpageequals_label" messageCode="global_menu_find" roles="" url="/lots?find=ByNotebookPageEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_notebookpageequalsandignorenot" labelCode="menu_item_lot_notebookpageequalsandignorenot_label" messageCode="global_menu_find" roles="" url="/lots?find=ByNotebookPageEqualsAndIgnoreNot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_saltform" labelCode="menu_item_lot_saltform_label" messageCode="global_menu_find" roles="" url="/lots?find=BySaltForm&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_synthesisdatebetween" labelCode="menu_item_lot_synthesisdatebetween_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateBetween&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_synthesisdategreaterthan" labelCode="menu_item_lot_synthesisdategreaterthan_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateGreaterThan&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_lot_synthesisdatelessthan" labelCode="menu_item_lot_synthesisdatelessthan_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateLessThan&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_parent" labelCode="menu_category_parent_label" name="Parent">
+		<menu-item hidden="false" id="i_parent_new" labelCode="menu_item_parent_new_label" messageCode="global_menu_new" roles="" url="/parents?form"/>
+		<menu-item hidden="false" id="i_parent_list" labelCode="menu_item_parent_list_label" messageCode="global_menu_list" roles="" url="/parents?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_cdid" labelCode="menu_item_parent_cdid_label" messageCode="global_menu_find" roles="" url="/parents?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_commonnamelike" labelCode="menu_item_parent_commonnamelike_label" messageCode="global_menu_find" roles="" url="/parents?find=ByCommonNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_corpnameequals" labelCode="menu_item_parent_corpnameequals_label" messageCode="global_menu_find" roles="" url="/parents?find=ByCorpNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_corpnamelike" labelCode="menu_item_parent_corpnamelike_label" messageCode="global_menu_find" roles="" url="/parents?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_saltforms" labelCode="menu_item_parent_saltforms_label" messageCode="global_menu_find" roles="" url="/parents?find=BySaltForms&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parent_bulkloadfileequals" labelCode="menu_item_parent_bulkloadfileequals_label" messageCode="global_menu_find" roles="" url="/parents?find=ByBulkLoadFileEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_solutionunit" labelCode="menu_category_solutionunit_label" name="SolutionUnit">
+		<menu-item hidden="false" id="i_solutionunit_new" labelCode="menu_item_solutionunit_new_label" messageCode="global_menu_new" roles="" url="/solutionunits?form"/>
+		<menu-item hidden="false" id="i_solutionunit_list" labelCode="menu_item_solutionunit_list_label" messageCode="global_menu_list" roles="" url="/solutionunits?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_solutionunit_codeequals" labelCode="menu_item_solutionunit_codeequals_label" messageCode="global_menu_find" roles="" url="/solutionunits?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_solutionunit_codelike" labelCode="menu_item_solutionunit_codelike_label" messageCode="global_menu_find" roles="" url="/solutionunits?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_stereocategory" labelCode="menu_category_stereocategory_label" name="StereoCategory">
+		<menu-item hidden="false" id="i_stereocategory_new" labelCode="menu_item_stereocategory_new_label" messageCode="global_menu_new" roles="" url="/stereocategorys?form"/>
+		<menu-item hidden="false" id="i_stereocategory_list" labelCode="menu_item_stereocategory_list_label" messageCode="global_menu_list" roles="" url="/stereocategorys?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_stereocategory_codeequals" labelCode="menu_item_stereocategory_codeequals_label" messageCode="global_menu_find" roles="" url="/stereocategorys?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_unit" labelCode="menu_category_unit_label" name="Unit">
+		<menu-item hidden="false" id="i_unit_new" labelCode="menu_item_unit_new_label" messageCode="global_menu_new" roles="" url="/units?form"/>
+		<menu-item hidden="false" id="i_unit_list" labelCode="menu_item_unit_list_label" messageCode="global_menu_list" roles="" url="/units?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_unit_codeequals" labelCode="menu_item_unit_codeequals_label" messageCode="global_menu_find" roles="" url="/units?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_unit_codelike" labelCode="menu_item_unit_codelike_label" messageCode="global_menu_find" roles="" url="/units?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_vendor" labelCode="menu_category_vendor_label" name="Vendor">
+		<menu-item hidden="false" id="i_vendor_new" labelCode="menu_item_vendor_new_label" messageCode="global_menu_new" roles="" url="/vendors?form"/>
+		<menu-item hidden="false" id="i_vendor_list" labelCode="menu_item_vendor_list_label" messageCode="global_menu_list" roles="" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_vendor_codeequals" labelCode="menu_item_vendor_codeequals_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_vendor_codelike" labelCode="menu_item_vendor_codelike_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_predef_corpname" labelCode="menu_category_predef_corpname_label" name="PreDef_CorpName">
+		<menu-item hidden="false" id="i_predef_corpname_new" labelCode="menu_item_predef_corpname_new_label" messageCode="global_menu_new" roles="" url="/predef_corpnames?form"/>
+		<menu-item hidden="false" id="i_predef_corpname_list" labelCode="menu_item_predef_corpname_list_label" messageCode="global_menu_list" roles="" url="/predef_corpnames?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_saltform" labelCode="menu_category_saltform_label" name="SaltForm">
+		<menu-item hidden="false" id="i_saltform_new" labelCode="menu_item_saltform_new_label" messageCode="global_menu_new" roles="" url="/saltforms?form"/>
+		<menu-item hidden="false" id="i_saltform_list" labelCode="menu_item_saltform_list_label" messageCode="global_menu_list" roles="" url="/saltforms?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_saltform_cdid" labelCode="menu_item_saltform_cdid_label" messageCode="global_menu_find" roles="" url="/saltforms?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_saltform_corpnameequals" labelCode="menu_item_saltform_corpnameequals_label" messageCode="global_menu_find" roles="" url="/saltforms?find=ByCorpNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_saltform_corpnamelike" labelCode="menu_item_saltform_corpnamelike_label" messageCode="global_menu_find" roles="" url="/saltforms?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_saltform_parent" labelCode="menu_item_saltform_parent_label" messageCode="global_menu_find" roles="" url="/saltforms?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_saltform_bulkloadfileequals" labelCode="menu_item_saltform_bulkloadfileequals_label" messageCode="global_menu_find" roles="" url="/saltforms?find=ByBulkLoadFileEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_isosalt" labelCode="menu_category_isosalt_label" name="IsoSalt">
+		<menu-item hidden="false" id="i_isosalt_new" labelCode="menu_item_isosalt_new_label" messageCode="global_menu_new" roles="" url="/isosalts?form"/>
+		<menu-item hidden="false" id="i_isosalt_list" labelCode="menu_item_isosalt_list_label" messageCode="global_menu_list" roles="" url="/isosalts?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_isosalt_saltform" labelCode="menu_item_isosalt_saltform_label" messageCode="global_menu_find" roles="" url="/isosalts?find=BySaltForm&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_isosalt_saltformandtype" labelCode="menu_item_isosalt_saltformandtype_label" messageCode="global_menu_find" roles="" url="/isosalts?find=BySaltFormAndType&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_scientist" labelCode="menu_category_scientist_label" name="Scientist">
+		<menu-item hidden="false" id="i_scientist_new" labelCode="menu_item_scientist_new_label" messageCode="global_menu_new" roles="" url="/scientists?form"/>
+		<menu-item hidden="false" id="i_scientist_list" labelCode="menu_item_scientist_list_label" messageCode="global_menu_list" roles="" url="/scientists?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_scientist_codeequals" labelCode="menu_item_scientist_codeequals_label" messageCode="global_menu_find" roles="" url="/scientists?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_project" labelCode="menu_category_project_label" name="Project">
+		<menu-item hidden="false" id="i_project_new" labelCode="menu_item_project_new_label" messageCode="global_menu_new" roles="" url="/projects?form"/>
+		<menu-item hidden="false" id="i_project_list" labelCode="menu_item_project_list_label" messageCode="global_menu_list" roles="" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_project_codeequals" labelCode="menu_item_project_codeequals_label" messageCode="global_menu_find" roles="" url="/projects?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_physicalstate" labelCode="menu_category_physicalstate_label" name="PhysicalState">
+		<menu-item hidden="false" id="i_physicalstate_new" labelCode="menu_item_physicalstate_new_label" messageCode="global_menu_new" roles="" url="/physicalstates?form"/>
+		<menu-item hidden="false" id="i_physicalstate_list" labelCode="menu_item_physicalstate_list_label" messageCode="global_menu_list" roles="" url="/physicalstates?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_physicalstate_codeequals" labelCode="menu_item_physicalstate_codeequals_label" messageCode="global_menu_find" roles="" url="/physicalstates?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_physicalstate_namelike" labelCode="menu_item_physicalstate_namelike_label" messageCode="global_menu_find" roles="" url="/physicalstates?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_physicalstate_nameequals" labelCode="menu_item_physicalstate_nameequals_label" messageCode="global_menu_find" roles="" url="/physicalstates?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_isotope" labelCode="menu_category_isotope_label" name="Isotope">
+		<menu-item hidden="false" id="i_isotope_new" labelCode="menu_item_isotope_new_label" messageCode="global_menu_new" roles="" url="/isotopes?form"/>
+		<menu-item hidden="false" id="i_isotope_list" labelCode="menu_item_isotope_list_label" messageCode="global_menu_list" roles="" url="/isotopes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_isotope_abbrevequals" labelCode="menu_item_isotope_abbrevequals_label" messageCode="global_menu_find" roles="" url="/isotopes?find=ByAbbrevEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_isotope_abbrevequalsandnameequals" labelCode="menu_item_isotope_abbrevequalsandnameequals_label" messageCode="global_menu_find" roles="" url="/isotopes?find=ByAbbrevEqualsAndNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_isotope_nameequals" labelCode="menu_item_isotope_nameequals_label" messageCode="global_menu_find" roles="" url="/isotopes?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_corpname" labelCode="menu_category_corpname_label" name="CorpName">
+		<menu-item hidden="false" id="i_corpname_new" labelCode="menu_item_corpname_new_label" messageCode="global_menu_new" roles="" url="/corpnames?form"/>
+		<menu-item hidden="false" id="i_corpname_list" labelCode="menu_item_corpname_list_label" messageCode="global_menu_list" roles="" url="/corpnames?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+
+	<menu-item id="c_parentannotation" labelCode="menu_category_parentannotation_label" name="ParentAnnotation">
+		<menu-item hidden="false" id="i_parentannotation_new" labelCode="menu_item_parentannotation_new_label" messageCode="global_menu_new" roles="" url="/parentAnnotations?form"/>
+		<menu-item hidden="false" id="i_parentannotation_list" labelCode="menu_item_parentannotation_list_label" messageCode="global_menu_list" roles="" url="/parentAnnotations?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parentannotation_codeequals" labelCode="menu_item_parentannotation_codeequals_label" messageCode="global_menu_find" roles="" url="/parentAnnotations?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+
+	<menu-item id="c_compoundtype" labelCode="menu_category_compoundtype_label" name="CompoundType">
+        <menu-item hidden="false" id="i_compoundtype_new" labelCode="menu_item_compoundtype_new_label" messageCode="global_menu_new" roles="" url="/compoundTypes?form"/>
+    	<menu-item hidden="false" id="i_compoundtype_list" labelCode="menu_item_compoundtype_list_label" messageCode="global_menu_list" roles="" url="/compoundTypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    	<menu-item hidden="false" id="fi_compoundtype_codeequals" labelCode="menu_item_compoundtype_codeequals_label" messageCode="global_menu_find" roles="" url="/compoundTypes?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+
+	<menu-item id="c_parentaliastype" labelCode="menu_category_parentaliastype_label" name="ParentAliasType">
+		<menu-item hidden="false" id="i_parentaliastype_new" labelCode="menu_item_parentaliastype_new_label" messageCode="global_menu_new" roles="" url="/parentaliastypes?form"/>
+		<menu-item hidden="false" id="i_parentaliastype_list" labelCode="menu_item_parentaliastype_list_label" messageCode="global_menu_list" roles="" url="/parentaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	<menu-item id="c_parentaliaskind" labelCode="menu_category_parentaliaskind_label" name="ParentAliasKind">
+		<menu-item hidden="false" id="i_parentaliaskind_new" labelCode="menu_item_parentaliaskind_new_label" messageCode="global_menu_new" roles="" url="/parentaliaskinds?form"/>
+		<menu-item hidden="false" id="i_parentaliaskind_list" labelCode="menu_item_parentaliaskind_list_label" messageCode="global_menu_list" roles="" url="/parentaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+
+	<menu-item id="c_parentalias" labelCode="menu_category_parentalias_label" name="ParentAlias">
+		<menu-item hidden="false" id="i_parentalias_new" labelCode="menu_item_parentalias_new_label" messageCode="global_menu_new" roles="" url="/parentaliases?form"/>
+		<menu-item hidden="false" id="i_parentalias_list" labelCode="menu_item_parentalias_list_label" messageCode="global_menu_list" roles="" url="/parentaliases?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parentalias_aliasnameequalsandlstypeequalsandlskindequals" labelCode="menu_item_parentalias_aliasnameequalsandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parentalias_parent" labelCode="menu_item_parentalias_parent_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+		<menu-item hidden="false" id="fi_parentalias_aliasnameequals" labelCode="menu_item_parentalias_aliasnameequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+	</menu-item>
+	
+
+<menu-item id="c_lotaliastype" labelCode="menu_category_lotaliastype_label" name="LotAliasType">
+        <menu-item hidden="false" id="i_lotaliastype_new" labelCode="menu_item_lotaliastype_new_label" messageCode="global_menu_new" roles="" url="/lotaliastypes?form"/>
+    <menu-item hidden="false" id="i_lotaliastype_list" labelCode="menu_item_lotaliastype_list_label" messageCode="global_menu_list" roles="" url="/lotaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+
+<menu-item id="c_lotaliaskind" labelCode="menu_category_lotaliaskind_label" name="LotAliasKind">
+        <menu-item hidden="false" id="i_lotaliaskind_new" labelCode="menu_item_lotaliaskind_new_label" messageCode="global_menu_new" roles="" url="/lotaliaskinds?form"/>
+    <menu-item hidden="false" id="i_lotaliaskind_list" labelCode="menu_item_lotaliaskind_list_label" messageCode="global_menu_list" roles="" url="/lotaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+
+<menu-item id="c_lotalias" labelCode="menu_category_lotalias_label" name="LotAlias">
+        <menu-item hidden="false" id="i_lotalias_new" labelCode="menu_item_lotalias_new_label" messageCode="global_menu_new" roles="" url="/lotaliases?form"/>
+    <menu-item hidden="false" id="i_lotalias_list" labelCode="menu_item_lotalias_list_label" messageCode="global_menu_list" roles="" url="/lotaliases?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_lotalias_aliasnameequalsandlstypeequalsandlskindequals" labelCode="menu_item_lotalias_aliasnameequalsandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_lotalias_lot" labelCode="menu_item_lotalias_lot_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+
+<menu-item id="c_filelist" labelCode="menu_category_filelist_label" name="FileList"/>
+<menu-item id="c_cmpdregappsetting" labelCode="menu_category_cmpdregappsetting_label" name="CmpdRegAppSetting"/>
+<menu-item id="c_puritymeasuredby" labelCode="menu_category_puritymeasuredby_label" name="PurityMeasuredBy"/>
+<menu-item id="c_operator" labelCode="menu_category_operator_label" name="Operator"/>
+</gvnix-menu>

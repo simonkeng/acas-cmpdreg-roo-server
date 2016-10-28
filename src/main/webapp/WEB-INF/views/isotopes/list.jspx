@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Isotope" items="${isotopes}" z="YhcGci3p4bxNVT6osbhoWY083V0=">
+        <table:table data="${isotopes}" id="l_com_labsynch_cmpdreg_domain_Isotope" path="/isotopes" z="BA9f8pxFUsEfs7A5INu2WUbfs7A=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Isotope_name" property="name" z="cFFevpzPXWk3ZgL+LCuls6bJPvA="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Isotope_abbrev" property="abbrev" z="VaFJUM6weqUfgJgO9SNcngjpQHU="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Isotope_massChange" property="massChange" z="/U0pyY3jU8PfSqWQGl92qFDsEeo="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Isotope_ignore" property="ignore" z="v5LaIaiYiIzIFR9KSSdTbLvlDOg="/>
+        </table:table>
+    </page:list>
+</div>

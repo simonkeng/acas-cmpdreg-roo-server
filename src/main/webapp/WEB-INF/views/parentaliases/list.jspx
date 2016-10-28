@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_ParentAlias" items="${parentaliases}" z="nU+DSthj4NMZuLmqnClILdAUdVw=">
+        <table:table data="${parentaliases}" id="l_com_labsynch_cmpdreg_domain_ParentAlias" path="/parentaliases" z="N1XXyBLLftBfID+uXqFnQuyyoco=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_parent" property="parent" z="524dccBS0Lj0dRTMDOZC7hsruX0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_lsType" property="lsType" z="5tmgcD0AjUa4TGo13dbuowH6UxE="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_lsKind" property="lsKind" z="XsbCyN5QvwJmb0JoHrZO2gV+4yo="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_aliasName" property="aliasName" z="5WpbkFtM/c3njxXUGvI+aII2U8w="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_preferred" property="preferred" z="ivRUX30HawA3KSCWwkcnVR9upso="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAlias_ignored" property="ignored" z="pue4vbZ+uczY/2lbaaPGRmJ7iC8="/>
+        </table:table>
+    </page:list>
+</div>

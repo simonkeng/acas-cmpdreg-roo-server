@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_CompoundType" object="${compoundtype}" path="/compoundTypes" z="ecTaEOtsUn+yLo1oSoI7dKN0lA0=">
+        <field:display field="code" id="s_com_labsynch_cmpdreg_domain_CompoundType_code" object="${compoundtype}" z="xat4slliPPl0M6T8S8GdIY8mWvQ="/>
+        <field:display field="displayOrder" id="s_com_labsynch_cmpdreg_domain_CompoundType_displayOrder" object="${compoundtype}" z="9s4+OeK8Od+2RBMqXxnXF2lVMTY="/>
+        <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_CompoundType_comment" object="${compoundtype}" z="xQiwzytlXDRsatcrzansPgAcOTk="/>
+        <field:display field="name" id="s_com_labsynch_cmpdreg_domain_CompoundType_name" object="${compoundtype}" z="i0oZTrmAHFyh32rpmBlri5X41BM="/>
+    </page:show>
+</div>

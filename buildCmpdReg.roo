@@ -1,0 +1,132 @@
+project --topLevelPackage com.labsynch.cmpdreg
+persistence setup --provider HIBERNATE --database MSSQL 
+
+entity --class ~.domain.Salt --testAutomatically 
+
+field string --fieldName name --sizeMax 255
+field string --fieldName structure
+field string --fieldName originalStructure
+field string --fieldName abbrev --sizeMax 100
+field number --fieldName molWeight --type java.lang.Double
+field string --fieldName formula --sizeMax 255
+field number --fieldName saltCdId --type int
+field boolean --fieldName ignore
+
+entity --class ~.domain.Isotope --testAutomatically 
+field string --fieldName name --sizeMax 255
+field string --fieldName abbrev --sizeMax 100
+field number --fieldName massChange --type java.lang.Double
+field boolean --fieldName ignore
+
+entity --class ~.domain.PhysicalState --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.StereoCategory --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.PurityMeasureType --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.Operator --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.Unit --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.Color --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+
+entity --class ~.domain.Supplier --testAutomatically
+field string --fieldName name --sizeMax 255
+field string --fieldName code --sizeMax 100
+field string --fieldName description --sizeMax 255
+
+entity --class ~.domain.Parent --testAutomatically
+field string --fieldName corpName --sizeMax 255
+field string --fieldName chemist --sizeMax 255
+field string --fieldName stereoCategoryCode --sizeMax 100
+field string --fieldName stereoComment --sizeMax 1000
+field boolean --fieldName ignore
+
+entity --class ~.domain.Structure --testAutomatically
+field string --fieldName structure
+field string --fieldName originalStructure
+field number --fieldName molWeight --type java.lang.Double
+field string --fieldName formula --sizeMax 255
+field number --fieldName parentCdId --type int
+
+entity --class ~.domain.ParentAlias --testAutomatically
+field string --fieldName isoSaltForm --sizeMax 255
+field string --fieldName aliasName --sizeMax 255
+field string --fieldName aliasType --sizeMax 255
+field boolean --fieldName ignore
+
+entity --class ~.domain.IsoSaltAlias --testAutomatically
+field string --fieldName isoSaltForm --sizeMax 255
+field string --fieldName aliasName --sizeMax 255
+field string --fieldName aliasType --sizeMax 255
+field boolean --fieldName ignore
+
+entity --class ~.domain.AliasType --testAutomatically
+field string --fieldName typeName
+
+entity --class ~.domain.IsoSaltForm --testAutomatically
+field string --fieldName structureWithIsoSalts
+field string --fieldName parent --sizeMax 255
+field string --fieldName isosaltName --sizeMax 255
+field number --fieldName isoSaltCdId --type int
+field boolean --fieldName ignore
+
+entity --class ~.domain.IsoSaltEquivs --testAutomatically
+field string --fieldName isoSaltForm --sizeMax 255
+field string --fieldName isoSalt --sizeMax 255
+field number --fieldName equivalents --type java.lang.Double
+field number --fieldName isoSaltCdId --type int
+field boolean --fieldName ignore
+
+entity --class ~.domain.Lot --testAutomatically
+field string --fieldName asDrawnStructure
+field string --fieldName saltForm --sizeMax 255
+field string --fieldName lotName --sizeMax 255
+field number --fieldName lotMolWeight --type java.lang.Double
+field date --fieldName synthesisDate --type java.util.Date
+field string --fieldName color --sizeMax 255
+field string --fieldName physicalStateCode --sizeMax 100
+field string --fieldName notebook --sizeMax 255
+field number --fieldName notebookPage --type int
+field number --fieldName amount --type java.lang.Double
+field string --fieldName amountUnitsCode --sizeMax 100
+field number --fieldName retain --type java.lang.Double
+field string --fieldName retainUnitsCode --sizeMax 100
+field string --fieldName supplier --sizeMax 255
+field number --fieldName supplierID --type int
+field number --fieldName purity --type java.lang.Double
+field string --fieldName purityOperatorCode --sizeMax 100
+field string --fieldName purityMeasuredByCode --sizeMax 100
+field string --fieldName chemist --sizeMax 255
+field number --fieldName percentEE --type java.lang.Double
+field string --fieldName comments --sizeMax 2000
+field boolean --fieldName ignore
+
+
+entity --class ~.service.Admin
+field string --fieldName name --sizeMax 50
+
+entity --class ~.service.GeneralUtils
+field string --fieldName name --sizeMax 50
+
+json all
+controller all --package ~.web
+selenium test --controller ~.web.SaltController
+selenium test --controller ~.web.IsotopeController
+selenium test --controller ~.web.PhysicalStateController
+selenium test --controller ~.web.LotController
+
+
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_FileList" modelAttribute="fileList" path="/filelists" versionField="Version" z="epcCnFa+bpoijS0NFXdOZuUI36Q=">
+        <field:input field="file" id="c_com_labsynch_cmpdreg_domain_FileList_file" z="fIiiEeTvidmUh50p0YY2cNyAKSs="/>
+        <field:select field="lot" id="c_com_labsynch_cmpdreg_domain_FileList_lot" itemValue="id" items="${lots}" path="/lots" z="iD2beo3jOQlpcZAPHj6oP37pNMk="/>
+        <field:input field="description" id="c_com_labsynch_cmpdreg_domain_FileList_description" z="XbokHegHT+o0lcf2D77+a8k5vC8="/>
+        <field:input field="name" id="c_com_labsynch_cmpdreg_domain_FileList_name" z="Tc2TNamng2b1im3RhaFSTOgWu9s="/>
+        <field:textarea field="type" id="c_com_labsynch_cmpdreg_domain_FileList_type" z="T/zj07uAGnFGETMYkESWJs/ZUvk="/>
+        <field:input field="size" id="c_com_labsynch_cmpdreg_domain_FileList_size" z="ypCLEClD8GeTLyz+uZLHvQAVEXg="/>
+        <field:input field="url" id="c_com_labsynch_cmpdreg_domain_FileList_url" z="6LrVOunNzb7/b1RlZJFFi8l6hmY="/>
+        <field:checkbox field="ie" id="c_com_labsynch_cmpdreg_domain_FileList_ie" z="dv9ypzsfA+E3khpwHicG0GvqL8k="/>
+        <field:checkbox field="uploaded" id="c_com_labsynch_cmpdreg_domain_FileList_uploaded" z="Nw6UgFDUPp7wO/h3z9yv3xNI4zo="/>
+        <field:input field="fileName" id="c_com_labsynch_cmpdreg_domain_FileList_fileName" z="XQfcXnfQ/GjHNtr0Mv3yyVAeMqQ="/>
+        <field:input field="subdir" id="c_com_labsynch_cmpdreg_domain_FileList_subdir" z="Uo9Ll0t6iVZyhiQK4GOVTRWLee4="/>
+        <field:input field="filePath" id="c_com_labsynch_cmpdreg_domain_FileList_filePath" z="kUhMhxiKqe/eToULu8wA8IbJtJo="/>
+    </form:update>
+</div>

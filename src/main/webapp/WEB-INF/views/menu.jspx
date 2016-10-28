@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" id="menu" version="2.0">
+    <jsp:output omit-xml-declaration="yes"/>
+    <menu:menu id="_menu" z="user-managed">
+        <menu:gvnixmenu/>
+        <menu:category id="c_cmpdregappsetting" render="false" z="user-managed">
+            <menu:item id="i_cmpdregappsetting_new" messageCode="global_menu_new" url="/cmpdregappsettings?form" z="au9XaWogdPQMlv6B29VXd8yXbTo="/>
+            <menu:item id="i_cmpdregappsetting_list" messageCode="global_menu_list" url="/cmpdregappsettings?page=1&amp;size=${empty param.size ? 10 : param.size}" z="E2/UtElA8zn0/iBWPy3EtS6DJ3A="/>
+        </menu:category>
+        <menu:category id="c_parent" render="false" z="user-managed">
+            <menu:item id="i_parent_new" messageCode="global_menu_new" url="/parents?form" z="1Sm2H8ouc62T/6SdPx5lIneW+9I="/>
+            <menu:item id="i_parent_list" messageCode="global_menu_list" url="/parents?page=1&amp;size=${empty param.size ? 10 : param.size}" z="DTAZKuxonCJw3ld/0pOBw9NOwNA="/>
+            <menu:item id="fi_parent_bulkloadfileequals" messageCode="global_menu_find" url="/parents?find=ByBulkLoadFileEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="DeTYxpX058xh6TGRfzygs/1qVVM="/>
+            <menu:item id="fi_parent_cdid" messageCode="global_menu_find" url="/parents?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="jP3+hwLEUHCWp5XqvdIFI9Kkefc="/>
+            <menu:item id="fi_parent_commonnamelike" messageCode="global_menu_find" url="/parents?find=ByCommonNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="gao0JChLRVeTwnxATw0SVJcFsmk="/>
+            <menu:item id="fi_parent_corpnameequals" messageCode="global_menu_find" url="/parents?find=ByCorpNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8yeRSZ/rhGlkqYvw/84veveB3ug="/>
+            <menu:item id="fi_parent_corpnamelike" messageCode="global_menu_find" url="/parents?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="M3rHnPF7xhwNDOiCmqwgMmCnuOQ="/>
+            <menu:item id="fi_parent_saltforms" messageCode="global_menu_find" url="/parents?find=BySaltForms&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="yI44433bRe4ptlTLOJuDw+4IMh8="/>
+        </menu:category>
+        <menu:category id="c_operator" render="false" z="user-managed">
+            <menu:item id="i_operator_new" messageCode="global_menu_new" url="/operators?form" z="348aQG/OMwcpfhf4YOVFumU9lXA="/>
+            <menu:item id="i_operator_list" messageCode="global_menu_list" url="/operators?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Tz16FblnAMkG7trnwdzRokFAC6Q="/>
+            <menu:item id="fi_operator_codeequals" messageCode="global_menu_find" url="/operators?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8JL8+ru+gaX6YnBv8HM6rnGGiS4="/>
+        </menu:category>
+        <menu:category id="c_unit" render="false" z="user-managed">
+            <menu:item id="i_unit_new" messageCode="global_menu_new" url="/units?form" z="oJDJNzw0PlIDkMTtID4g4gvkhTY="/>
+            <menu:item id="i_unit_list" messageCode="global_menu_list" url="/units?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mqpJPY7uCke3Lrgup34MXG8RkII="/>
+            <menu:item id="fi_unit_codeequals" messageCode="global_menu_find" url="/units?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="xzoRz0OblHLuU4iTtHXl8gW4KSw="/>
+            <menu:item id="fi_unit_codelike" messageCode="global_menu_find" url="/units?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TzatNt6rvhoNHOC20qBZYtMdPrI="/>
+        </menu:category>
+        <menu:category id="c_scientist" render="false" z="user-managed">
+            <menu:item id="i_scientist_new" messageCode="global_menu_new" url="/scientists?form" z="wAgAaplPP7T9G7eBgiZTqiTx1eo="/>
+            <menu:item id="i_scientist_list" messageCode="global_menu_list" url="/scientists?page=1&amp;size=${empty param.size ? 10 : param.size}" z="3JzqxLdYWnMfOqIFX1YXa/hIS1U="/>
+            <menu:item id="fi_scientist_codeequals" messageCode="global_menu_find" url="/scientists?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="oZgaFLqoM7bu7POQyLiefMoxPJs="/>
+        </menu:category>
+        <menu:category id="c_isotope" render="false" z="user-managed">
+            <menu:item id="i_isotope_new" messageCode="global_menu_new" url="/isotopes?form" z="v5077+SfRgbthIoVGsPAu1HyiSo="/>
+            <menu:item id="i_isotope_list" messageCode="global_menu_list" url="/isotopes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="CxHGF61wygqCLpfCatHyGZE/yVs="/>
+            <menu:item id="fi_isotope_abbrevequals" messageCode="global_menu_find" url="/isotopes?find=ByAbbrevEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8/nfUu+qQhBqBFdopPzc9Nrkluo="/>
+            <menu:item id="fi_isotope_abbrevequalsandnameequals" messageCode="global_menu_find" url="/isotopes?find=ByAbbrevEqualsAndNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="fOg34F5KJiKaKVly9SMGsnKkCJA="/>
+            <menu:item id="fi_isotope_nameequals" messageCode="global_menu_find" url="/isotopes?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="9UN/HbJMq+lLqRKA+S2WDGYNRp4="/>
+        </menu:category>
+        <menu:category id="c_solutionunit" render="false" z="user-managed">
+            <menu:item id="i_solutionunit_new" messageCode="global_menu_new" url="/solutionunits?form" z="LH7VnOGJk9HlXcTwnzZbC1MoOPk="/>
+            <menu:item id="i_solutionunit_list" messageCode="global_menu_list" url="/solutionunits?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Xxov5+isHXigALbrAFg10eGgpiI="/>
+            <menu:item id="fi_solutionunit_codeequals" messageCode="global_menu_find" url="/solutionunits?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="geMzrw9gFm8et/nRkHhRERN+vUA="/>
+            <menu:item id="fi_solutionunit_codelike" messageCode="global_menu_find" url="/solutionunits?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="7yQAqNl7Bi8wcDUW4MrKqpUHhEg="/>
+        </menu:category>
+        <menu:category id="c_physicalstate" render="false" z="user-managed">
+            <menu:item id="i_physicalstate_new" messageCode="global_menu_new" url="/physicalstates?form" z="lOaDCAIsIIPTDCFlzMgIFHDmVWo="/>
+            <menu:item id="i_physicalstate_list" messageCode="global_menu_list" url="/physicalstates?page=1&amp;size=${empty param.size ? 10 : param.size}" z="oAJwErBMeNfYmWg7YsK1hGYPkxs="/>
+            <menu:item id="fi_physicalstate_codeequals" messageCode="global_menu_find" url="/physicalstates?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="o50CF+rwB6pngfK6cBTvOPmV7pM="/>
+            <menu:item id="fi_physicalstate_nameequals" messageCode="global_menu_find" url="/physicalstates?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="zcIHcuw5PlofzmPTHiTnSVolvtQ="/>
+            <menu:item id="fi_physicalstate_namelike" messageCode="global_menu_find" url="/physicalstates?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="yVL9dEFkY4CaMo9LP1UqqvXjCfo="/>
+        </menu:category>
+        <menu:category id="c_stereocategory" render="false" z="user-managed">
+            <menu:item id="i_stereocategory_new" messageCode="global_menu_new" url="/stereocategorys?form" z="trKta9BiDm4PjPwsPoRUoyg9g0w="/>
+            <menu:item id="i_stereocategory_list" messageCode="global_menu_list" url="/stereocategorys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="sLSTkD9W4fteJyy3aAX8vRJ8rA0="/>
+            <menu:item id="fi_stereocategory_codeequals" messageCode="global_menu_find" url="/stereocategorys?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="LDPrAb3m3AKlp6DBcOHDGq1Qm40="/>
+        </menu:category>
+        <menu:category id="c_filetype" render="false" z="user-managed">
+            <menu:item id="i_filetype_new" messageCode="global_menu_new" url="/filetypes?form" z="KgZDHotqr83ugmuhjsMTgMiEStM="/>
+            <menu:item id="i_filetype_list" messageCode="global_menu_list" url="/filetypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="zjaVtNqO4B+Z7hZrRGBmmy4y2x0="/>
+        </menu:category>
+        <menu:category id="c_salt" render="false" z="user-managed">
+            <menu:item id="i_salt_new" messageCode="global_menu_new" url="/salts?form" z="Rt6Yn5Yy2OmK8gGhLSquihEpiiI="/>
+            <menu:item id="i_salt_list" messageCode="global_menu_list" url="/salts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="vjSKA4wsQUy8O7hsslkG1EC8haw="/>
+            <menu:item id="fi_salt_abbrevequals" messageCode="global_menu_find" url="/salts?find=ByAbbrevEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="faEAuZlMBHTE0ex80p7vjTsYSDo="/>
+            <menu:item id="fi_salt_abbrevequalsandnameequals" messageCode="global_menu_find" url="/salts?find=ByAbbrevEqualsAndNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="yFxOyFDs9ootIiRB/QhwmqOIn3k="/>
+            <menu:item id="fi_salt_abbrevlike" messageCode="global_menu_find" url="/salts?find=ByAbbrevLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="/soeIBsKfSoVqIwTeH+xfJs4+UI="/>
+            <menu:item id="fi_salt_cdid" messageCode="global_menu_find" url="/salts?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="lV1IoOJ3gs//kWtnqu5ktR1YUjY="/>
+            <menu:item id="fi_salt_nameequals" messageCode="global_menu_find" url="/salts?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="CEhaZMjuxycMVvNcnHn8fJBE2hg="/>
+        </menu:category>
+        <menu:category id="c_predef_corpname" render="false" z="user-managed">
+            <menu:item id="i_predef_corpname_new" messageCode="global_menu_new" url="/predef_corpnames?form" z="Kwz8R5E274kap2paJSFMlwS0IDA="/>
+            <menu:item id="i_predef_corpname_list" messageCode="global_menu_list" url="/predef_corpnames?page=1&amp;size=${empty param.size ? 10 : param.size}" z="dvkZ3heCrrSBM1skxCr5XwRORqw="/>
+        </menu:category>
+        <menu:category id="c_saltform" render="false" z="user-managed">
+            <menu:item id="i_saltform_new" messageCode="global_menu_new" url="/saltforms?form" z="GJNFdQxtdlDG3OjBR5H0U/psG+4="/>
+            <menu:item id="i_saltform_list" messageCode="global_menu_list" url="/saltforms?page=1&amp;size=${empty param.size ? 10 : param.size}" z="JeDUyMUHv6JapOQDWBWCBYt3erQ="/>
+            <menu:item id="fi_saltform_bulkloadfileequals" messageCode="global_menu_find" url="/saltforms?find=ByBulkLoadFileEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="VwRclDdxN4rzNpFhlhmCtNH+/U4="/>
+            <menu:item id="fi_saltform_cdid" messageCode="global_menu_find" url="/saltforms?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="k8sB1tWhwjius1TXNUQg48kBJqE="/>
+            <menu:item id="fi_saltform_corpnameequals" messageCode="global_menu_find" url="/saltforms?find=ByCorpNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="ODunbPjAY2MmlzJ2g4H50roXLMs="/>
+            <menu:item id="fi_saltform_corpnamelike" messageCode="global_menu_find" url="/saltforms?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="VlEVFIkOfP/0sTY8Id/+uXNZZVw="/>
+            <menu:item id="fi_saltform_parent" messageCode="global_menu_find" url="/saltforms?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="0BDsMTGOaCH2+B+hAn6H2VXOZyc="/>
+        </menu:category>
+        <menu:category id="c_project" render="false" z="user-managed">
+            <menu:item id="i_project_new" messageCode="global_menu_new" url="/projects?form" z="1BazRC1rLnod0a+MpP1flWTvehA="/>
+            <menu:item id="i_project_list" messageCode="global_menu_list" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}" z="GHL05c3Rvr+eKDgRCk3Ttak0W+g="/>
+            <menu:item id="fi_project_codeequals" messageCode="global_menu_find" url="/projects?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hbu4dPmttz2ZEHz5IRca2M3IJkc="/>
+        </menu:category>
+        <menu:category id="c_filelist" render="false" z="user-managed">
+            <menu:item id="i_filelist_new" messageCode="global_menu_new" url="/filelists?form" z="T5zFpWbm4xPcs0m2oX0k7C0CCJw="/>
+            <menu:item id="i_filelist_list" messageCode="global_menu_list" url="/filelists?page=1&amp;size=${empty param.size ? 10 : param.size}" z="V1RYn6ReH9SSees3BlAu+js09r0="/>
+            <menu:item id="fi_filelist_lot" messageCode="global_menu_find" url="/filelists?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="/WwkZZETne1BJGJpkdb157Psa2c="/>
+            <menu:item id="fi_filelist_urlequals" messageCode="global_menu_find" url="/filelists?find=ByUrlEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="vxoq0X6tTQ7OzHg1xIiwOQS+sv0="/>
+        </menu:category>
+        <menu:category id="c_vendor" render="false" z="user-managed">
+            <menu:item id="i_vendor_new" messageCode="global_menu_new" url="/vendors?form" z="5DUNHCgAaFlQsUsHrIfmstuWxPM="/>
+            <menu:item id="i_vendor_list" messageCode="global_menu_list" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}" z="PaHIFalbQwm47Wrz8iGe8DCcyXI="/>
+            <menu:item id="fi_vendor_codeequals" messageCode="global_menu_find" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="69IaDPJSu71IVkN+va/S676ad1k="/>
+            <menu:item id="fi_vendor_codelike" messageCode="global_menu_find" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="F5O/oxpbL9hdNr/GN/OwdQ5No8M="/>
+        </menu:category>
+        <menu:category id="c_puritymeasuredby" render="false" z="user-managed">
+            <menu:item id="i_puritymeasuredby_new" messageCode="global_menu_new" url="/puritymeasuredbys?form" z="tvshqP/oDSgqHaraSA/XFTHK7Zg="/>
+            <menu:item id="i_puritymeasuredby_list" messageCode="global_menu_list" url="/puritymeasuredbys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="NlvmmDC9n6PYUeRdurr4NHaTyPU="/>
+        </menu:category>
+        <menu:category id="c_corpname" render="false" z="user-managed">
+            <menu:item id="i_corpname_new" messageCode="global_menu_new" url="/corpnames?form" z="9Y7Fue+tBb3JgAcm0ra2eyymgrU="/>
+            <menu:item id="i_corpname_list" messageCode="global_menu_list" url="/corpnames?page=1&amp;size=${empty param.size ? 10 : param.size}" z="gvD4EmjmKU/cqBTDDHYf9+gAo2w="/>
+        </menu:category>
+        <menu:category id="c_parentaliaskind" render="false" z="user-managed">
+            <menu:item id="i_parentaliaskind_new" messageCode="global_menu_new" url="/parentaliaskinds?form" z="i58ookxL/qdt0iXtCGbHhggh3gs="/>
+            <menu:item id="i_parentaliaskind_list" messageCode="global_menu_list" url="/parentaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}" z="BMyJCAhga4yyuzifpodVs4tLO/4="/>
+        </menu:category>
+        <menu:category id="c_parentaliastype" render="false" z="user-managed">
+            <menu:item id="i_parentaliastype_new" messageCode="global_menu_new" url="/parentaliastypes?form" z="DDjyUk4c9Mu0mqS5dikahwh6HS0="/>
+            <menu:item id="i_parentaliastype_list" messageCode="global_menu_list" url="/parentaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="/GL/5i6szsTRV/nVHSh1uaL3qag="/>
+        </menu:category>
+        <menu:category id="c_parentannotation" render="false" z="user-managed">
+            <menu:item id="i_parentannotation_new" messageCode="global_menu_new" url="/parentAnnotations?form" z="UjOZD3d0zHzYrxgnGSpkvyyF8J8="/>
+            <menu:item id="i_parentannotation_list" messageCode="global_menu_list" url="/parentAnnotations?page=1&amp;size=${empty param.size ? 10 : param.size}" z="+RZp2HcHCdygW/wE0JSftRcktUM="/>
+            <menu:item id="fi_parentannotation_codeequals" messageCode="global_menu_find" url="/parentAnnotations?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="YHUygGqihI+hobIyd5+P/sm58tc="/>
+        </menu:category>
+        <menu:category id="c_compoundtype" render="false" z="user-managed">
+            <menu:item id="i_compoundtype_new" messageCode="global_menu_new" url="/compoundTypes?form" z="aCkGif09s3F0BXJEvgHtL53ZrI4="/>
+            <menu:item id="i_compoundtype_list" messageCode="global_menu_list" url="/compoundTypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="jJwHBtYzZ7q3NRu4cH/yrLdiJ4U="/>
+            <menu:item id="fi_compoundtype_codeequals" messageCode="global_menu_find" url="/compoundTypes?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="buwZKzCnBsiw1f+bld7QxqRD8kU="/>
+        </menu:category>
+        <menu:category id="c_parentalias" render="false" z="user-managed">
+            <menu:item id="i_parentalias_new" messageCode="global_menu_new" url="/parentaliases?form" z="7m7jOxS/Kq3XrrtUZy9IvBxhO10="/>
+            <menu:item id="i_parentalias_list" messageCode="global_menu_list" url="/parentaliases?page=1&amp;size=${empty param.size ? 10 : param.size}" z="WI7MUG6wdygjnVfcZzwC6E4syNM="/>
+            <menu:item id="fi_parentalias_aliasnameequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="rRE78zjA6mg+IWAAPMfjS7xS65U="/>
+            <menu:item id="fi_parentalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="9zt66MzfFVmkN9mRuvm16RCe20s="/>
+            <menu:item id="fi_parentalias_parent" messageCode="global_menu_find" url="/parentaliases?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TeasU75mfP4kzPs2h9Tw8q6allY="/>
+        </menu:category>
+        <menu:category id="c_lotalias" render="false" z="user-managed">
+            <menu:item id="i_lotalias_new" messageCode="global_menu_new" url="/lotaliases?form" z="7b7Z7gKs6/AHbRn1Y42KyALCZ9E="/>
+            <menu:item id="i_lotalias_list" messageCode="global_menu_list" url="/lotaliases?page=1&amp;size=${empty param.size ? 10 : param.size}" z="tcQ2uLs/U2jHGEJfw4ygmyp49Kg="/>
+            <menu:item id="fi_lotalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/lotaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="RnL4u288C415TNmFj1z/1XD7n1c="/>
+            <menu:item id="fi_lotalias_lot" messageCode="global_menu_find" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hPeHvSNu9h5nWZ0LtatTsO0IOM4="/>
+        </menu:category>
+        <menu:category id="c_lotaliaskind" render="false" z="user-managed">
+            <menu:item id="i_lotaliaskind_new" messageCode="global_menu_new" url="/lotaliaskinds?form" z="70JcpgQKJnM1f+bosxXSp1N2uUQ="/>
+            <menu:item id="i_lotaliaskind_list" messageCode="global_menu_list" url="/lotaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}" z="UresvrBuxs0ZyhFkJZtCcJ6E0tY="/>
+        </menu:category>
+        <menu:category id="c_lotaliastype" render="false" z="user-managed">
+            <menu:item id="i_lotaliastype_new" messageCode="global_menu_new" url="/lotaliastypes?form" z="Ap05dqWute6GkrvsvbL82R3tFpE="/>
+            <menu:item id="i_lotaliastype_list" messageCode="global_menu_list" url="/lotaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}" z="3xOlLWoMPwrCl25j4BZDTWWc3Dk="/>
+        </menu:category>
+    </menu:menu>
+</div>

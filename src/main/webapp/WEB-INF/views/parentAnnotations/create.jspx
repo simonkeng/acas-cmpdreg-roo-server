@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_com_labsynch_cmpdreg_domain_ParentAnnotation" modelAttribute="parentAnnotation" path="/parentAnnotations" render="${empty dependencies}" z="5K1HInk36IbYjZwIbBLm1LSarWs=">
+        <field:input field="code" id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_code" required="true" z="a+M3dwSzwv8N6onDvsh3HWUGICs="/>
+        <field:input field="displayOrder" id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_displayOrder" validationMessageCode="field_invalid_integer" z="e2iOFORL91ZQs6pH40qAVd+ySg0="/>
+        <field:input field="comment" id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_comment" z="P5hOnOnkoe1HzeFIRObfQuG7SuQ="/>
+        <field:input field="name" id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_name" required="true" z="PnOFhUc5EQJrGFAEc2/4WtlPooQ="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_com_labsynch_cmpdreg_domain_ParentAnnotation" render="${not empty dependencies}" z="tywNssXkvQOp6rzRuW80jrWUgtk="/>
+</div>

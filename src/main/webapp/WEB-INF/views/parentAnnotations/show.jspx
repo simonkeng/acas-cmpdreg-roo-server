@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_ParentAnnotation" object="${parentannotation}" path="/parentAnnotations" z="KAGZjwPgLDZXriF/KYA941pOL9w=">
+        <field:display field="code" id="s_com_labsynch_cmpdreg_domain_ParentAnnotation_code" object="${parentannotation}" z="Vx1jR4a7Kqu2CjZVInKRujLEPP4="/>
+        <field:display field="displayOrder" id="s_com_labsynch_cmpdreg_domain_ParentAnnotation_displayOrder" object="${parentannotation}" z="oAjlCiinVWllctS6rSknYh48Ys4="/>
+        <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_ParentAnnotation_comment" object="${parentannotation}" z="eWm9FtceJHsGvsHJMRFYqjpC3ow="/>
+        <field:display field="name" id="s_com_labsynch_cmpdreg_domain_ParentAnnotation_name" object="${parentannotation}" z="WyHGXysNnSWPE43laqVYffSx+yw="/>
+    </page:show>
+</div>

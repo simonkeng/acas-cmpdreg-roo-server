@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Scientist" items="${scientists}" z="wrGuYoIFKLPos4xXW30HJ1346+Y=">
+        <table:table data="${scientists}" id="l_com_labsynch_cmpdreg_domain_Scientist" path="/scientists" z="y6FctpxUTmLIaZltrO+SSrv2Gzs=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Scientist_code" property="code" z="slxto48mzD6ky2xfgJyvuLFj1ak="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Scientist_name" property="name" z="rdJz7JV+5jLlgZDyuvtY/yqUXz0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Scientist_isChemist" property="isChemist" z="EALKi8j0LesV9kHB2eDTeoQQi08="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Scientist_isAdmin" property="isAdmin" z="l1pEyBd1mPqwoksyTktb3mwA3qQ="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Scientist_ignore" property="ignore" z="lIAadXyI786MW7RyOs375YBoLKE="/>
+        </table:table>
+    </page:list>
+</div>

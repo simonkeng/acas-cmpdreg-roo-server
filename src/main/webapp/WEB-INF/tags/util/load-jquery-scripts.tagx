@@ -1,0 +1,37 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+
+  <jsp:output omit-xml-declaration="yes" />
+  
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery.form.js"></script>
+	<script src="/cmpdreg/clientres/client/lib/jquery.form.js"></script>
+	<script src="/cmpdreg/clientres/client/lib/jquery.form.js"></script>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery.form.js"/>
+    <script src="/cmpdreg/clientres/client/lib/json2.js" type="text/javascript"/>
+    <script src="/cmpdreg/clientres/client/lib/jquery-1.6.2.js" type="text/javascript"/>
+
+   <link href="/cmpdreg/clientres/client/css/NewCmpdReg.css" rel="stylesheet"  type="text/css" />		
+  	<link href="/cmpdreg/clientres/client/lib/JQuery_theme_redmond/jquery-ui-1.8.16.custom.css" rel="stylesheet"  type="text/css" />		
+  	<link href="/cmpdreg/clientres/client/lib/JQuery_theme_redmond/jquery.ui.datepicker.css" rel="stylesheet"  type="text/css" />		
+  	<link href="/cmpdreg/clientres/client/lib/JQuery_theme_redmond/jquery.ui.dialog.css" rel="stylesheet"  type="text/css" />		
+	<link href="/cmpdreg/clientres/client/MultipleFilePicker/css/style.css" rel="stylesheet"  type="text/css" />		
+   
+    <script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery_ui/jquery.ui.core.min.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery_ui/jquery.ui.widget.min.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery_ui/jquery.ui.datepicker.min.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/jquery_ui/jquery.ui.dialog.min.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/underscore-1.1.6.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/backbone.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/lib/backbone-localstorage.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/marvin/marvin.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/AppController.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/Isotope.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/Salt.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/ErrorNotification.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/IsoSaltEquiv.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/SaltForm.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/Lot.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/src/PickList.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/MultipleFilePicker/javascript/src/file.js"/>
+	<script type="text/javascript" src="/cmpdreg/clientres/client/MultipleFilePicker/javascript/src/file_renderer.js"/>  
+
+</jsp:root>

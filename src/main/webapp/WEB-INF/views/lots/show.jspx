@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_Lot" object="${lot}" path="/lots" z="Vo+fQi+gIRD5WOZ3CurUNzH8EoU=">
+        <field:display field="buid" id="s_com_labsynch_cmpdreg_domain_Lot_buid" object="${lot}" z="OSoDSR0yW3VmED85GNp/ijuAMPc="/>
+        <field:display field="parent" id="s_com_labsynch_cmpdreg_domain_Lot_parent" object="${lot}" z="hJIrtMUsk0b7RktGUwHncAB8yCI="/>
+        <field:display field="saltForm" id="s_com_labsynch_cmpdreg_domain_Lot_saltForm" object="${lot}" z="pGeIzR57uyNxTKERMPhxuxEGt1M="/>
+        <field:display field="asDrawnStruct" id="s_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" object="${lot}" z="KacdbERuEFBqZ3EpDtY3GVc14U0="/>
+        <field:display field="lotAsDrawnCdId" id="s_com_labsynch_cmpdreg_domain_Lot_lotAsDrawnCdId" object="${lot}" z="Fo1qBboj35lXRiw7al6+Lsg6F6I="/>
+        <field:display field="corpName" id="s_com_labsynch_cmpdreg_domain_Lot_corpName" object="${lot}" z="iNnIqLDaQIK4vv6liORNAqjgE+w="/>
+        <field:display field="lotNumber" id="s_com_labsynch_cmpdreg_domain_Lot_lotNumber" object="${lot}" z="iEI8RsOUdOdqkhPm+TA/N6qWj+M="/>
+        <field:display field="lotMolWeight" id="s_com_labsynch_cmpdreg_domain_Lot_lotMolWeight" object="${lot}" z="uzmFPQlavfrRT8xA6TJP9YtPBXM="/>
+        <field:display date="true" dateTimePattern="${lot_synthesisdate_date_format}" field="synthesisDate" id="s_com_labsynch_cmpdreg_domain_Lot_synthesisDate" object="${lot}" z="y+7qDCtiqKZHBkimme3kCHXi1z4="/>
+        <field:display date="true" dateTimePattern="${lot_registrationdate_date_format}" field="registrationDate" id="s_com_labsynch_cmpdreg_domain_Lot_registrationDate" object="${lot}" z="EO0szwfJCMo0cOwkeSNkIfqGw0k="/>
+        <field:display date="true" dateTimePattern="${lot_modifieddate_date_format}" field="modifiedDate" id="s_com_labsynch_cmpdreg_domain_Lot_modifiedDate" object="${lot}" z="lZbyXx/nj+ZG/M+RAm4xJ5kRFI4="/>
+        <field:display field="modifiedBy" id="s_com_labsynch_cmpdreg_domain_Lot_modifiedBy" object="${lot}" z="P0GPDgo698Uwo2wFhbPSrUZXhk4="/>
+        <field:display field="barcode" id="s_com_labsynch_cmpdreg_domain_Lot_barcode" object="${lot}" z="bBVLdN4jiUJ+Mm1inw6Ooyl0asU="/>
+        <field:display field="color" id="s_com_labsynch_cmpdreg_domain_Lot_color" object="${lot}" z="U1p6zIbijjTbcyHJPdBKp6HfNv4="/>
+        <field:display field="notebookPage" id="s_com_labsynch_cmpdreg_domain_Lot_notebookPage" object="${lot}" z="H+EXzUiJL8QQvtoiLiAFyg+bWBY="/>
+        <field:display field="amount" id="s_com_labsynch_cmpdreg_domain_Lot_amount" object="${lot}" z="RDvROd3qt1KX2oU9SMLT0cPmg9E="/>
+        <field:display field="amountUnits" id="s_com_labsynch_cmpdreg_domain_Lot_amountUnits" object="${lot}" z="QGR016oYBcJBC9CSofE+dfjxIOo="/>
+        <field:display field="solutionAmount" id="s_com_labsynch_cmpdreg_domain_Lot_solutionAmount" object="${lot}" z="Jw1o4Z4EunaQ7DA72sO75VlCFtU="/>
+        <field:display field="solutionAmountUnits" id="s_com_labsynch_cmpdreg_domain_Lot_solutionAmountUnits" object="${lot}" z="ndzuXT787RU9U9TRyJXoOSLhwBI="/>
+        <field:display field="supplier" id="s_com_labsynch_cmpdreg_domain_Lot_supplier" object="${lot}" z="nrzUUrpWDwxOPhkta7Ur7Io/4aE="/>
+        <field:display field="supplierID" id="s_com_labsynch_cmpdreg_domain_Lot_supplierID" object="${lot}" z="04OxLrz/Bor0knU/yD2FW1NQJfE="/>
+        <field:display field="purity" id="s_com_labsynch_cmpdreg_domain_Lot_purity" object="${lot}" z="ZoATpBcNWZlbKjOQZJU1pehnuK8="/>
+        <field:display field="purityOperator" id="s_com_labsynch_cmpdreg_domain_Lot_purityOperator" object="${lot}" z="5BAewr/k4+hty9OCW1IoG+J5PuA="/>
+        <field:display field="purityMeasuredBy" id="s_com_labsynch_cmpdreg_domain_Lot_purityMeasuredBy" object="${lot}" z="oRYziH7asFyucUETvPUy+CRFiAc="/>
+        <field:display field="chemist" id="s_com_labsynch_cmpdreg_domain_Lot_chemist" object="${lot}" z="iAPJxuj1Xc3pKicK3fHylZp38jE="/>
+        <field:display field="percentEE" id="s_com_labsynch_cmpdreg_domain_Lot_percentEE" object="${lot}" z="nuML0ao83aKkpPJT4+F6z0BKsSk="/>
+        <field:display field="comments" id="s_com_labsynch_cmpdreg_domain_Lot_comments" object="${lot}" z="JY74dvds6kzI1rcX3omNCtiC1EE="/>
+        <field:display field="isVirtual" id="s_com_labsynch_cmpdreg_domain_Lot_isVirtual" object="${lot}" z="MPR4s+YmBo15afEK9SxPhpad3Y4="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_Lot_ignore" object="${lot}" z="KaYGFPlQMGFVkG1Cxa2o4utPY+g="/>
+        <field:display field="physicalState" id="s_com_labsynch_cmpdreg_domain_Lot_physicalState" object="${lot}" z="O0bUWi5jqFU2h1lctBZ4QrzbrWQ="/>
+        <field:display field="vendor" id="s_com_labsynch_cmpdreg_domain_Lot_vendor" object="${lot}" z="4I3HtLSFHZs+KnTm1I/4CCTSBOI="/>
+        <field:display field="retain" id="s_com_labsynch_cmpdreg_domain_Lot_retain" object="${lot}" z="nxdUa6ENXsJe2jatHEajMREvtzQ="/>
+        <field:display field="retainUnits" id="s_com_labsynch_cmpdreg_domain_Lot_retainUnits" object="${lot}" z="j7tFjEeAZdAiY+jzAsYeglX5zjU="/>
+        <field:display field="meltingPoint" id="s_com_labsynch_cmpdreg_domain_Lot_meltingPoint" object="${lot}" z="lCZzFm+dPPe+Kd3uv6iuKqEL0Nk="/>
+        <field:display field="boilingPoint" id="s_com_labsynch_cmpdreg_domain_Lot_boilingPoint" object="${lot}" z="tmSZCEalaM8FEzb9/TcExheAs18="/>
+        <field:display field="supplierLot" id="s_com_labsynch_cmpdreg_domain_Lot_supplierLot" object="${lot}" z="jSCBS2Z8hiJrgzi0PuzKHuOq1nw="/>
+        <field:display field="project" id="s_com_labsynch_cmpdreg_domain_Lot_project" object="${lot}" z="x6S1SOvzFHoE7Z3Nv9et75UM95k="/>
+    </page:show>
+</div>

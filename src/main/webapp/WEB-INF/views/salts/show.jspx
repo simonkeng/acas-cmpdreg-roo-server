@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_Salt" object="${salt}" path="/salts" z="nrFp0UCxv7QdNOu5y8jNX18o9mU=">
+        <field:display field="name" id="s_com_labsynch_cmpdreg_domain_Salt_name" object="${salt}" z="S8k0mKjuJIj5Yavjbol+pleRKxM="/>
+        <field:display field="originalStructure" id="s_com_labsynch_cmpdreg_domain_Salt_originalStructure" object="${salt}" z="PI0Q0AbjYf0lF6fZgbKn2BRkUkA="/>
+        <field:display field="abbrev" id="s_com_labsynch_cmpdreg_domain_Salt_abbrev" object="${salt}" z="soNRlkGXYIbdQrcl2jh38ER+WpE="/>
+        <field:display field="molWeight" id="s_com_labsynch_cmpdreg_domain_Salt_molWeight" object="${salt}" z="T6tyM3qBH9+K2QRPD1g/URbZFGw="/>
+        <field:display field="formula" id="s_com_labsynch_cmpdreg_domain_Salt_formula" object="${salt}" z="6RaW8jU5o3yWqYYlvZEzjCC5fXk="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_Salt_ignore" object="${salt}" z="b6FgGb6ppPthasH2kGINAf3cBTM="/>
+        <field:display field="molStructure" id="s_com_labsynch_cmpdreg_domain_Salt_molStructure" object="${salt}" z="moDXpfFaBDwR91iMvu8EtsZrhqs="/>
+        <field:display field="cdId" id="s_com_labsynch_cmpdreg_domain_Salt_cdId" object="${salt}" z="81sV0E/csefhT/Cos8T0oDzr8O8="/>
+        <field:display field="charge" id="s_com_labsynch_cmpdreg_domain_Salt_charge" object="${salt}" z="7HR4adarjWDkaxcrDO8dUj9D5+w="/>
+    </page:show>
+</div>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_SaltForm" items="${saltforms}" z="zJhp3AZZrMUrWLZryeOYxVHmoW0=">
+        <table:table data="${saltforms}" id="l_com_labsynch_cmpdreg_domain_SaltForm" path="/saltforms" z="dUQaM9tJ3NBbPDWg4U+aRvmrLU8=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltForm_molStructure" property="molStructure" z="nlVfAZ0Z8YRGiCW5sVYa0fhn62s="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltForm_corpName" property="corpName" z="qv2zYbESrF66wVI2ykCReMxRZuc="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltForm_casNumber" property="casNumber" z="lre8TUBjqDKRJfdT8SqLHc4g0Jw="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltForm_chemist" property="chemist" z="OdtcshxxdWebmuMAiW7FyMaR+gQ="/>
+            <table:column date="true" dateTimePattern="${saltForm_registrationdate_date_format}" id="c_com_labsynch_cmpdreg_domain_SaltForm_registrationDate" property="registrationDate" z="ANXS4BA6mNL8/Z2+MxEtG3CUl3Q="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltForm_CdId" property="cdId" z="yUGD4yrYttzl+N/ksrYHAnTidBg="/>
+        </table:table>
+    </page:list>
+</div>

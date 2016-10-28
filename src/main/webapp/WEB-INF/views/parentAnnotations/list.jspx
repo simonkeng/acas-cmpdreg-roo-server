@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_ParentAnnotation" items="${parentannotations}" z="Hhtm+C+mOvFt6ADkuhT5z8WJD8w=">
+        <table:table data="${parentannotations}" id="l_com_labsynch_cmpdreg_domain_ParentAnnotation" path="/parentAnnotations" z="Sm7TvAX/npaWjbX4OMc0RAAd/sc=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_code" property="code" z="iUJbx8JWPa6coYrai2iYAJaxzOQ="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_displayOrder" property="displayOrder" z="75ot0I+0aI5BxrmcbhfSX6mYxxg="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_comment" property="comment" z="gyTTQt+yHYV6taR9CrbfgCMq+sc="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_ParentAnnotation_name" property="name" z="DKYEAKEQQXvXEm+yx6i4SPfi+yY="/>
+        </table:table>
+    </page:list>
+</div>

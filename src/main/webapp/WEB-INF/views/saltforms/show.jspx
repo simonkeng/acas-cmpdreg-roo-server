@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_SaltForm" object="${saltform}" path="/saltforms" z="Bcl4jL2uzGAcFn0zjzri7tdDhqg=">
+        <field:display field="molStructure" id="s_com_labsynch_cmpdreg_domain_SaltForm_molStructure" object="${saltform}" z="DyKEfHmb/ee+nnJvwqEjf+jXF30="/>
+        <field:display field="corpName" id="s_com_labsynch_cmpdreg_domain_SaltForm_corpName" object="${saltform}" z="5x6FUzzbfJ7wk3BIuO4rg5EOuHo="/>
+        <field:display field="casNumber" id="s_com_labsynch_cmpdreg_domain_SaltForm_casNumber" object="${saltform}" z="qMbsbpKjp8/3Sa1Qrp214D6Sfyo="/>
+        <field:display field="chemist" id="s_com_labsynch_cmpdreg_domain_SaltForm_chemist" object="${saltform}" z="OHVF2ttgKdyyHoT0TwNA2I9XW28="/>
+        <field:display date="true" dateTimePattern="${saltForm_registrationdate_date_format}" field="registrationDate" id="s_com_labsynch_cmpdreg_domain_SaltForm_registrationDate" object="${saltform}" z="MX1Dctm6BnoynOcemtROzjHIEMw="/>
+        <field:display field="cdId" id="s_com_labsynch_cmpdreg_domain_SaltForm_CdId" object="${saltform}" z="1KVOSTCghTnZDDNtoN9Lc4/mfdo="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_SaltForm_ignore" object="${saltform}" z="5cEaBF/xYkfoQb59HF42KUUAFRY="/>
+        <field:display field="saltWeight" id="s_com_labsynch_cmpdreg_domain_SaltForm_saltWeight" object="${saltform}" z="B8hlpN+6PHK6c1raz2V5eWpBfJw="/>
+        <field:display field="parent" id="s_com_labsynch_cmpdreg_domain_SaltForm_parent" object="${saltform}" z="H/Yqn8Uxu/JaSgaHEA+KmgWAM0E="/>
+        <field:display field="bulkLoadFile" id="s_com_labsynch_cmpdreg_domain_SaltForm_bulkLoadFile" object="${saltform}" z="3eI0VjTrtvUmBXqaqakVlGDAa9Y="/>
+    </page:show>
+</div>

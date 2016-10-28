@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_IsoSalt" items="${isosalts}" z="96hrhMpRedEu4ZBpHjztc9biM90=">
+        <table:table data="${isosalts}" id="l_com_labsynch_cmpdreg_domain_IsoSalt" path="/isosalts" z="gGDM6208QELDcHQ/7+qde1dXIIQ=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_isotope" property="isotope" z="iq5SYp3Y//hAgQWud7txiFgJwkM="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_salt" property="salt" z="g1TPGoJH2n5b+ZRrwtNRP4huDII="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_type" property="type" z="SqjROI6pqzaeyQ5QrUlE9m6D8gY="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_equivalents" property="equivalents" z="jDICY5oB0T5e/yDqs5L1QsnU9uc="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_ignore" property="ignore" z="LhkgG4dPtGmBI9aEvNXUyr/N5VE="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_IsoSalt_saltForm" property="saltForm" z="PewsEb6+WLrxG14vqb4rWbq9+l4="/>
+        </table:table>
+    </page:list>
+</div>

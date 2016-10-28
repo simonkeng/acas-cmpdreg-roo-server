@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Salt" items="${salts}" z="ET56u3lqckGYTNMO7PPYKeZ2quU=">
+        <table:table data="${salts}" id="l_com_labsynch_cmpdreg_domain_Salt" path="/salts" z="xH0ykdQa8AYIRD9vk/LxGeq5dNs=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_name" property="name" z="DFdd80eo8YMY9Nu3ymNw4pM/Iwg="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_originalStructure" property="originalStructure" z="Eo5DFKoGFtMEcjq9pShIZ1Q1fmI="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_abbrev" property="abbrev" z="JV2l3uuz4TVuwbqtqclhAnxwym8="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_molWeight" property="molWeight" z="sHggnoNgl3xyGrVIIjlyCfnhlsg="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_formula" property="formula" z="Vypu2HRU4zDYC8dshToUH/v61j0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Salt_molStructure" property="molStructure" z="TfyA+vsTwH6XbNmBZRH00qwmKnk="/>
+        </table:table>
+    </page:list>
+</div>

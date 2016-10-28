@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_CorpName" object="${corpname}" path="/corpnames" z="GX18Yzandlb3Zn1i80HnJhTEZIg=">
+        <field:display field="parentCorpName" id="s_com_labsynch_cmpdreg_domain_CorpName_parentCorpName" object="${corpname}" z="+loF4jzU2x/2D7R+psle+iRjTRA="/>
+        <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_CorpName_comment" object="${corpname}" z="W18ZUlHf/4m3rFHAx0fGPoLqTlU="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_CorpName_ignore" object="${corpname}" z="n8lKnLbrt0ainnfFiLuJ1MKnhEE="/>
+    </page:show>
+</div>

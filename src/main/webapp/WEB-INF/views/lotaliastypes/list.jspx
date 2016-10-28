@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_LotAliasType" items="${lotaliastypes}" z="XUBlMXlF/40LbC7xYhBwKURfQ0g=">
+        <table:table data="${lotaliastypes}" id="l_com_labsynch_cmpdreg_domain_LotAliasType" path="/lotaliastypes" z="tD0VDbccc7f7ovSnpFNoEAufG/s=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_LotAliasType_typeName" property="typeName" z="ybgRclxrNq1AGIt64O8VjYvi7a0="/>
+        </table:table>
+    </page:list>
+</div>

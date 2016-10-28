@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_PreDef_CorpName" items="${predef_corpnames}" z="awGQGuko7C7HBTIa95vXqXmsPvs=">
+        <table:table data="${predef_corpnames}" id="l_com_labsynch_cmpdreg_domain_PreDef_CorpName" path="/predef_corpnames" z="YscJgxuEmXlENOADfLHiiWTHpB8=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_PreDef_CorpName_corpNumber" property="corpNumber" z="Qepmkznmc7hgxoZGFX+ti6sOnus="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_PreDef_CorpName_corpName" property="corpName" z="Re9tpZGy/ut5YGpmHBuG07rManU="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_PreDef_CorpName_comment" property="comment" z="dZEDHvayAhfol5Yj3bYGVRyadp8="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_PreDef_CorpName_used" property="used" z="SpAnjyHhcGmAlVZoHG4kxDErG6Y="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_PreDef_CorpName_skip" property="skip" z="EZXPZxc+d0vDjcK0xeY7er0vBU0="/>
+        </table:table>
+    </page:list>
+</div>

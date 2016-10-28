@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_Lot" modelAttribute="lot" path="/lots" versionField="Version" z="5UVg/UIrAXhmE0euk1WwlUirhig=">
+        <field:input field="buid" id="c_com_labsynch_cmpdreg_domain_Lot_buid" z="P/0OlR216AYvu9rUpzvD7iwN0OI="/>
+        <field:input field="parent" id="c_com_labsynch_cmpdreg_domain_Lot_parent" z="k0doY3pnFYV1MRLplVCRDGciJs0="/>
+        <field:select field="saltForm" id="c_com_labsynch_cmpdreg_domain_Lot_saltForm" itemValue="id" items="${saltforms}" path="/saltforms" z="XGlB0j0GKN+bbSajDFvclT+udEg="/>
+        <field:textarea field="asDrawnStruct" id="c_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" z="f7iUrTaE/t2dtrtpJdYp1pAgTJQ="/>
+        <field:input field="lotAsDrawnCdId" id="c_com_labsynch_cmpdreg_domain_Lot_lotAsDrawnCdId" z="LJZ8hExGRwOsAvYXIze/HHkHNpA="/>
+        <field:textarea field="corpName" id="c_com_labsynch_cmpdreg_domain_Lot_corpName" required="true" z="fNejnMXGkVbyEt/DqjffwWOYX7c="/>
+        <field:input field="lotNumber" id="c_com_labsynch_cmpdreg_domain_Lot_lotNumber" z="AY+oIhgsZDMY43zPTTrcHgJC/5g="/>
+        <field:input field="lotMolWeight" id="c_com_labsynch_cmpdreg_domain_Lot_lotMolWeight" validationMessageCode="field_invalid_number" z="TB4+6icFgbQSU4OPzbAZgJrLO3k="/>
+        <field:datetime dateTimePattern="${lot_synthesisdate_date_format}" field="synthesisDate" id="c_com_labsynch_cmpdreg_domain_Lot_synthesisDate" z="7KTZl+zRcsTyUExC7l20EWwMw+Y="/>
+        <field:datetime dateTimePattern="${lot_registrationdate_date_format}" field="registrationDate" id="c_com_labsynch_cmpdreg_domain_Lot_registrationDate" z="zi2Ulh+RiStd8Pfl7jSnpLuw2Qo="/>
+        <field:datetime dateTimePattern="${lot_modifieddate_date_format}" field="modifiedDate" id="c_com_labsynch_cmpdreg_domain_Lot_modifiedDate" z="nBb3+CWb9SIiRQlgcSNkLiivivg="/>
+        <field:select field="modifiedBy" id="c_com_labsynch_cmpdreg_domain_Lot_modifiedBy" itemValue="id" items="${scientists}" path="/scientists" z="iy3mwEQgwDg+4hU7C1tDZQNi2E0="/>
+        <field:textarea field="barcode" id="c_com_labsynch_cmpdreg_domain_Lot_barcode" z="B2r1kZTBXlU8I5IyBLpoIIas/vo="/>
+        <field:textarea field="color" id="c_com_labsynch_cmpdreg_domain_Lot_color" z="p3SIXjR8UgpUiyVyvGx1srcuzCA="/>
+        <field:textarea field="notebookPage" id="c_com_labsynch_cmpdreg_domain_Lot_notebookPage" z="O5/Y/KJN+AuH4PkYorW/5gu4ShM="/>
+        <field:input field="amount" id="c_com_labsynch_cmpdreg_domain_Lot_amount" validationMessageCode="field_invalid_number" z="z0bsr4ddEwL7dahO19ion13WjAo="/>
+        <field:select field="amountUnits" id="c_com_labsynch_cmpdreg_domain_Lot_amountUnits" itemValue="id" items="${units}" path="/units" z="usayp95SZ2ibMbovQu0LoQJ+RTM="/>
+        <field:input field="solutionAmount" id="c_com_labsynch_cmpdreg_domain_Lot_solutionAmount" validationMessageCode="field_invalid_number" z="+ia3ksJ/aSKcYR57IeypfrNm8Uo="/>
+        <field:select field="solutionAmountUnits" id="c_com_labsynch_cmpdreg_domain_Lot_solutionAmountUnits" itemValue="id" items="${solutionunits}" path="/solutionunits" z="Dlj3heg0Vp0auUjoEKscr/4o2g4="/>
+        <field:textarea field="supplier" id="c_com_labsynch_cmpdreg_domain_Lot_supplier" z="k/SGWyh9+4c48vJzV4i+O96rhNE="/>
+        <field:textarea field="supplierID" id="c_com_labsynch_cmpdreg_domain_Lot_supplierID" z="SsZ9dJAOOaQAApxwYbKYERv5TVU="/>
+        <field:input field="purity" id="c_com_labsynch_cmpdreg_domain_Lot_purity" validationMessageCode="field_invalid_number" z="Y1/xqQudDLtBb0xZx59RIv6nBJo="/>
+        <field:select field="purityOperator" id="c_com_labsynch_cmpdreg_domain_Lot_purityOperator" itemValue="id" items="${operators}" path="/operators" z="4ONHUpHqFSkr7H3R0C2Wa9+8+Us="/>
+        <field:select field="purityMeasuredBy" id="c_com_labsynch_cmpdreg_domain_Lot_purityMeasuredBy" itemValue="id" items="${puritymeasuredbys}" path="/puritymeasuredbys" z="QpRQhdypI+q8/oLIo75f51QSs/M="/>
+        <field:select field="chemist" id="c_com_labsynch_cmpdreg_domain_Lot_chemist" itemValue="id" items="${scientists}" path="/scientists" z="tBa49oOWMk3Smw+11WWmwUn3ADo="/>
+        <field:input field="percentEE" id="c_com_labsynch_cmpdreg_domain_Lot_percentEE" validationMessageCode="field_invalid_number" z="qM+H68XXe43CWlaBQC9sEokg2Z4="/>
+        <field:textarea field="comments" id="c_com_labsynch_cmpdreg_domain_Lot_comments" z="1Yf/enNtUVxCTFYVx67ePvCBoG8="/>
+        <field:checkbox field="isVirtual" id="c_com_labsynch_cmpdreg_domain_Lot_isVirtual" z="5VHxzQJIne1OG4p8qd0GbV2NNb0="/>
+        <field:checkbox field="ignore" id="c_com_labsynch_cmpdreg_domain_Lot_ignore" z="JOSUR6lFNX8Hodr7M620/IVO1Zs="/>
+        <field:select field="physicalState" id="c_com_labsynch_cmpdreg_domain_Lot_physicalState" itemValue="id" items="${physicalstates}" path="/physicalstates" z="ApX0XrWrTKWXZwzec4UrbKUCSek="/>
+        <field:select field="vendor" id="c_com_labsynch_cmpdreg_domain_Lot_vendor" itemValue="id" items="${vendors}" path="/vendors" z="KAAWMXQ1BGcLeCrXQzWSbMiSSXY="/>
+        <field:simple field="fileLists" id="c_com_labsynch_cmpdreg_domain_Lot_fileLists" messageCode="entity_reference_not_managed" messageCodeAttribute="File List" z="8xcu8334jP15/Wp54LLWk2thoHo="/>
+        <field:input field="retain" id="c_com_labsynch_cmpdreg_domain_Lot_retain" validationMessageCode="field_invalid_number" z="wJTmPmp500ddmdGiCOX43+cKgMs="/>
+        <field:select field="retainUnits" id="c_com_labsynch_cmpdreg_domain_Lot_retainUnits" itemValue="id" items="${units}" path="/units" z="UgPOJ6EAs5G0Hlp3cGl8m1Tjph4="/>
+        <field:input field="meltingPoint" id="c_com_labsynch_cmpdreg_domain_Lot_meltingPoint" validationMessageCode="field_invalid_number" z="qgPHdfI2jsICdiJAeA+AtKq93S8="/>
+        <field:input field="boilingPoint" id="c_com_labsynch_cmpdreg_domain_Lot_boilingPoint" validationMessageCode="field_invalid_number" z="J60PwkLRXCt39xy4MmzWmhHRMCk="/>
+        <field:textarea field="supplierLot" id="c_com_labsynch_cmpdreg_domain_Lot_supplierLot" z="MzFtCWbvkKSm0ylZaUh0TJeFSYI="/>
+        <field:select field="project" id="c_com_labsynch_cmpdreg_domain_Lot_project" itemValue="id" items="${projects}" path="/projects" z="76hEiD//7UF/h8wEWINuiQhceeg="/>
+    </form:update>
+</div>

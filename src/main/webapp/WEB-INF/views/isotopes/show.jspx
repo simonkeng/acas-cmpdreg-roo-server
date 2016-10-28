@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_Isotope" object="${isotope}" path="/isotopes" z="I1/NOVxaObjYNNuI3z24bNmAoSw=">
+        <field:display field="name" id="s_com_labsynch_cmpdreg_domain_Isotope_name" object="${isotope}" z="wseXKR/3ZPglyX6ZRGD6zVjzHnA="/>
+        <field:display field="abbrev" id="s_com_labsynch_cmpdreg_domain_Isotope_abbrev" object="${isotope}" z="YvX63USmrHHDVFSJvPxEyZsCe9g="/>
+        <field:display field="massChange" id="s_com_labsynch_cmpdreg_domain_Isotope_massChange" object="${isotope}" z="jtOWl8khV2LsVcK/oKWdrK084DU="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_Isotope_ignore" object="${isotope}" z="sxMHPSb6t9MFxpWshWj60uuNo0c="/>
+    </page:show>
+</div>

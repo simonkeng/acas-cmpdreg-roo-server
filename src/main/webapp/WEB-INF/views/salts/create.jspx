@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_com_labsynch_cmpdreg_domain_Salt" modelAttribute="salt" path="/salts" render="${empty dependencies}" z="acfFpJWf6WrmMvAVgzbQgBG4BYo=">
+        <field:textarea field="name" id="c_com_labsynch_cmpdreg_domain_Salt_name" z="KOKcTWoaLNHgozqmFj9EH13uR50="/>
+        <field:input field="originalStructure" id="c_com_labsynch_cmpdreg_domain_Salt_originalStructure" z="9YPak9+P9YDwXnMTTq9T50z+4X8="/>
+        <field:textarea field="abbrev" id="c_com_labsynch_cmpdreg_domain_Salt_abbrev" z="gE9JmQFvAC/CVjR3nJf1A6HwGtc="/>
+        <field:input field="molWeight" id="c_com_labsynch_cmpdreg_domain_Salt_molWeight" validationMessageCode="field_invalid_number" z="Uz50TOcvWM/vxK+dUJg8doktlFQ="/>
+        <field:textarea field="formula" id="c_com_labsynch_cmpdreg_domain_Salt_formula" z="cbuyusiy943oJqAUVXrJTKwAaV0="/>
+        <field:checkbox field="ignore" id="c_com_labsynch_cmpdreg_domain_Salt_ignore" z="j6rCdtwB1pw9jxQMX3F36v2tqus="/>
+        <field:input field="molStructure" id="c_com_labsynch_cmpdreg_domain_Salt_molStructure" z="1alJKHQK3Wn2HUVE+sTTX9IJseY="/>
+        <field:input field="cdId" id="c_com_labsynch_cmpdreg_domain_Salt_cdId" z="NOWr0b9Tldw3rVPS2XKnSatqd/c="/>
+        <field:input field="charge" id="c_com_labsynch_cmpdreg_domain_Salt_charge" z="4k78e9DJt0gKHSkY+fASm4vcN58="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_com_labsynch_cmpdreg_domain_Salt" render="${not empty dependencies}" z="jfoxM/wrKLkt38fWiPet144xSxQ="/>
+</div>

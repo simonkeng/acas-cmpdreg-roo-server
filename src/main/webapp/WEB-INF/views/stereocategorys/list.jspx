@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_StereoCategory" items="${stereocategorys}" z="UV3cLrDbZqY8xZC/ptw/qiuV7MU=">
+        <table:table data="${stereocategorys}" id="l_com_labsynch_cmpdreg_domain_StereoCategory" path="/stereocategorys" z="1U+Qb3iKSnSzL006LnHuXcdBMQk=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_StereoCategory_name" property="name" z="crqLOnCM45CFOg2ooHCb8yqLxd0="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_StereoCategory_code" property="code" z="YLRUhQQxR14bpsAYYtil9j+HnM0="/>
+        </table:table>
+    </page:list>
+</div>

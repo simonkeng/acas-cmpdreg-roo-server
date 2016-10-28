@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_LotAlias" modelAttribute="lotAlias" path="/lotaliases" versionField="Version" z="kCcvVxGopVjDTmMMG4KlsjBu+XU=">
+        <field:select field="lot" id="c_com_labsynch_cmpdreg_domain_LotAlias_lot" itemValue="id" items="${lots}" path="/lots" z="Vicsbv6+0vBTk/I5+2yRBuKTndc="/>
+        <field:input field="lsType" id="c_com_labsynch_cmpdreg_domain_LotAlias_lsType" z="uxWenU6jZWYjHiLehRzNB5XgVxc="/>
+        <field:input field="lsKind" id="c_com_labsynch_cmpdreg_domain_LotAlias_lsKind" z="meq3HXeU3DYHiwwhkF4G35AY5u0="/>
+        <field:input field="aliasName" id="c_com_labsynch_cmpdreg_domain_LotAlias_aliasName" z="4as9qXjrqYPxxQR5SuRyiwzthYU="/>
+        <field:checkbox field="preferred" id="c_com_labsynch_cmpdreg_domain_LotAlias_preferred" z="lEkTeLEBGcVvKvegj2XC12LWtwY="/>
+        <field:checkbox field="ignored" id="c_com_labsynch_cmpdreg_domain_LotAlias_ignored" z="Adj4BMRFU3eQPYUAADha68m2CrA="/>
+        <field:checkbox field="deleted" id="c_com_labsynch_cmpdreg_domain_LotAlias_deleted" z="4ckMzP58Uz9bUewdU54NK2Yz8A4="/>
+    </form:update>
+</div>

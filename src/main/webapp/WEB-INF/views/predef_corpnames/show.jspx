@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_PreDef_CorpName" object="${predef_corpname}" path="/predef_corpnames" z="xiXX6FPqPcqNJ61Kdb1X0zkxXF8=">
+        <field:display field="corpNumber" id="s_com_labsynch_cmpdreg_domain_PreDef_CorpName_corpNumber" object="${predef_corpname}" z="c/5/bzsXHdDM7G2Vn8szd9dh16w="/>
+        <field:display field="corpName" id="s_com_labsynch_cmpdreg_domain_PreDef_CorpName_corpName" object="${predef_corpname}" z="aACgtoUefKexaBewNukRsKyn+As="/>
+        <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_PreDef_CorpName_comment" object="${predef_corpname}" z="QGUaiiddLjAV/8P1wVONhx5WlZs="/>
+        <field:display field="used" id="s_com_labsynch_cmpdreg_domain_PreDef_CorpName_used" object="${predef_corpname}" z="7ftwq6/D3MYfSw3tbfzjMS8VyS0="/>
+        <field:display field="skip" id="s_com_labsynch_cmpdreg_domain_PreDef_CorpName_skip" object="${predef_corpname}" z="lfUn9RorT/F0+G/v6r2MxL8UVD4="/>
+    </page:show>
+</div>

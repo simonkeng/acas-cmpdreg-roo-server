@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:find finderName="ByBuid" id="ff_com_labsynch_cmpdreg_domain_Lot" path="/lots" z="iy3JD0ZF4Z1ZfE5+2lWw9rlO0rU=">
+        <field:input disableFormBinding="true" field="buid" id="f_com_labsynch_cmpdreg_domain_Lot_buid" required="true" z="xXqA3qYPkIja2k5YlyrLQMQ8C30="/>
+    </form:find>
+</div>

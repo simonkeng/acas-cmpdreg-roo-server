@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:table="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Vendor" items="${vendors}" z="uo+3Jrwi2XvNrK8b+hoLqOGByDw=">
+        <table:table data="${vendors}" id="l_com_labsynch_cmpdreg_domain_Vendor" path="/vendors" z="FxYvI90YzyhnB3xgQ81XGVlTzEg=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Vendor_name" property="name" z="LxQ9xB6i06GFGlLrIA2bxHlpgGw="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Vendor_code" property="code" z="7+wtviwg3YujmPKTayyPi+OvTtI="/>
+        </table:table>
+    </page:list>
+</div>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_FileList" object="${filelist}" path="/filelists" z="2Hvk0Sx1jtpQCEPBXZRcG2qDHBI=">
+        <field:display field="file" id="s_com_labsynch_cmpdreg_domain_FileList_file" object="${filelist}" z="4Zyi5nBfxSgt6aBgG0QThf3m14w="/>
+        <field:display field="lot" id="s_com_labsynch_cmpdreg_domain_FileList_lot" object="${filelist}" z="NYRVkasSUChua689e4Io5z1ByBw="/>
+        <field:display field="description" id="s_com_labsynch_cmpdreg_domain_FileList_description" object="${filelist}" z="rLttl48mz7AaNJKSiXQY8PHybUY="/>
+        <field:display field="name" id="s_com_labsynch_cmpdreg_domain_FileList_name" object="${filelist}" z="wroUlZC6x+PnmvWIC6w0Dw5e2dE="/>
+        <field:display field="type" id="s_com_labsynch_cmpdreg_domain_FileList_type" object="${filelist}" z="OYPmtUimvyTpw/jkMn0+8+17j2o="/>
+        <field:display field="size" id="s_com_labsynch_cmpdreg_domain_FileList_size" object="${filelist}" z="EdRH4Fz94tFOz0YBeBIG/W8fsWo="/>
+        <field:display field="url" id="s_com_labsynch_cmpdreg_domain_FileList_url" object="${filelist}" z="oNgqgKlOaCWDhNmSL1CwIBvot1U="/>
+        <field:display field="ie" id="s_com_labsynch_cmpdreg_domain_FileList_ie" object="${filelist}" z="fYzeRGlamkyBibv2whF9Iu1YX0c="/>
+        <field:display field="uploaded" id="s_com_labsynch_cmpdreg_domain_FileList_uploaded" object="${filelist}" z="vRhIYJKCJianr/GKYoJLNOngPjI="/>
+        <field:display field="fileName" id="s_com_labsynch_cmpdreg_domain_FileList_fileName" object="${filelist}" z="tAyJcLeE3PXTy0uF7XY/C/mQfuM="/>
+        <field:display field="subdir" id="s_com_labsynch_cmpdreg_domain_FileList_subdir" object="${filelist}" z="JxjvwWdoh06fvYW0fv1GhaieuDI="/>
+        <field:display field="filePath" id="s_com_labsynch_cmpdreg_domain_FileList_filePath" object="${filelist}" z="MwoALjRdj2vTVVe5f0I/ztIL+tw="/>
+    </page:show>
+</div>

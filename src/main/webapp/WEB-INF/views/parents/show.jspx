@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_Parent" object="${parent}" path="/parents" z="NK0mI5l5tMNo+UsCU0rOwq4n4yo=">
+        <field:display field="molFormula" id="s_com_labsynch_cmpdreg_domain_Parent_molFormula" object="${parent}" z="Nw46sh2SnZTg42oYJFgdj4rBU7Q="/>
+        <field:display field="corpName" id="s_com_labsynch_cmpdreg_domain_Parent_corpName" object="${parent}" z="2Wa+boWq9+bdoPqTvgHMw3Lxbn0="/>
+        <field:display field="parentNumber" id="s_com_labsynch_cmpdreg_domain_Parent_parentNumber" object="${parent}" z="7/vo4+uoVznq/yTpEt86TNVD0JY="/>
+        <field:display field="chemist" id="s_com_labsynch_cmpdreg_domain_Parent_chemist" object="${parent}" z="VHV/ABRGsWGt9DNrL9s5zbPQYaM="/>
+        <field:display field="commonName" id="s_com_labsynch_cmpdreg_domain_Parent_commonName" object="${parent}" z="RQng2d/8CbTQz8IbNrEj1jpZzs0="/>
+        <field:display field="stereoCategory" id="s_com_labsynch_cmpdreg_domain_Parent_stereoCategory" object="${parent}" z="FMy11UgINISgX0B5oTpxnDlDmpk="/>
+        <field:display field="stereoComment" id="s_com_labsynch_cmpdreg_domain_Parent_stereoComment" object="${parent}" z="G/wuaIFTctcIeBtoA5bku+A8CRg="/>
+        <field:display field="molStructure" id="s_com_labsynch_cmpdreg_domain_Parent_molStructure" object="${parent}" z="btT0JLcNUYsXHpvwrz1cD/2JYGs="/>
+        <field:display field="molWeight" id="s_com_labsynch_cmpdreg_domain_Parent_molWeight" object="${parent}" z="ICMbDiR7vvWrBPwKisuzym1dsWY="/>
+        <field:display field="cdId" id="s_com_labsynch_cmpdreg_domain_Parent_CdId" object="${parent}" z="7APHVdSNcXmDZZgHaVdyTykSCXg="/>
+        <field:display date="true" dateTimePattern="${parent_registrationdate_date_format}" field="registrationDate" id="s_com_labsynch_cmpdreg_domain_Parent_registrationDate" object="${parent}" z="0GPeiII85VCHNs8Ag6K+MGKD5rQ="/>
+        <field:display date="true" dateTimePattern="${parent_modifieddate_date_format}" field="modifiedDate" id="s_com_labsynch_cmpdreg_domain_Parent_modifiedDate" object="${parent}" z="fafh1pquOW6mk9lmBYcGd6+tCYE="/>
+        <field:display field="modifiedBy" id="s_com_labsynch_cmpdreg_domain_Parent_modifiedBy" object="${parent}" z="oKAEiAFJm7RHu7eYfgxyLZGmu28="/>
+        <field:display field="ignore" id="s_com_labsynch_cmpdreg_domain_Parent_ignore" object="${parent}" z="kp/LHpH7yCZtvmFW8t9ZRGwWFCM="/>
+        <field:display field="exactMass" id="s_com_labsynch_cmpdreg_domain_Parent_exactMass" object="${parent}" z="vWXQkUI44oM61JVE0hTS1go3hDE="/>
+        <field:display field="registeredBy" id="s_com_labsynch_cmpdreg_domain_Parent_registeredBy" object="${parent}" z="B8owef8nAFSX0xGqxt5YbHFQgoA="/>
+        <field:display field="bulkLoadFile" id="s_com_labsynch_cmpdreg_domain_Parent_bulkLoadFile" object="${parent}" z="G98vwVPZozG8tA6BR696CbQCh8I="/>
+        <field:display field="parentAnnotation" id="s_com_labsynch_cmpdreg_domain_Parent_parentAnnotation" object="${parent}" z="QgDmI55j+cnvpNl0lw+9i3+Gjbw="/>
+        <field:display field="compoundType" id="s_com_labsynch_cmpdreg_domain_Parent_compoundType" object="${parent}" z="DmiOlOkYcRtbkYPd3JtZUzu2cNE="/>
+        <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_Parent_comment" object="${parent}" z="nwqA40juz2VN8h+qGZ+WuP/13LI="/>
+        <field:display field="isMixture" id="s_com_labsynch_cmpdreg_domain_Parent_isMixture" object="${parent}" z="a7l4JQTADCTFpPRvt5u0trq1TFI="/>
+    </page:show>
+</div>
