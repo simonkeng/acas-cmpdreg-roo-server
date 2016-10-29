@@ -88,6 +88,10 @@ public interface ChemStructureService {
 
 	StrippedSaltDTO stripSalts(Molecule inputStructure);
 
+	public String standardizeStructure(String molfile) throws MolFormatException, IOException;
+
+	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
+
 
 
 }

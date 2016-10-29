@@ -29,6 +29,7 @@ import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.criterion.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -254,7 +255,7 @@ public class Lot {
 
         String corpName = null;
         if (mainConfig.getServerSettings().getCorpBatchFormat().equalsIgnoreCase("cas_style_format")){
-        	corpName = Lot.generateCasStyleLotName();
+        	corpName = generateCasStyleLotName();
         } else if (mainConfig.getMetaLot().isSaltBeforeLot()) {
             corpName = generateSaltFormLotName();
         } else {
@@ -263,7 +264,7 @@ public class Lot {
         return corpName;
     }
 
-    public static String generateCasStyleLotName() {
+    public String generateCasStyleLotName() {
     	List seqList = generateCustomLotSequence();
 		String inputSequence = seqList.get(0).toString();
 		int casCheckDigit = Lot.generateCasCheckDigit(inputSequence);
@@ -284,6 +285,27 @@ public class Lot {
 		String lotName = sb.toString();
 		logger.info(lotName);
 
+		//set lot number
+		int lotNumber = this.getLotNumber();
+        if (this.getIsVirtual()) {
+            lotNumber = 0;
+        } else {
+        	if (this.lotNumber > 0){
+        		lotNumber = this.lotNumber;
+        	}else{
+        		int lotCount = 0;
+                if (Lot.getMaxParentLotNumber(this.getParent()) == null) {
+                    logger.debug("this is a null pointer exception. Set lotCount = 0");
+                } else {
+                    lotCount = Lot.getMaxParentLotNumber(this.getParent());
+                }
+                logger.debug("Lot Count = " + lotCount);
+                lotNumber = lotCount + 1;
+        	}
+        }
+        logger.debug("Lot Number = " + lotNumber);
+        this.setLotNumber(lotNumber);
+		
     	return lotName;
     }
     
@@ -547,10 +569,44 @@ public class Lot {
         criteria.select(lotRoot);
         Predicate predicate = criteriaBuilder.equal(saltFormParent, parent);
         criteria.where(criteriaBuilder.and(predicate));
+        criteria.orderBy(criteriaBuilder.desc(lotRoot.get("lotNumber")));
         TypedQuery<Lot> q = em.createQuery(criteria);
         return q;
     }
+    
 
+    public static TypedQuery<Lot> findFirstLotByParent(Parent parent) {
+        if (parent == null) throw new IllegalArgumentException("The parent argument is required");
+        EntityManager em = Lot.entityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Lot> criteria = criteriaBuilder.createQuery(Lot.class);
+        Root<Lot> lotRoot = criteria.from(Lot.class);
+        Join<Lot, SaltForm> lotSaltForm = lotRoot.join("saltForm");
+        Join<SaltForm, Parent> saltFormParent = lotSaltForm.join("parent");
+        criteria.select(lotRoot);
+        Predicate predicate = criteriaBuilder.equal(saltFormParent, parent);
+        criteria.where(criteriaBuilder.and(predicate));
+        TypedQuery<Lot> q = em.createQuery(criteria);
+        return q;
+    }
+    
+    public static TypedQuery<Lot> findLotByParentAndLotNumber(Parent parent, int lotNumber) {
+        if (parent == null) throw new IllegalArgumentException("The parent argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Lot> q = em.createQuery("SELECT o FROM Lot AS o WHERE o.saltForm.parent = :parent AND o.lotNumber = :lotNumber ORDER BY o.lotNumber desc", Lot.class);
+        q.setParameter("parent", parent);
+        q.setParameter("lotNumber", lotNumber);
+        return q;
+    }
+
+    public static TypedQuery<Lot> findLotByParentAndLowestLotNumber(Parent parent) {
+        if (parent == null) throw new IllegalArgumentException("The parent argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Lot> q = em.createQuery("SELECT o FROM Lot AS o WHERE o.saltForm.parent = :parent AND (o.ignore IS NULL OR o.ignore IS :ignore) AND o.lotNumber = (select min(l.lotNumber) FROM Lot AS l WHERE l.saltForm.parent = :parent AND (l.ignore IS NULL OR l.ignore IS :ignore ))", Lot.class);
+        q.setParameter("parent", parent);
+        q.setParameter("ignore", false);
+        return q;
+    }
     public static TypedQuery<Lot> findLotsBySaltForm(SaltForm saltForm) {
         if (saltForm == null) throw new IllegalArgumentException("The saltForm argument is required");
         EntityManager em = Lot.entityManager();

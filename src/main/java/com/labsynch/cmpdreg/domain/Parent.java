@@ -305,6 +305,16 @@ public class Parent {
 		parent.setIsMixture(inputParent.getIsMixture());
 		return parent;
 	}
+
+	public static List<Long> getParentIds() {
+		EntityManager em = Parent.entityManager();
+		String sqlQuery = "SELECT o.id FROM Parent o WHERE o.ignore IS NOT :ignore OR o.ignore is null";
+		boolean ignore = true;
+		TypedQuery<Long> query = em.createQuery(sqlQuery, Long.class);
+		query.setParameter("ignore", ignore);
+		List<Long> parentIds = query.getResultList();		
+		return parentIds;
+	}
 	
 
 }

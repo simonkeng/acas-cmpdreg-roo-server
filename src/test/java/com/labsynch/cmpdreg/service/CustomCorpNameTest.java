@@ -83,7 +83,8 @@ public class CustomCorpNameTest {
 	@Test
 	@Transactional
 	public void testLotName(){
-		logger.info("custom lot name: " + Lot.generateCasStyleLotName());
+		Lot lot = new Lot();
+		logger.info("custom lot name: " + lot.generateCasStyleLotName());
 
 	}
 

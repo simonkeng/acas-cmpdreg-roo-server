@@ -61,7 +61,10 @@
     	"initalDBLoad": false,
     	"projectRestrictions": false,
     	"jchemVersion": "16.4.25.0",
-    	"databaseType": "postgres"
+    	"databaseType": "postgres",
+    	"standardizeStructure": false,
+    	"useExternalStandardizerConfig": false,
+    	"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml"
     },
     "bulkLoadSettings": {
         "useProjectRoles": false,

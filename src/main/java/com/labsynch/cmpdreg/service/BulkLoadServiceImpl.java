@@ -1064,6 +1064,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		String regexMatch = "(\\x00|\\^M|\\^\\@)$";
 		if (value != null) value = value.replaceAll(regexMatch, "");
 		if (value == null) value = mapping.getDefaultVal();
+		
+		logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 	
@@ -1091,11 +1093,17 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		String stringVal = null;
 		if (sdfProperty != null && sdfProperty.length() > 0) stringVal = mol.getProperty(sdfProperty);
 		String regexMatch = "(\\x00|\\^M|\\^\\@)$";
-		if (stringVal != null) stringVal = stringVal.replaceAll(regexMatch, "");
+		if (stringVal != null) {
+			stringVal = stringVal.replaceAll(regexMatch, "");
+			stringVal = stringVal.replaceAll("[^0-9.]+", "");			
+		} 
+		if (stringVal == "") stringVal = null;
 		Double value;
 		if (stringVal == null && mapping.getDefaultVal() != null && mapping.getDefaultVal().length() > 0) value = new Double(mapping.getDefaultVal());
 		else if (stringVal ==null) value = null;
 		else value = new Double(stringVal);
+		
+		logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 
@@ -1152,6 +1160,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 
 		}
+		logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 

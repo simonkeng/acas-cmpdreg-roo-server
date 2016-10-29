@@ -1,6 +1,7 @@
 package com.labsynch.cmpdreg.service;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,9 +40,13 @@ import chemaxon.jchem.db.JChemSearch;
 //import chemaxon.jchem.db.PropertyNotSetException;
 import chemaxon.jchem.db.StructureTableOptions;
 import chemaxon.jchem.db.UpdateHandler;
+import chemaxon.license.LicenseException;
 import chemaxon.sss.SearchConstants;
 import chemaxon.sss.search.JChemSearchOptions;
+import chemaxon.sss.search.MolSearch;
+import chemaxon.sss.search.MolSearchOptions;
 import chemaxon.sss.search.SearchException;
+import chemaxon.standardizer.Standardizer;
 import chemaxon.struc.CIPStereoDescriptorIface;
 import chemaxon.struc.Molecule;
 import chemaxon.struc.MoleculeGraph;
@@ -82,8 +87,8 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 	private static String exactSearchDef = mainConfig.getServerSettings().getExactMatchDef();
 	private static long maxSearchTime = mainConfig.getServerSettings().getMaxSearchTime();
 	private static int maxSearchResults = mainConfig.getServerSettings().getMaxSearchResults();
-
-
+	private static boolean useStandardizer = mainConfig.getServerSettings().isUseExternalStandardizerConfig();
+	private static String standardizerConfigFilePath = mainConfig.getServerSettings().getStandardizerConfigFilePath();
 
 	@Override
 	public int getCount(String structureTable) {
@@ -98,6 +103,90 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 
 		return count;
 	}
+
+	@Override
+	public boolean compareStructures(String preMolStruct, String postMolStruct, String searchType){
+
+
+		//logger.info("SearchType is: " + searchType);
+		boolean compoundsMatch = false;
+		try {
+			MolSearch molSearch = new MolSearch();
+			MolHandler mhQuery = new MolHandler(preMolStruct);
+			Molecule queryMol = mhQuery.getMolecule();
+			MolHandler mhTarget = new MolHandler(postMolStruct);
+			Molecule targetMol = mhTarget.getMolecule();
+
+			molSearch.setQuery(queryMol);
+			molSearch.setTarget(targetMol);
+			MolSearchOptions options = new MolSearchOptions(MolSearchOptions.DUPLICATE);
+			options.setTautomerSearch(MolSearchOptions.TAUTOMER_SEARCH_OFF);
+			options.setChargeMatching(MolSearchOptions.CHARGE_MATCHING_EXACT);
+			molSearch.setSearchOptions(options);
+			compoundsMatch = molSearch.isMatching();
+			if (!compoundsMatch){
+				logger.info(queryMol.toFormat("smiles"));
+				logger.info(targetMol.toFormat("smiles"));				
+			}
+
+		} catch (MolFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SearchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return compoundsMatch;
+	}
+
+
+
+	@Override
+	public String standardizeStructure(String molfile) throws LicenseException, MolFormatException, IOException {
+		// service to standardize input structure
+		// return standardized structre
+		// error conditions? 
+		// throw or catch errors
+		// create Standardizer based on a XML configuration file
+		String molOut = null;
+		try {
+			Standardizer standardizer = new Standardizer(new File(standardizerConfigFilePath));
+			MolHandler mh = new MolHandler(molfile);
+			Molecule molecule = mh.getMolecule();
+			// standardize molecule
+			standardizer.standardize(molecule);
+			// export standardized molecule
+			molOut = MolExporter.exportToFormat(molecule, "mol");
+			
+		} catch (MolFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return molOut;
+	}
+
+
+	public Molecule standardizeMolecule(Molecule molecule) {
+		// service to standardize input structure
+		// return standardized structure
+		// create Standardizer based on a XML configuration file
+		Standardizer standardizer = new Standardizer(new File(standardizerConfigFilePath));
+		try {
+			// standardize molecule
+			standardizer.standardize(molecule);
+			// export standardized molecule
+		} catch (LicenseException e) {
+			e.printStackTrace();
+		}
+
+		return molecule;
+	}
+
 
 
 	@Override
@@ -172,7 +261,14 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 				}
 				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
 
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
+			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
+				String cacheIdentifier = "labsynch_qc_cmpd_cache";
+				if (!cru.isCacheIDRegistered(cacheIdentifier)){
+					cru.registerPermanentCache(cacheIdentifier);	
+				}
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
+
+			}  else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
 				String cacheIdentifier = "labsynch_salt_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
 					cru.registerPermanentCache(cacheIdentifier);	
@@ -217,8 +313,10 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 			e.printStackTrace();
 		} 
 
+
 		System.out.println("here is the new saved cdId  " + cdId);		
 		return cdId;
+
 
 	}
 
@@ -330,6 +428,12 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 					cru.registerPermanentCache(cacheIdentifier);	
 				}
 				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);		
+			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
+				String cacheIdentifier = "labsynch_qc_cmpd_cache";
+				if (!cru.isCacheIDRegistered(cacheIdentifier)){
+					cru.registerPermanentCache(cacheIdentifier);	
+				}
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
 			} else {
 				String cacheIdentifier = "labsynch_cmpd_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
@@ -345,7 +449,14 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 
 			mh = new MolHandler(molfile);
 			Molecule mol = mh.getMolecule();
-			mol.aromatize();
+
+			if (useStandardizer){
+				mol = standardizeMolecule(mol);
+				mol.aromatize();				
+			} else {
+				mol.aromatize();				
+			}
+
 			searcher = new JChemSearch();
 			searcher.setQueryStructure(mol);
 			searcher.setConnectionHandler(ch);
@@ -361,22 +472,22 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 
 			} else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_TAUTOMER");		
+				logger.debug("Search type is DUPLICATE_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
 
 			} else if (searchType.equalsIgnoreCase("DUPLICATE_NO_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_NO_TAUTOMER");		
+				logger.debug("Search type is DUPLICATE_NO_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 
 			}else if (searchType.equalsIgnoreCase("STEREO_IGNORE")){
-				System.out.println("Search type is no stereo");		
+				logger.debug("Search type is no stereo");		
 				searchOptions = new JChemSearchOptions(SearchConstants.STEREO_IGNORE);
 				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
 
 			} else if (searchType.equalsIgnoreCase("FULL_TAUTOMER")){
-				System.out.println("Search type is exact FULL_TAUTOMER");		
+				logger.debug("Search type is exact FULL_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
@@ -384,13 +495,13 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
 
 			} else if (searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				System.out.println("Search type is substructure");	
+				logger.debug("Search type is substructure");	
 				searchOptions = new JChemSearchOptions(SearchConstants.SUBSTRUCTURE);
 
 			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
 				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
 				searchOptions.setDissimilarityThreshold(simlarityPercent);
-//				searchOptions.setMaxTime(maxTime);	
+				//				searchOptions.setMaxTime(maxTime);	
 			} else if (searchType.equalsIgnoreCase("FULL")){
 				logger.debug("Selected Search type is full with no tautomer search");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
@@ -441,7 +552,7 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 		int[] hitList = searcher.getResults();
 
 		if (hitList.length > 0){
-			System.out.println("found a matching molecule!!!  " + hitList.length);
+			logger.debug("found a matching molecule!!!  " + hitList.length);
 		}
 
 		return hitList;
@@ -461,7 +572,7 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 		return foundNonCovalentSalt;
 
 	}
-	
+
 	@Override
 	public StrippedSaltDTO stripSalts(Molecule inputStructure){
 		Molecule clone = inputStructure.clone();
@@ -536,7 +647,13 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
 					cru.registerPermanentCache(cacheIdentifier);	
 				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);		
+			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
+				String cacheIdentifier = "labsynch_qc_cmpd_cache";
+				if (!cru.isCacheIDRegistered(cacheIdentifier)){
+					cru.registerPermanentCache(cacheIdentifier);	
+				}
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
 			} else {
 				String cacheIdentifier = "labsynch_cmpd_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
@@ -609,7 +726,7 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
 				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
 				searchOptions.setDissimilarityThreshold(simlarityPercent);
-//				searchOptions.setMaxTime(maxTime);
+				//				searchOptions.setMaxTime(maxTime);
 				hitColorOptions = new HitColoringAndAlignmentOptions();	
 				boolean coloringEnabled = true;		
 				Color hitColor = Color.blue;
@@ -761,8 +878,14 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 				String cacheIdentifier = "labsynch_salt_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
 					cru.registerPermanentCache(cacheIdentifier);	
-				}
+				}	
 				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
+			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
+				String cacheIdentifier = "labsynch_qc_cmpd_cache";
+				if (!cru.isCacheIDRegistered(cacheIdentifier)){
+					cru.registerPermanentCache(cacheIdentifier);	
+				}
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
 			} else {
 				String cacheIdentifier = "labsynch_cmpd_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
@@ -835,7 +958,7 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
 				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
 				searchOptions.setDissimilarityThreshold(simlarityPercent);
-//				searchOptions.setMaxTime(maxTime);
+				//				searchOptions.setMaxTime(maxTime);
 				hitColorOptions = new HitColoringAndAlignmentOptions();	
 				boolean coloringEnabled = true;		
 				Color hitColor = Color.blue;
@@ -974,53 +1097,6 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 		}
 	}
 
-//	@Override
-//	public String toMolfile(String molStructure) {
-//		logger.debug("here is the incoming molStructure: " +  molStructure);
-//		MolHandler mh = null;
-//		boolean badStructureFlag = false;
-//		Molecule mol = null;
-//		String lineEnd = System.getProperty("line.separator");
-//		try {
-//			//molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
-//			mh = new MolHandler(molStructure);
-//			mol = mh.getMolecule();
-//			mol.dearomatize();
-//		} catch (MolFormatException e1) {
-//			logger.debug("failed first attempt: bad mol structure: " + molStructure);
-//			// clean up the molString and try again
-//			try {
-//				molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
-//				mh = new MolHandler(molStructure);
-//				mol = mh.getMolecule();
-//				mol.dearomatize();				
-//			} catch (MolFormatException e2) {
-//				logger.debug("failed second attempt: bad mol structure: " + molStructure);
-//				badStructureFlag = true;
-//				logger.error("bad mol structure: " + molStructure);
-//			}
-//		}
-//		logger.debug("The badStructureFlag " + badStructureFlag);
-//		try {
-//			logger.debug("The molfile " + MolExporter.exportToFormat(mol, "mol"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		if (!badStructureFlag){
-//			try {
-//				return MolExporter.exportToFormat(mol, "mol");
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		} else {
-//			return molStructure;
-//		}
-//		return molStructure;
-//	}
-//	
 	@Override
 	public String toMolfile(String molStructure) {
 		logger.debug("here is the incoming molStructure: " +  molStructure);
@@ -1062,13 +1138,13 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 		MolHandler mh = new MolHandler(structure);
 		Molecule mol = mh.getMolecule();
 		Collection<CIPStereoDescriptorIface> output = CIPStereoCalculator.calculateCIPStereoDescriptors(mol);
-		
+
 		if (logger.isDebugEnabled()){
 			for (CIPStereoDescriptorIface single : output){
 				logger.debug(single.toString());
 			}			
 		}
-		
+
 		return output.toString();
 	}
 
@@ -1217,9 +1293,10 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public boolean createJChemTable(String tableName, boolean tautomerDupe) {
+		boolean tableCreated = false;
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
@@ -1239,20 +1316,24 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 			if (!tableList.contains(tableName)){
 				UpdateHandler.createStructureTable(ch, options );
 				logger.info("created the Jchem structure table " + tableName );
+				tableCreated = true;
 			}
 		} catch (SQLException e) {
 			logger.error("SQL error. Unable to create the Jchem structure table " + tableName );
 			e.printStackTrace();
 		}
 
-		return false;
+		return tableCreated;
 	}	
 
 	@Override
+	@Transactional
 	public boolean dropJChemTable(String tableName) {
+		boolean tableDropped = false;
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
+		logger.info("is the connection active: " + ch.isConnected());
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e1) {
@@ -1262,15 +1343,26 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 		try {
 			String[] tables = UpdateHandler.getStructureTables(ch);
 			List<String> tableList = Arrays.asList(tables); 
+			for (String table : tableList){
+				logger.info("tables: " + table);
+			}
 			if (tableList.contains(tableName)){
 				UpdateHandler.dropStructureTable(ch, tableName);				
+			} else {
+				logger.info(tableName + " does not exist");
+			}
+			tables = UpdateHandler.getStructureTables(ch);
+			tableList = Arrays.asList(tables); 
+			if (tableList.contains(tableName)){
+				tableDropped = false;
+			} else {
+				tableDropped = true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return false;
+		return tableDropped;
 	}	
 
 	@Override
@@ -1509,14 +1601,18 @@ public class ChemStructureServiceImpl implements ChemStructureService {
 					cru.registerPermanentCache(cacheIdentifier);	
 				}
 				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-
 			} else if (structureTable.equalsIgnoreCase("Parent_Structure")) {
 				String cacheIdentifier = "labsynch_cmpd_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){
 					cru.registerPermanentCache(cacheIdentifier);	
 				}
 				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-
+			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
+				String cacheIdentifier = "labsynch_qc_cmpd_cache";
+				if (!cru.isCacheIDRegistered(cacheIdentifier)){
+					cru.registerPermanentCache(cacheIdentifier);	
+				}
+				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
 			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
 				String cacheIdentifier = "labsynch_salt_cache";
 				if (!cru.isCacheIDRegistered(cacheIdentifier)){

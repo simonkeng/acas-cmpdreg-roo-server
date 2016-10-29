@@ -386,7 +386,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 			}
 			structureTable = "SaltForm_Structure";
 			logger.debug(structureTable + "   search type:= " + searchParams.getSearchType());
-			logger.debug("Query Structure Smiles: " + structureService.toSmiles(searchParams.getMolStructure()));
+//			logger.debug("Query Structure Smiles: " + structureService.toSmiles(searchParams.getMolStructure()));
 
 			Molecule[] saltFormStructureHits;
 			if (searchParams.getMaxResults() != null){
@@ -493,7 +493,14 @@ public class SearchFormServiceImpl implements SearchFormService {
 							}
 							searchCompound.setMolStructure(hitMol.toFormat("mol"));
 						}
-						List<Lot> lots = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
+						List<Lot> lotsFound = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
+						List<Lot> lots = new ArrayList<Lot>();
+						for (Lot lot : lotsFound){
+							if (!lots.contains(lot)) lots.add(lot);
+						}
+						logger.debug("current saltForm: " + saltForm.getCorpName() + "  " + saltForm.getId());
+						logger.debug("number of lots found: " + lotsFound.size());
+						logger.debug("number of unique lots found: " + lots.size());
 						for (Lot lot : lots){
 							//						logger.debug("current lot:" + lot.getCorpName());
 							SearchLotDTO searchLot = new SearchLotDTO();
@@ -548,7 +555,14 @@ public class SearchFormServiceImpl implements SearchFormService {
 
 					searchCompound.setMolStructure(saltFormMols.get(saltForm.getCorpName()).getMolStructure());
 					//					logger.debug("current query structrue: " + searchCompound.getMolStructure());
-					List<Lot> lots = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
+					List<Lot> lotsFound = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
+					List<Lot> lots = new ArrayList<Lot>();
+					for (Lot lot : lotsFound){
+						if (!lots.contains(lot)) lots.add(lot);
+					}
+					logger.debug("current saltForm: " + saltForm.getCorpName() + "  " + saltForm.getId());
+					logger.debug("number of lots found: " + lotsFound.size());
+					logger.debug("number of unique lots found: " + lots.size());
 					for (Lot lot : lots){
 						//						logger.debug("current lot: " + lot.toJson());
 						SearchLotDTO searchLot = new SearchLotDTO();

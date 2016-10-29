@@ -1,5 +1,6 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,23 +51,22 @@ public class MetalotServiceImpl implements MetalotService {
 
 	@Autowired
 	private ParentStructureServiceImpl parentStructureServiceImpl;
-	
+
 	@Autowired
 	private ParentAliasService parentAliasService;
-	
+
 	@Autowired
 	private SaltFormService saltFormService;
-	
+
 	@Autowired
 	private LotAliasService lotAliasService;
 
 
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
-
 	private static final Logger logger = LoggerFactory.getLogger(MetalotServiceImpl.class);
-	
 	public static final String corpParentFormat = Configuration.getConfigInfo().getServerSettings().getCorpParentFormat();
-
+	private static boolean useStandardizer = Configuration.getConfigInfo().getServerSettings().isUseExternalStandardizerConfig();
+	private static String standardizerConfigFilePath = Configuration.getConfigInfo().getServerSettings().getStandardizerConfigFilePath();
 
 	@Transactional
 	@Override
@@ -128,8 +128,9 @@ public class MetalotServiceImpl implements MetalotService {
 
 	@Transactional
 	public MetalotReturn processAndSave(Metalot metaLot, MetalotReturn mr, ArrayList<ErrorMessage> errors) 
-			throws MolFormatException, UniqueNotebookException, DupeParentException, JsonParseException, 
-			DupeSaltFormCorpNameException, DupeSaltFormStructureException, SaltFormMolFormatException, SaltedCompoundException {
+			throws UniqueNotebookException, DupeParentException, JsonParseException, 
+			DupeSaltFormCorpNameException, DupeSaltFormStructureException, SaltFormMolFormatException, 
+			SaltedCompoundException, IOException {
 
 		logger.info("attempting to save the metaLot. ");
 
@@ -172,8 +173,8 @@ public class MetalotServiceImpl implements MetalotService {
 			parent = metaLot.getLot().getParent();
 		}
 		if (logger.isDebugEnabled()) logger.debug("parent: " + parent.toJson());
-		
-		
+
+
 		Set<ParentAlias> parentAliases = parent.getParentAliases();
 		int numberOfParentAliases = parentAliases.size();
 		logger.info("number of parent aliases: " + numberOfParentAliases);
@@ -181,6 +182,11 @@ public class MetalotServiceImpl implements MetalotService {
 		String dupeParentNames = "";
 		if (parent.getId() == null){
 			logger.debug("this is a new parent");
+			String molStructure;
+			if (useStandardizer){
+				molStructure = chemService.standardizeStructure(parent.getMolStructure());
+				parent.setMolStructure(molStructure);
+			}
 			int dupeParentCount = 0;			
 			if (!metaLot.isSkipParentDupeCheck()){
 				int[] dupeParentList = chemService.checkDupeMol(parent.getMolStructure(), "Parent_Structure", "Parent");
@@ -347,7 +353,7 @@ public class MetalotServiceImpl implements MetalotService {
 			if (logger.isDebugEnabled()) logger.debug("Parent aliases after save: "+ ParentAlias.toJsonArray(parent.getParentAliases()));
 
 			double totalSaltWeight = 0d;
-			
+
 			//save saltForm
 			SaltForm saltForm = metaLot.getLot().getSaltForm();
 			ErrorMessage saltFormError = new ErrorMessage();
@@ -430,7 +436,7 @@ public class MetalotServiceImpl implements MetalotService {
 				saltForm.setSaltWeight(totalSaltWeight);
 				saltForm.merge();
 			}
-			
+
 			if (lot.getId() == null ){
 
 				logger.info("do we have an error: " + metalotError);
@@ -439,7 +445,7 @@ public class MetalotServiceImpl implements MetalotService {
 					Set<LotAlias> lotAliases = lot.getLotAliases();
 					int numberOfLotAliases = lotAliases.size();
 					logger.info("number of lot aliases: " + numberOfLotAliases);
-					
+
 					logger.debug("this is a new lot");
 					if (lot.getRegisteredBy() != null){
 						Scientist registeredBy = Scientist.findScientistsByCodeEquals(lot.getRegisteredBy().getCode()).getSingleResult();
@@ -503,7 +509,7 @@ public class MetalotServiceImpl implements MetalotService {
 					} else {
 						logger.debug("no fileLists to save");        	
 					}
-					
+
 					logger.info("--------- Number of lotAliases to save: " + lotAliases.size());
 					lot = lotAliasService.updateLotAliases(lot, lotAliases);
 					if (logger.isDebugEnabled()) logger.debug("Lot aliases after save: "+ LotAlias.toJsonArray(lot.getLotAliases()));
@@ -514,11 +520,11 @@ public class MetalotServiceImpl implements MetalotService {
 
 			} else {
 				logger.debug("this is an old lot. " + lot.getId() + "  " + lot.getCorpName() + "  " + lot.getColor());
-				
+
 				Set<LotAlias> lotAliases = lot.getLotAliases();
 				int numberOfLotAliases = lotAliases.size();
 				logger.info("number of lot aliases: " + numberOfLotAliases);
-				
+
 				if (!metaLot.isSkipParentDupeCheck()){
 					Lot oldLot = Lot.findLot(lot.getId());
 					oldLot.setComments(lot.getComments());
@@ -560,11 +566,11 @@ public class MetalotServiceImpl implements MetalotService {
 						logger.warn("WARN: solutionAmountUnits not defined! ");
 						lot.setSolutionAmountUnits(null);
 					}
-					
+
 					logger.info("--------- Number of lotAliases to save: " + lotAliases.size());
 					oldLot = lotAliasService.updateLotAliases(oldLot, lotAliases);
 					if (logger.isDebugEnabled()) logger.debug("Lot aliases after save: "+ LotAlias.toJsonArray(lot.getLotAliases()));
-					
+
 					oldLot.setVendor(lot.getVendor());
 					oldLot.persist();
 					oldLot.flush();
@@ -681,7 +687,7 @@ public class MetalotServiceImpl implements MetalotService {
 		return metalot;
 
 	}
-	
+
 	public Metalot saveLotAliases(Metalot metalot){
 		Lot lot = metalot.getLot();
 		for (LotAlias lotAlias : lot.getLotAliases()){

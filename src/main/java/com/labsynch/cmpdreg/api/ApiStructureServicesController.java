@@ -37,6 +37,27 @@ public class ApiStructureServicesController {
 
 	@Autowired
 	private ChemStructureService chemStructureService;
+
+	@RequestMapping(value = "/standardize", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> standardize(@RequestBody String json){
+		if (logger.isDebugEnabled()) logger.debug("incoming json from molconvert: " + json);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");		
+		MolConvertInputDTO inputDTO = MolConvertInputDTO.fromJsonToMolConvertInputDTO(json);
+		MolConvertOutputDTO output = new MolConvertOutputDTO();
+		String standardizedMol= "" ;
+		try {
+			standardizedMol = chemStructureService.standardizeStructure(inputDTO.getStructure());
+		} catch (IOException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		}
+		output.setStructure(standardizedMol);
+		output.setFormat("mol");
+
+		return new ResponseEntity<String>(output.toJson(), headers, HttpStatus.OK);
+	}
 	
 	@RequestMapping(value = "/molconvert", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody

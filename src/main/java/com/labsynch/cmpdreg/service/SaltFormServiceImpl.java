@@ -210,17 +210,18 @@ public class SaltFormServiceImpl implements SaltFormService {
 					isoSalt.setSaltForm(oldSaltForm);
 				}
 				oldSaltForm.setIsoSalts(isoSalts);
+				oldSaltForm.setCasNumber(saltForm.getCasNumber());
 				oldSaltForm.merge();
 				oldSaltForm.flush();
+				lot.setSaltForm(oldSaltForm);
 				List<String> changedLotCorpNameMessages = new ArrayList<String>();
-				for (Lot affectedLot : oldSaltForm.getLots()){
-					String oldLotCorpName = affectedLot.getCorpName();
-					affectedLot.setLotMolWeight(affectedLot.calculateLotMolWeight(affectedLot));
-					affectedLot.setCorpName(affectedLot.generateCorpName());
-					String newLotCorpName = affectedLot.getCorpName();
-					if (!oldLotCorpName.equals(newLotCorpName)) changedLotCorpNameMessages.add(oldLotCorpName +" to "+newLotCorpName);
-					affectedLot.merge();
-				}
+				Lot oldLot = Lot.findLot(lot.getId());
+				String oldLotCorpName = oldLot.getCorpName();
+				lot.setLotMolWeight(Lot.calculateLotMolWeight(oldLot));
+				lot.setCorpName(lot.generateCorpName());
+				String newLotCorpName = lot.getCorpName();
+				lot.merge();
+				if (!oldLotCorpName.equals(newLotCorpName)) changedLotCorpNameMessages.add(oldLotCorpName +" to "+newLotCorpName);
 				if (!changedLotCorpNameMessages.isEmpty()){
 					ErrorMessage affectedLotsError = new ErrorMessage();
 					affectedLotsError.setLevel("info");
@@ -231,7 +232,7 @@ public class SaltFormServiceImpl implements SaltFormService {
 					affectedLotsError.setMessage(affectedLotsMessage);
 					errors.add(affectedLotsError);
 				}
-				
+				saltForm = oldSaltForm;
 			}
 		}else{
 			saltForm.setVersion(SaltForm.findSaltForm(saltForm.getId()).getVersion());

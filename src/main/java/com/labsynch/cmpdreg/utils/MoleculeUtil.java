@@ -83,5 +83,11 @@ public class MoleculeUtil {
 
 	}
 	
+	public static String convertMolToFormat(String molFile, String exportFormat) throws IOException{
+		MolHandler mh = new MolHandler(molFile);
+		Molecule mol = mh.getMolecule();
+		return MolExporter.exportToFormat(mol, exportFormat);
+
+	}
 	
 }

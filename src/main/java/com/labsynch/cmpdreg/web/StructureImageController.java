@@ -128,8 +128,9 @@ public class StructureImageController {
 			@RequestParam(value = "format", required=false) String format) {
     	
         Lot lot = Lot.findLotsByCorpNameEquals(corpName).getSingleResult();
-        String molStructure = lot.getAsDrawnStruct();
-        if (molStructure == null || molStructure.length() < 1){
+        String molStructure = null; //do not display the as drawn structure -- may be incorrect before standardization
+        
+        if ((molStructure == null || molStructure.length() < 1) && lot.getSaltForm().getMolStructure() != null){
         	molStructure = lot.getSaltForm().getMolStructure();
         }
         if (molStructure == null || molStructure.length() < 1){
