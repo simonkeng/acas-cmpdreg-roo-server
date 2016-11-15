@@ -45,6 +45,8 @@ public class LotDTO {
 	private String modifiedBy;
 	private Date modifiedDate;
 	private String notebookPage;
+	private Double observedMassOne;
+	private Double observedMassTwo;
 	private Double percentEE;
 	private String physicalStateCode;
 	private String project;
@@ -107,6 +109,8 @@ public class LotDTO {
 		this.meltingPoint = lot.getMeltingPoint();
 		if (lot.getModifiedBy() != null) this.modifiedBy = lot.getModifiedBy().getCode();
 		this.modifiedDate = lot.getModifiedDate();
+		this.observedMassOne = lot.getObservedMassOne();
+		this.observedMassTwo = lot.getObservedMassTwo();
 		this.notebookPage = lot.getNotebookPage();
 		this.percentEE = lot.getPercentEE();
 		if (lot.getPhysicalState() != null) this.physicalStateCode = lot.getPhysicalState().getCode();

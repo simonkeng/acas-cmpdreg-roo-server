@@ -118,6 +118,8 @@ public class ExportServiceImpl implements ExportService {
 			if (lotDTO.getModifiedBy() != null) mol.setProperty("Modified By", lotDTO.getModifiedBy());
 			if (lotDTO.getModifiedDate() != null) mol.setProperty("Modified Date", dateFormat.format(lotDTO.getModifiedDate()));
 			if (lotDTO.getNotebookPage() != null) mol.setProperty("Notebook Page", lotDTO.getNotebookPage());
+			if (lotDTO.getObservedMassOne() != null) mol.setProperty("Observed Mass #1", lotDTO.getObservedMassOne().toString());
+			if (lotDTO.getObservedMassTwo() != null) mol.setProperty("Observed Mass #2", lotDTO.getObservedMassTwo().toString());
 			if (lotDTO.getPercentEE() != null) mol.setProperty("Percent EE", lotDTO.getPercentEE().toString());
 			if (lotDTO.getPhysicalStateCode() != null) mol.setProperty("Physical State Code", lotDTO.getPhysicalStateCode());
 			if (lotDTO.getProject() != null) mol.setProperty("Project", lotDTO.getProject());

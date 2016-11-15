@@ -554,6 +554,9 @@ public class MetalotServiceImpl implements MetalotService {
 					oldLot.setStockSolvent(lot.getStockSolvent());
 					oldLot.setStockLocation(lot.getStockLocation());
 					//
+					oldLot.setObservedMassOne(lot.getObservedMassOne());
+					oldLot.setObservedMassTwo(lot.getObservedMassTwo());
+					//
 					oldLot.setSupplierLot(lot.getSupplierLot());
 					oldLot.setMeltingPoint(lot.getMeltingPoint());
 					oldLot.setBoilingPoint(lot.getBoilingPoint());

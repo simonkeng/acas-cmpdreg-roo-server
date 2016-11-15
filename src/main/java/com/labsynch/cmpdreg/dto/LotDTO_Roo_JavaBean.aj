@@ -168,6 +168,22 @@ privileged aspect LotDTO_Roo_JavaBean {
         this.notebookPage = notebookPage;
     }
     
+    public Double LotDTO.getObservedMassOne() {
+        return this.observedMassOne;
+    }
+    
+    public void LotDTO.setObservedMassOne(Double observedMassOne) {
+        this.observedMassOne = observedMassOne;
+    }
+    
+    public Double LotDTO.getObservedMassTwo() {
+        return this.observedMassTwo;
+    }
+    
+    public void LotDTO.setObservedMassTwo(Double observedMassTwo) {
+        this.observedMassTwo = observedMassTwo;
+    }
+    
     public Double LotDTO.getPercentEE() {
         return this.percentEE;
     }

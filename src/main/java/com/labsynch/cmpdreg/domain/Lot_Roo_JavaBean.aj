@@ -360,6 +360,22 @@ privileged aspect Lot_Roo_JavaBean {
         this.stockLocation = stockLocation;
     }
     
+    public Double Lot.getObservedMassOne() {
+        return this.observedMassOne;
+    }
+    
+    public void Lot.setObservedMassOne(Double observedMassOne) {
+        this.observedMassOne = observedMassOne;
+    }
+    
+    public Double Lot.getObservedMassTwo() {
+        return this.observedMassTwo;
+    }
+    
+    public void Lot.setObservedMassTwo(Double observedMassTwo) {
+        this.observedMassTwo = observedMassTwo;
+    }
+    
     public Set<LotAlias> Lot.getLotAliases() {
         return this.lotAliases;
     }

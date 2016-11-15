@@ -57,6 +57,12 @@ Cabinet #1
 >  <Lot Retain Location>
 Freezer #1 Top Shelf
 
+>  <Lot Observed Mass #1>
+123.45
+
+>  <Lot Observed Mass #2>
+124.45
+
 $$$$
 
   Mrv0541 11211113452D          
@@ -141,6 +147,12 @@ Cabinet #2
 
 >  <Lot Retain Location>
 Freezer #3 Top Shelf
+
+>  <Lot Observed Mass #1>
+333.49
+
+>  <Lot Observed Mass #2>
+334.49
 
 $$$$
 

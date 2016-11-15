@@ -201,6 +201,10 @@ public class Lot {
     
     private String stockLocation;
     
+    private Double observedMassOne;
+    
+    private Double observedMassTwo;
+    
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "lot", fetch = FetchType.LAZY)
 	private Set<LotAlias> lotAliases = new HashSet<LotAlias>();
     

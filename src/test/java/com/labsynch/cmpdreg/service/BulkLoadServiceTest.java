@@ -549,6 +549,8 @@ public class BulkLoadServiceTest {
     	mappings.add(new BulkLoadPropertyMappingDTO("Lot Stock Solvent", "Lot Stock Solvent", false, null));
     	mappings.add(new BulkLoadPropertyMappingDTO("Lot Stock Location", "Lot Stock Location", false, null));
     	mappings.add(new BulkLoadPropertyMappingDTO("Lot Retain Location", "Lot Retain Location", false, null));
+    	mappings.add(new BulkLoadPropertyMappingDTO("Lot Observed Mass #1", "Lot Observed Mass #1", false, null));
+    	mappings.add(new BulkLoadPropertyMappingDTO("Lot Observed Mass #2", "Lot Observed Mass #2", false, null));
     	BulkLoadSDFPropertyRequestDTO propertiesRequestDTO = new BulkLoadSDFPropertyRequestDTO(fileName, 15, null, null, mappings);
     	BulkLoadPropertiesDTO results = bulkLoadService.readSDFPropertiesFromFile(propertiesRequestDTO);
     	mappings = results.getBulkLoadProperties();
