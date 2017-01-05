@@ -10,4 +10,4 @@ CREATE SEQUENCE custom_parent_pkseq
     NO MAXVALUE
     CACHE 1;
 
-SELECT setval('custom_parent_pkseq', (select count(*)+1 from parent));
+SELECT setval('custom_parent_pkseq', (select greatest(count(*)+1 , max(parent_number)+1) from parent));
