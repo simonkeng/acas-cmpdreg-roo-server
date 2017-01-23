@@ -46,7 +46,7 @@ public class ParentAliasServiceImpl implements ParentAliasService {
 			for (ParentAlias aliasToBeSaved : aliasesToBeSaved){
 				aliasToBeSaved.setParent(parent);
 				if (aliasToBeSaved.getId() == null) aliasToBeSaved.persist();
-				else aliasToBeSaved.merge();
+				else aliasToBeSaved = aliasToBeSaved.merge();
 				savedAliases.add(aliasToBeSaved);
 			}
 		}
