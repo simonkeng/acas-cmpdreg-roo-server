@@ -602,6 +602,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				}
 			}catch (EmptyResultDataAccessException empty){
 				foundParent = null;
+			}catch (DupeParentException dupe){
+				throw dupe;
 			}catch (Exception e){
 				logger.error("Caught exception comparing parent structures for parent corp name: "+parent.getCorpName(),e);
 				foundParent = null;
