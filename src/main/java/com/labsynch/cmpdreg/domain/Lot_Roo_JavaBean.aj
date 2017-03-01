@@ -376,6 +376,22 @@ privileged aspect Lot_Roo_JavaBean {
         this.observedMassTwo = observedMassTwo;
     }
     
+    public Double Lot.getTareWeight() {
+        return this.tareWeight;
+    }
+    
+    public void Lot.setTareWeight(Double tareWeight) {
+        this.tareWeight = tareWeight;
+    }
+    
+    public Double Lot.getTotalAmountStored() {
+        return this.totalAmountStored;
+    }
+    
+    public void Lot.setTotalAmountStored(Double totalAmountStored) {
+        this.totalAmountStored = totalAmountStored;
+    }
+    
     public Set<LotAlias> Lot.getLotAliases() {
         return this.lotAliases;
     }

@@ -765,6 +765,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setRetainLocation(getStringValueFromMappings(mol, "Lot Retain Location", mappings));
 		lot.setObservedMassOne(getNumericValueFromMappings(mol, "Lot Observed Mass #1", mappings));
 		lot.setObservedMassTwo(getNumericValueFromMappings(mol, "Lot Observed Mass #2", mappings));
+		lot.setTareWeight(getNumericValueFromMappings(mol, "Lot Tare Weight", mappings));
+		lot.setTotalAmountStored(getNumericValueFromMappings(mol, "Lot Total Amount Stored", mappings));
 
 		//conversions
 		lot.setIsVirtual(Boolean.valueOf(getStringValueFromMappings(mol, "Lot Is Virtual", mappings)));

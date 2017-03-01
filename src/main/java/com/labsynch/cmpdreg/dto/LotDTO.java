@@ -66,6 +66,8 @@ public class LotDTO {
 	private String supplierID;
 	private String supplierLot;
 	private Date synthesisDate;
+	private Double tareWeight;
+	private Double totalAmountStored;
 	private String vendorCode;
 	private String saltFormCorpName;
 	private String casNumber;
@@ -131,6 +133,8 @@ public class LotDTO {
 		this.supplierID = lot.getSupplierID();
 		this.supplierLot = lot.getSupplierLot();
 		this.synthesisDate = lot.getSynthesisDate();
+		this.tareWeight = lot.getTareWeight();
+		this.totalAmountStored = lot.getTotalAmountStored();
 		if (lot.getVendor() != null) this.vendorCode = lot.getVendor().getCode();
 		if (!lot.getLotAliases().isEmpty()){
 			String lotAliases = "";
