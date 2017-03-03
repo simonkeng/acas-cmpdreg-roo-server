@@ -140,7 +140,9 @@ public class ExportServiceImpl implements ExportService {
 			if (lotDTO.getSupplierLot() != null) mol.setProperty("Supplier Lot", lotDTO.getSupplierLot());
 			if (lotDTO.getSynthesisDate() != null) mol.setProperty("Synthesis Date", dateFormat.format(lotDTO.getSynthesisDate()));
 			if (lotDTO.getTareWeight() != null) mol.setProperty("Tare Weight", lotDTO.getTareWeight().toString());
+			if (lotDTO.getTareWeightUnitsCode() != null) mol.setProperty("Tare Weight Units Code", lotDTO.getTareWeightUnitsCode());
 			if (lotDTO.getTotalAmountStored() != null) mol.setProperty("Total Amount Stored", lotDTO.getTotalAmountStored().toString());
+			if (lotDTO.getTotalAmountStoredUnitsCode() != null) mol.setProperty("Total Amount Stored Units Code", lotDTO.getTotalAmountStoredUnitsCode());
 			if (lotDTO.getVendorCode() != null) mol.setProperty("Vendor Code", lotDTO.getVendorCode());
 			if (lotDTO.getSaltFormCorpName() != null) mol.setProperty("Salt Form Corp Name", lotDTO.getSaltFormCorpName());
 			if (lotDTO.getCasNumber() != null) mol.setProperty("CAS Number", lotDTO.getCasNumber());

@@ -67,7 +67,9 @@ public class LotDTO {
 	private String supplierLot;
 	private Date synthesisDate;
 	private Double tareWeight;
+	private String tareWeightUnitsCode;
 	private Double totalAmountStored;
+	private String totalAmountStoredUnitsCode;
 	private String vendorCode;
 	private String saltFormCorpName;
 	private String casNumber;
@@ -134,7 +136,9 @@ public class LotDTO {
 		this.supplierLot = lot.getSupplierLot();
 		this.synthesisDate = lot.getSynthesisDate();
 		this.tareWeight = lot.getTareWeight();
+		if (lot.getTareWeightUnits() != null) this.tareWeightUnitsCode = lot.getTareWeightUnits().getCode();
 		this.totalAmountStored = lot.getTotalAmountStored();
+		if (lot.getTotalAmountStoredUnits() != null) this.totalAmountStoredUnitsCode = lot.getTotalAmountStoredUnits().getCode();
 		if (lot.getVendor() != null) this.vendorCode = lot.getVendor().getCode();
 		if (!lot.getLotAliases().isEmpty()){
 			String lotAliases = "";
