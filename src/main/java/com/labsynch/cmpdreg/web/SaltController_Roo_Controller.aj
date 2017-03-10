@@ -3,13 +3,13 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.web.SaltController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.Salt;
 
 privileged aspect SaltController_Roo_Controller {
     

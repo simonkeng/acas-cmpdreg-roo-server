@@ -433,11 +433,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<version>${querydsl.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<version>4.3</version>
-		</dependency>
-		<dependency>
 			<groupId>org.gvnix</groupId>
 			<artifactId>org.gvnix.addon.jpa.annotations</artifactId>
 			<version>${gvnix.version}</version>
