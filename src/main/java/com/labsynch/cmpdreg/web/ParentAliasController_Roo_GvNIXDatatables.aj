@@ -28,7 +28,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -65,9 +64,6 @@ import com.mysema.query.types.path.PathBuilder;
 privileged aspect ParentAliasController_Roo_GvNIXDatatables {
     
     declare precedence: ParentAliasController_Roo_GvNIXDatatables, ParentAliasController_Roo_Controller;
-    
-    @Autowired
-    public ConversionService ParentAliasController.conversionService_dtt;
     
     @Autowired
     public MessageSource ParentAliasController.messageSource_dtt;

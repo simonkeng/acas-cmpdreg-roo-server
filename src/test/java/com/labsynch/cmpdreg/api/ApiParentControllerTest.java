@@ -41,6 +41,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFRequestDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
 import com.labsynch.cmpdreg.dto.ParentDTO;
+import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.service.BulkLoadService;
 
@@ -68,7 +69,7 @@ public class ApiParentControllerTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
     
-    @Test
+ //   @Test
     @Transactional
     public void validateParent_noOp() throws Exception {
     	List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -94,7 +95,7 @@ public class ApiParentControllerTest {
     	}
     }
     
-    @Test
+//    @Test
     @Transactional
     public void validateParent_changeStereoCategory() throws Exception {
     	List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -124,7 +125,7 @@ public class ApiParentControllerTest {
     	}
     }
     
-    @Test
+ //   @Test
 	@Transactional
 	public void validateAndUpdateParent_changeStereoCategoryAndStructure() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -185,4 +186,55 @@ public class ApiParentControllerTest {
 
 	}
 
+    @Test
+    @Transactional
+    public void updateParentMetaSingle() throws Exception {
+    	
+		ParentEditDTO parentDTO = new ParentEditDTO();
+		parentDTO.setCorpName("CMPD-0000001");
+		parentDTO.setComment("parent comment update");
+		parentDTO.setChemistCode("cchemist");
+		parentDTO.setCommonNameAliases("apple;banana-pepper;pear");
+		String json = parentDTO.toJson();
+
+    	logger.debug(json);
+    	MockHttpServletResponse response = this.mockMvc.perform(post("/api/v1/parents/updateParent/metadata")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(json)
+    			.accept(MediaType.APPLICATION_JSON))
+    			.andExpect(status().isOk())
+    			.andExpect(content().contentType("application/json"))
+    			.andReturn().getResponse();
+    	String responseJson = response.getContentAsString();
+    	logger.info(responseJson);
+
+    }
+    
+ //   @Test
+    @Transactional
+    public void updateParentMetaArray() throws Exception {
+    	
+    	Collection<ParentEditDTO> parentDTOCollection = new HashSet<ParentEditDTO>();
+		ParentEditDTO parentDTO = new ParentEditDTO();
+		parentDTO.setCorpName("CMPD-0000001");
+//		parentDTO.setCorpName("CAS690");
+		parentDTO.setComment("parent comment update");
+		//parentDTO.setChemistCode("cchemist");
+		parentDTO.setCommonNameAliases("apple;banana-pepper;pear");
+		parentDTOCollection.add(parentDTO);
+		String json = ParentEditDTO.toJsonArray(parentDTOCollection);
+
+    	logger.debug(json);
+    	MockHttpServletResponse response = this.mockMvc.perform(post("/api/v1/parents/updateParent/metadata/jsonArray")
+    			.contentType(MediaType.APPLICATION_JSON)
+    			.content(json)
+    			.accept(MediaType.APPLICATION_JSON))
+    			.andExpect(status().isOk())
+    			.andExpect(content().contentType("application/json"))
+    			.andReturn().getResponse();
+    	String responseJson = response.getContentAsString();
+    	logger.info(responseJson);
+    	
+    }
+    
 }

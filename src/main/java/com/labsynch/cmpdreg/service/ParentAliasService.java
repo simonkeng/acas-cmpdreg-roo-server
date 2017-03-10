@@ -14,4 +14,12 @@ public interface ParentAliasService {
 	public Parent updateParentAliases(Parent parent,
 			Set<ParentAlias> parentAliases);
 
+	Parent updateParentLiveDesignAlias(Parent parent, String aliasList);
+
+	Parent updateParentCommonNameAlias(Parent parent, String aliasList);
+
+	Parent updateParentDefaultAlias(Parent parent, String aliasList);
+
+	Parent updateParentAliasByTypeAndKind(Parent parent, String lsType, String lsKind, String aliasList);
+
 }

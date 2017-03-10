@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.ParentDTO;
+import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 
 
@@ -30,7 +33,7 @@ public class ParentServiceTest {
 	@Autowired
 	private ParentService parentService;
 	
-	@Test
+//	@Test
 	@Transactional
 	public void validateParent_noOp() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -44,7 +47,7 @@ public class ParentServiceTest {
     	Assert.assertNull(validationDTO.getDupeParents());
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void validateParent_obviousDupe() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -63,7 +66,7 @@ public class ParentServiceTest {
     	Assert.assertFalse(validationDTO.getDupeParents().isEmpty());
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void validateParent_changeStereoCategory() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -86,7 +89,7 @@ public class ParentServiceTest {
     	Assert.assertNull(validationDTO.getDupeParents());
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void validateAndUpdateParent_changeStereoCategory() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -122,7 +125,7 @@ public class ParentServiceTest {
 
 	}
 	
-	@Test
+//	@Test
 	@Transactional
 	public void validateAndUpdateParent_changeStereoCategoryAndStructure() throws Exception{
 		List<Parent> parents = Parent.findParentEntries(0, 2);
@@ -158,6 +161,22 @@ public class ParentServiceTest {
 
 	}
 
+	
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void updateParentMeta() throws Exception{
+
+		ParentEditDTO parentDTO = new ParentEditDTO();
+		parentDTO.setCorpName("CMPD-0000001");
+		parentDTO.setComment("parent comment update");
+		parentDTO.setChemistCode("cchemist");
+		parentDTO.setCommonNameAliases("apple;banana-pepper;pear");
+		
+		Parent parent = parentService.updateParentMeta(parentDTO, "cchemist" );
+		logger.info(parent.toJson());
+		
+	}
 }
 
 

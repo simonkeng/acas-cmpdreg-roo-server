@@ -80,5 +80,21 @@ public class ParentLotServiceImpl implements ParentLotService {
 	}
 
 	
+	@Transactional
+	public void updateLot() {
+		
+		
+		// What does the service do?
+		// input: json lot object -- metalot object?
+//		All fields except compound structure and salts should be editable.
+//		If property is not passed in, property will remain the same.
+//		Check for parent uniqueness in consideration of edits, throw error if changes to parent will conflict with existing parent.
+		
+		
+
+	}
+	
+		
+	
 }
 

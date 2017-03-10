@@ -30,6 +30,18 @@ privileged aspect LotAlias_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long LotAlias.countFindLotAliasesByLotAndLsTypeEqualsAndLsKindEquals(Lot lot, String lsType, String lsKind) {
+        if (lot == null) throw new IllegalArgumentException("The lot argument is required");
+        if (lsType == null || lsType.length() == 0) throw new IllegalArgumentException("The lsType argument is required");
+        if (lsKind == null || lsKind.length() == 0) throw new IllegalArgumentException("The lsKind argument is required");
+        EntityManager em = LotAlias.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM LotAlias AS o WHERE o.lot = :lot AND o.lsType = :lsType  AND o.lsKind = :lsKind", Long.class);
+        q.setParameter("lot", lot);
+        q.setParameter("lsType", lsType);
+        q.setParameter("lsKind", lsKind);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<LotAlias> LotAlias.findLotAliasesByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals(String aliasName, String lsType, String lsKind) {
         if (aliasName == null || aliasName.length() == 0) throw new IllegalArgumentException("The aliasName argument is required");
         if (lsType == null || lsType.length() == 0) throw new IllegalArgumentException("The lsType argument is required");
@@ -81,6 +93,37 @@ privileged aspect LotAlias_Roo_Finder {
         }
         TypedQuery<LotAlias> q = em.createQuery(queryBuilder.toString(), LotAlias.class);
         q.setParameter("lot", lot);
+        return q;
+    }
+    
+    public static TypedQuery<LotAlias> LotAlias.findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals(Lot lot, String lsType, String lsKind) {
+        if (lot == null) throw new IllegalArgumentException("The lot argument is required");
+        if (lsType == null || lsType.length() == 0) throw new IllegalArgumentException("The lsType argument is required");
+        if (lsKind == null || lsKind.length() == 0) throw new IllegalArgumentException("The lsKind argument is required");
+        EntityManager em = LotAlias.entityManager();
+        TypedQuery<LotAlias> q = em.createQuery("SELECT o FROM LotAlias AS o WHERE o.lot = :lot AND o.lsType = :lsType  AND o.lsKind = :lsKind", LotAlias.class);
+        q.setParameter("lot", lot);
+        q.setParameter("lsType", lsType);
+        q.setParameter("lsKind", lsKind);
+        return q;
+    }
+    
+    public static TypedQuery<LotAlias> LotAlias.findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals(Lot lot, String lsType, String lsKind, String sortFieldName, String sortOrder) {
+        if (lot == null) throw new IllegalArgumentException("The lot argument is required");
+        if (lsType == null || lsType.length() == 0) throw new IllegalArgumentException("The lsType argument is required");
+        if (lsKind == null || lsKind.length() == 0) throw new IllegalArgumentException("The lsKind argument is required");
+        EntityManager em = LotAlias.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM LotAlias AS o WHERE o.lot = :lot AND o.lsType = :lsType  AND o.lsKind = :lsKind");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<LotAlias> q = em.createQuery(queryBuilder.toString(), LotAlias.class);
+        q.setParameter("lot", lot);
+        q.setParameter("lsType", lsType);
+        q.setParameter("lsKind", lsKind);
         return q;
     }
     

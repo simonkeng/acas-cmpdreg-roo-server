@@ -14,7 +14,7 @@ privileged aspect Scientist_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager Scientist.entityManager;
     
-    public static final List<String> Scientist.fieldNames4OrderClauseFilter = java.util.Arrays.asList("code", "name", "isChemist", "isAdmin", "ignore");
+    public static final List<String> Scientist.fieldNames4OrderClauseFilter = java.util.Arrays.asList("logger", "code", "name", "isChemist", "isAdmin", "ignore");
     
     public static final EntityManager Scientist.entityManager() {
         EntityManager em = new Scientist().entityManager;
