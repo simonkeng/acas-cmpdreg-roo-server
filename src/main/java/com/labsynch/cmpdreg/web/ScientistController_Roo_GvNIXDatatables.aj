@@ -3,6 +3,25 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.github.dandelion.datatables.core.ajax.DataSet;
+import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
+import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
+import com.github.dandelion.datatables.core.exception.ExportException;
+import com.github.dandelion.datatables.core.export.CsvExport;
+import com.github.dandelion.datatables.core.export.DatatablesExport;
+import com.github.dandelion.datatables.core.export.ExportConf;
+import com.github.dandelion.datatables.core.export.ExportType;
+import com.github.dandelion.datatables.core.export.ExportUtils;
+import com.github.dandelion.datatables.core.export.XmlExport;
+import com.github.dandelion.datatables.core.html.HtmlTable;
+import com.github.dandelion.datatables.extras.export.itext.PdfExport;
+import com.github.dandelion.datatables.extras.export.poi.XlsExport;
+import com.github.dandelion.datatables.extras.export.poi.XlsxExport;
+import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
+import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.web.ScientistController;
+import com.labsynch.cmpdreg.web.ScientistController_Roo_Controller;
+import com.labsynch.cmpdreg.web.ScientistController_Roo_GvNIXDatatables;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,12 +32,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gvnix.web.datatables.query.SearchResults;
@@ -41,25 +58,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.github.dandelion.datatables.core.ajax.DataSet;
-import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
-import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
-import com.github.dandelion.datatables.core.exception.ExportException;
-import com.github.dandelion.datatables.core.export.CsvExport;
-import com.github.dandelion.datatables.core.export.DatatablesExport;
-import com.github.dandelion.datatables.core.export.ExportConf;
-import com.github.dandelion.datatables.core.export.ExportType;
-import com.github.dandelion.datatables.core.export.ExportUtils;
-import com.github.dandelion.datatables.core.export.XmlExport;
-import com.github.dandelion.datatables.core.html.HtmlTable;
-import com.github.dandelion.datatables.extras.export.itext.PdfExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsxExport;
-import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
-import com.labsynch.cmpdreg.domain.Scientist;
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.path.PathBuilder;
 
 privileged aspect ScientistController_Roo_GvNIXDatatables {
     
@@ -423,34 +421,6 @@ privileged aspect ScientistController_Roo_GvNIXDatatables {
         Class type = beanWrapper.getPropertyType(property);
         boolean response = DatatablesUtils.checkFilterExpressions(type,expression, messageSource_dtt);
         return new ResponseEntity<String>(String.format("{ \"response\": %s, \"property\": \"%s\"}",response, property), headers, org.springframework.http.HttpStatus.OK);
-    }
-    
-    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCodeEquals", produces = "application/json")
-    @ResponseBody
-    public DatatablesResponse<Map<String, String>> ScientistController.findScientistsByCodeEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("code") String code) {
-        BooleanBuilder baseSearch = new BooleanBuilder();
-        
-        // Base Search. Using BooleanBuilder, a cascading builder for
-        // Predicate expressions
-        PathBuilder<Scientist> entity = new PathBuilder<Scientist>(Scientist.class, "entity");
-        
-        if(code != null){
-            baseSearch.and(entity.getString("code").eq(code));
-        }else{
-            baseSearch.and(entity.getString("code").isNull());
-        }
-        
-        SearchResults<Scientist> searchResult = DatatablesUtils.findByCriteria(entity, Scientist.entityManager(), criterias, baseSearch);
-        
-        // Get datatables required counts
-        long totalRecords = searchResult.getTotalCount();
-        long recordsFound = searchResult.getResultsCount();
-        
-        // Entity pk field name
-        String pkFieldName = "id";
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
     }
     
     @RequestMapping(value = "/exportcsv", produces = "text/csv")

@@ -3,13 +3,13 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.domain.LotAlias;
+import com.labsynch.cmpdreg.web.LotAliasController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.Lot;
-import com.labsynch.cmpdreg.domain.LotAlias;
 
 privileged aspect LotAliasController_Roo_Controller_Finder {
     
