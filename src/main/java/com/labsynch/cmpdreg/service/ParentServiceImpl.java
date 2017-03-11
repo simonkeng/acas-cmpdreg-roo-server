@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -17,11 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.domain.CompoundType;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.QcCompound;
+import com.labsynch.cmpdreg.domain.ParentAnnotation;
+import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.ParentAliasDTO;
 import com.labsynch.cmpdreg.dto.ParentDTO;
+import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
@@ -31,6 +39,8 @@ import chemaxon.formats.MolExporter;
 import chemaxon.formats.MolFormatException;
 import chemaxon.struc.Molecule;
 import chemaxon.util.MolHandler;
+
+import chemaxon.formats.MolFormatException;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -418,6 +428,157 @@ public class ParentServiceImpl implements ParentService {
 
 	}
 
+
+
+	
+	@Override
+	public String updateParentMetaArray(String jsonInput, String modifiedByUser){
+		int parentCounter = 0;
+		Collection<ParentEditDTO> parentDTOs = ParentEditDTO.fromJsonArrayToParentEditDTO(jsonInput);
+		for (ParentEditDTO parentDTO : parentDTOs){
+			updateParentMeta(parentDTO, modifiedByUser);
+			parentCounter++;
+		}
+		String returnMessage = "Number of parents updated: " + parentCounter;
+
+		return  returnMessage;
+	}
+		
+	
+	@Override
+	public Parent updateParentMeta(ParentEditDTO parentDTO, String modifiedByUser){
+
+		// NON-EDITABLE fields via this service
+		//		private Set<SaltFormDTO> saltForms = new HashSet<SaltFormDTO>();
+		//		private String molStructure;
+		//		private Double exactMass;
+		//		private String molFormula;
+		//		private int CdId;
+		//	    private Double molWeight;
+		
+		Scientist modifiedUser = Scientist.checkValidUser(modifiedByUser);		
+		Parent parent = null;
+		if (parentDTO.getId() != null){
+			parent = Parent.findParent(parentDTO.getId());
+		} else {
+			List<Parent> parents = Parent.findParentsByCorpNameEquals(parentDTO.getCorpName()).getResultList();
+			if (parents.size() == 0){
+				String errorMessage = "ERROR: Did not find requested query parent: " + parentDTO.getCorpName();
+				logger.error(errorMessage);
+				throw new RuntimeException(errorMessage);
+			} else if (parents.size() > 1){
+				String errorMessage = "ERROR: found multiple parents for: " + parentDTO.getCorpName();		
+				logger.error(errorMessage);		
+				throw new RuntimeException(errorMessage);
+			} else {
+				parent = parents.get(0);
+			}
+		}
+
+		if (parentDTO.getComment() != null && parentDTO.getComment().length() > 0) parent.setComment(parentDTO.getComment());
+		if (parentDTO.getStereoCategoryCode() != null && parentDTO.getStereoCategoryCode().length() > 0){
+			parent.setStereoCategory(StereoCategory.findStereoCategorysByCodeEquals(parentDTO.getStereoCategoryCode()).getSingleResult());
+		}
+		if (parentDTO.getStereoComment() != null && parentDTO.getStereoComment().length() > 0) parent.setStereoComment(parentDTO.getStereoComment());
+
+		ParentValidationDTO parentValidationDTO = null;
+		try {
+			parentValidationDTO = validateUniqueParent(parent);
+		} catch (MolFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (!parentValidationDTO.isParentUnique()){
+			String errorMessage = "ERROR: Changing stereocategory and/or comments will create a duplicate parent";
+			logger.error(errorMessage );
+			throw new RuntimeException(errorMessage);
+		} 
+		
+		
+		if (parentDTO.getChemistCode() != null && parentDTO.getChemistCode().length() > 0){
+			parent.setChemist(Scientist.findScientistsByCodeEquals(parentDTO.getChemistCode()).getSingleResult());
+		}
+		if (parentDTO.getCommonName() != null && parentDTO.getCommonName().length() > 0) parent.setCommonName(parentDTO.getCommonName());
+		if (parentDTO.getIgnore() != null) parent.setIgnore(parentDTO.getIgnore());
+		if (parentDTO.getIsMixture() != null) parent.setIsMixture(parentDTO.getIsMixture());
+		if (parentDTO.getCompoundTypeCode() != null && parentDTO.getCompoundTypeCode().length() > 0){
+			parent.setCompoundType(CompoundType.findCompoundTypesByCodeEquals(parentDTO.getCompoundTypeCode()).getSingleResult());
+		}
+		if (parentDTO.getParentAnnotationCode() != null && parentDTO.getParentAnnotationCode().length() > 0){
+			parent.setParentAnnotation(ParentAnnotation.findParentAnnotationsByCodeEquals(parentDTO.getParentAnnotationCode()).getSingleResult());
+		}
+		
+		if (parentDTO.getLiveDesignAliases() != null && parentDTO.getLiveDesignAliases().length() > 0){
+			parent = parentAliasService.updateParentLiveDesignAlias(parent, parentDTO.getLiveDesignAliases());
+		}
+
+		if (parentDTO.getCommonNameAliases() != null && parentDTO.getCommonNameAliases().length() > 0){
+			parent = parentAliasService.updateParentCommonNameAlias(parent, parentDTO.getCommonNameAliases());
+		}
+		
+		if (parentDTO.getDefaultAliases() != null && parentDTO.getDefaultAliases().length() > 0){
+			parent = parentAliasService.updateParentDefaultAlias(parent, parentDTO.getDefaultAliases());
+		}
+
+		
+		if (parentDTO.getParentAliases() != null && !parentDTO.getParentAliases().isEmpty()){
+			parent = updateParentAliasSet(parent, parentDTO);
+		}
+		
+
+		if (parentValidationDTO.isParentUnique()){
+			parent.setModifiedDate(new Date());
+			parent.setModifiedBy(modifiedUser);
+			parent.merge();
+		}
+
+		return parent;
+	}
+
+
+	private Parent updateParentAliasSet(Parent parent, ParentEditDTO parentDTO) {
+		Set<ParentAliasDTO> parentDTOAliases = parentDTO.getParentAliases();
+		Map<String, ParentAliasDTO> parentDTOAliasMAP = new HashMap<String, ParentAliasDTO>();
+		for (ParentAliasDTO parentDTOAlias : parentDTOAliases){
+			parentDTOAliasMAP.put(parentDTOAlias.getAliasName(), parentDTOAlias);
+		}
+		
+		List<ParentAlias> parentAliases = ParentAlias.findParentAliasesByParent(parent).getResultList();
+		Map<String, ParentAlias> parentAliasMAP = new HashMap<String, ParentAlias>();
+		for (ParentAlias parentAlias : parentAliases){
+			parentAliasMAP.put(parentAlias.getAliasName(), parentAlias);
+		}
+		
+		if (parentAliases != null && !parentAliases.isEmpty()){
+			for (ParentAlias parentAlias : parentAliases){
+				if (!parentDTOAliasMAP.containsKey(parentAlias.getAliasName())){
+					parentAlias.setIgnored(true);
+					parentAlias.merge();						
+				}
+			}
+		}
+
+		Set<ParentAlias> newParentAliases = new HashSet<ParentAlias>();
+		for (ParentAliasDTO parentAliasDTO : parentDTO.getParentAliases()){
+			if (parentAliasMAP.containsKey(parentAliasDTO.getAliasName())){
+				
+			} else {
+				
+			}
+			ParentAlias newParentAlias = new ParentAlias();
+			newParentAlias.setAliasName(parentAliasDTO.getAliasName());
+			newParentAlias.setLsType(parentAliasDTO.getLsType());
+			newParentAlias.setLsKind(parentAliasDTO.getLsKind());
+			newParentAlias.setParent(parent);
+			newParentAlias.persist();
+			newParentAliases.add(newParentAlias);
+		}
+		
+		parent.setParentAliases(newParentAliases);
+		
+		return parent;
+	}
 
 }
 

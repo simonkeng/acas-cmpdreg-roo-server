@@ -1,6 +1,9 @@
 package com.labsynch.cmpdreg.service;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.LotAlias;
+import com.labsynch.cmpdreg.domain.Parent;
+import com.labsynch.cmpdreg.domain.ParentAlias;
 
 @Service
 public class LotAliasServiceImpl implements LotAliasService {
@@ -54,6 +59,58 @@ public class LotAliasServiceImpl implements LotAliasService {
 		return lot;
 	}
 
+	//update default lot aliases
+	@Override
+	public Lot updateLotDefaultAlias(Lot lot, String aliasList) {
+		String lsType = "default";
+		String lsKind = "default";
+		lot = updateLotAliasByTypeAndKind(lot, lsType, lsKind, aliasList);
+		return lot;
+	}
 	
+	@Override
+	public Lot updateLotAliasByTypeAndKind(Lot lot, String lsType, String lsKind, String aliasList) {
+		if (aliasList != null){
+			List<LotAlias> existingAliases = LotAlias.findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals(lot, lsType, lsKind).getResultList();
+			Map<String, LotAlias> existingAliasMap = new HashMap<String, LotAlias>();
+			for (LotAlias existingAlias : existingAliases){
+				existingAliasMap.put(existingAlias.getAliasName(), existingAlias);
+			}
+
+			Map<String, LotAlias> newAliasMap = new HashMap<String, LotAlias>();
+			Set<LotAlias> lotAliasSet = new HashSet<LotAlias>();
+			
+			String[] aliases = aliasList.split(";");
+			for (String alias : aliases){
+				if (!existingAliasMap.containsKey(alias)){
+					LotAlias lotAlias = new LotAlias();
+					lotAlias.setLsType(lsType);
+					lotAlias.setLsKind(lsKind);
+					lotAlias.setAliasName(alias);
+					lotAlias.setLot(lot);
+					lotAlias.persist();
+					lotAliasSet.add(lotAlias);
+					newAliasMap.put(lotAlias.getAliasName(), lotAlias);
+				} else {
+					lotAliasSet.add(existingAliasMap.get(alias));
+					newAliasMap.put(alias, existingAliasMap.get(alias));
+				}
+			}
+
+			for (String aliasKey : existingAliasMap.keySet()){
+				if (!newAliasMap.containsKey(aliasKey)){
+					//not present -- so marked to ignore
+					LotAlias queryAlias = existingAliasMap.get(aliasKey);
+					logger.info("current query alias: " + queryAlias);
+					queryAlias.setIgnored(true);
+					queryAlias.merge();
+				}
+			}
+
+			lot.setLotAliases(lotAliasSet);
+		}
+
+		return lot;
+	}
 }
 

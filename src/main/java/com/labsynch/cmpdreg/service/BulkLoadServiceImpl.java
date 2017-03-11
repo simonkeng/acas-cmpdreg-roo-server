@@ -537,7 +537,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				for (Parent foundParent : foundParents){
 					//same structure
 					boolean sameStereoCategory = (parent.getStereoCategory().getCode().equalsIgnoreCase(foundParent.getStereoCategory().getCode()));
-					boolean sameStereoComment = ((parent.getStereoComment() == null && foundParent.getStereoComment() == null)
+					boolean sameStereoComment = (((parent.getStereoComment() == null || parent.getStereoComment().length() < 1) && (foundParent.getStereoComment() == null || foundParent.getStereoComment().length() < 1))
 							|| (parent.getStereoComment() != null && foundParent.getStereoComment() != null && parent.getStereoComment().equalsIgnoreCase(foundParent.getStereoComment())));
 					boolean sameCorpName = (parent.getCorpName() != null && parent.getCorpName().equals(foundParent.getCorpName()));
 					boolean noCorpName = (parent.getCorpName() == null);
@@ -552,7 +552,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					}else if (sameStereoCategory & !sameStereoComment & sameCorpName & !noCorpName){
 						//stereo comment conflict for same corpName
 						logger.error("Mismatched stereo comments for same parent structure, stereo category and corp name! Corp name: "+parent.getCorpName()+" sdf stereo category: "+parent.getStereoCategory().getCode()+" sdf stereo comment: "+parent.getStereoComment()+" db stereo category: "+foundParent.getStereoCategory().getCode()+" db stereo comment: "+foundParent.getStereoComment());
-						throw new DupeParentException("Mismatched stereo categories for same parent structure and corp name!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
+						throw new DupeParentException("Mismatched stereo comments for same parent structure, stereo category and corp name!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
 					}else if (sameStereoCategory & !sameStereoComment & (!sameCorpName | noCorpName)){
 						//same stereo category, but different stereo comment => new parent
 						continue;
@@ -700,6 +700,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			lot.setLotNumber(0);
 		}else if (lot.getIsVirtual() != null && lot.getIsVirtual() == true){
 			throw new MissingPropertyException("Cannot register a virtual lot with lot number "+lot.getLotNumber() +". Try again with lot number = 0 for a virtual lot, or remove the isVirtual property if a non-virtual lot is desired.");
+		}else if (lot.getLotNumber() == -1){
+			lot.setLotNumber(lot.generateLotNumber());
 		}
 		if (mainConfig.getBulkLoadSettings().getUseProjectRoles()){
 			//check project is assigned and is in allowed list

@@ -3,10 +3,10 @@
 
 package com.labsynch.cmpdreg.web;
 
-import org.springframework.ui.Model;
-
 import com.labsynch.cmpdreg.domain.FileList;
 import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.web.FileListController;
+import org.springframework.ui.Model;
 
 privileged aspect FileListController_Roo_Controller {
     

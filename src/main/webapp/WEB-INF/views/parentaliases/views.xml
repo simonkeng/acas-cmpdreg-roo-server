@@ -22,4 +22,10 @@
 <definition extends="default" name="parentaliases/findParentAliasesByAliasNameEquals">
         <put-attribute name="body" value="/WEB-INF/views/parentaliases/findParentAliasesByAliasNameEquals.jspx"/>
     </definition>
+<definition extends="default" name="parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals.jspx"/>
+    </definition>
+<definition extends="default" name="parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals">
+        <put-attribute name="body" value="/WEB-INF/views/parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals.jspx"/>
+    </definition>
 </tiles-definitions>

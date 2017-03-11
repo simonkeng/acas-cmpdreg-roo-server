@@ -8,6 +8,8 @@ import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.gvnix.web.datatables.query.SearchResults;
 import org.gvnix.web.datatables.util.DatatablesUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,7 @@ import com.github.dandelion.datatables.core.ajax.DataSet;
 import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
 import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
 import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
+import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.path.PathBuilder;
@@ -35,7 +38,10 @@ import com.mysema.query.types.path.PathBuilder;
 @GvNIXDatatables(ajax = true)
 @RooWebFinder
 public class ParentAliasController {
-
+	
+    @Autowired
+    public ConversionService conversionService_dtt;
+    
     @RequestMapping(method = RequestMethod.POST, value = "{id}")
     public void post(@PathVariable Long id, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
     }
@@ -44,7 +50,6 @@ public class ParentAliasController {
     public String index() {
         return "parentalias/index";
     }
-    
     
     @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals", produces = "application/json")
     @ResponseBody
@@ -85,5 +90,87 @@ public class ParentAliasController {
     }
 
     
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByParentAndLsTypeEqualsAndLsKindEquals", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("parent") Parent parent, @RequestParam("lsType") String lsType, @RequestParam("lsKind") String lsKind) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<ParentAlias> entity = new PathBuilder<ParentAlias>(ParentAlias.class, "entity");
+        
+        if(parent != null){
+            baseSearch.and(entity.get("parent").eq(parent));
+        }else{
+            baseSearch.and(entity.get("parent").isNull());
+        }
+        if(lsType != null){
+            baseSearch.and(entity.getString("lsType").eq(lsType));
+        }else{
+            baseSearch.and(entity.getString("lsType").isNull());
+        }
+        if(lsKind != null){
+            baseSearch.and(entity.getString("lsKind").eq(lsKind));
+        }else{
+            baseSearch.and(entity.getString("lsKind").isNull());
+        }
+        
+        SearchResults<ParentAlias> searchResult = DatatablesUtils.findByCriteria(entity, ParentAlias.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
+    }
     
+    
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("parent") Parent parent, @RequestParam("lsType") String lsType, @RequestParam("lsKind") String lsKind, @RequestParam("aliasName") String aliasName) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<ParentAlias> entity = new PathBuilder<ParentAlias>(ParentAlias.class, "entity");
+        
+        if(parent != null){
+            baseSearch.and(entity.get("parent").eq(parent));
+        }else{
+            baseSearch.and(entity.get("parent").isNull());
+        }
+        if(lsType != null){
+            baseSearch.and(entity.getString("lsType").eq(lsType));
+        }else{
+            baseSearch.and(entity.getString("lsType").isNull());
+        }
+        if(lsKind != null){
+            baseSearch.and(entity.getString("lsKind").eq(lsKind));
+        }else{
+            baseSearch.and(entity.getString("lsKind").isNull());
+        }
+        if(aliasName != null){
+            baseSearch.and(entity.getString("aliasName").eq(aliasName));
+        }else{
+            baseSearch.and(entity.getString("aliasName").isNull());
+        }
+        
+        SearchResults<ParentAlias> searchResult = DatatablesUtils.findByCriteria(entity, ParentAlias.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
+    }
+
+   
 }

@@ -8,6 +8,14 @@ import java.util.Date;
 
 privileged aspect LotDTO_Roo_JavaBean {
     
+    public Long LotDTO.getId() {
+        return this.id;
+    }
+    
+    public void LotDTO.setId(Long id) {
+        this.id = id;
+    }
+    
     public Double LotDTO.getAbsorbance() {
         return this.absorbance;
     }
@@ -128,11 +136,11 @@ privileged aspect LotDTO_Roo_JavaBean {
         this.lotMolWeight = lotMolWeight;
     }
     
-    public int LotDTO.getLotNumber() {
+    public Integer LotDTO.getLotNumber() {
         return this.lotNumber;
     }
     
-    public void LotDTO.setLotNumber(int lotNumber) {
+    public void LotDTO.setLotNumber(Integer lotNumber) {
         this.lotNumber = lotNumber;
     }
     

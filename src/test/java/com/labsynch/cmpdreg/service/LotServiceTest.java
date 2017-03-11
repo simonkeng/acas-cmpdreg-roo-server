@@ -14,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.domain.LotAlias;
+import com.labsynch.cmpdreg.dto.LotDTO;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -28,6 +30,28 @@ public class LotServiceTest {
 	@Transactional
 	@Rollback(false)
 	@Test
+	public void updateLotMeta1(){
+		Lot lot = Lot.findLotsByCorpNameEquals("CMPD-0000001-001").getSingleResult();
+		LotDTO lotDTO = new LotDTO();
+		lotDTO.setLotCorpName(lot.getCorpName());
+		lotDTO.setColor("blue 103");
+		lotDTO.setBarcode("barcode TEST 102");
+		LotAlias lotAlias = new LotAlias();
+		lotAlias.setLsType("other name");
+		lotAlias.setLsKind("Lot Common Name");
+		lotAlias.setAliasName("test lot alias name 101");
+
+		//		lotDTO.setBarcode("");
+
+		Lot result = lotService.updateLotMeta(lotDTO, "cchemist");
+		logger.info(result.toJson());
+	}
+
+	
+	
+	@Transactional
+	@Rollback(false)
+//	@Test
 	public void updateSingleLotTest(){
 		Double originalLotWeight = Lot.findLot(20712L).getLotMolWeight();
 		Lot updatedLot = lotService.updateLotWeight(Lot.findLot(20712L));
