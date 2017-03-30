@@ -1101,7 +1101,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			stringVal = stringVal.replaceAll(regexMatch, "");
 			stringVal = stringVal.replaceAll("[^0-9.]+", "");			
 		} 
-		if (stringVal.length() < 1) stringVal = null;
+		if (stringVal != null && stringVal.length() < 1) stringVal = null;
 		Double value;
 		if (stringVal == null && mapping.getDefaultVal() != null && mapping.getDefaultVal().length() > 0) value = new Double(mapping.getDefaultVal());
 		else if (stringVal ==null) value = null;
