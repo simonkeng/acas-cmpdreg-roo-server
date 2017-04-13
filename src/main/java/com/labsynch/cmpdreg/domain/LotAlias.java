@@ -15,7 +15,9 @@ import com.labsynch.cmpdreg.exceptions.LotNotFoundException;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders={"findLotAliasesByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals", "findLotAliasesByLot"})
+@RooJpaActiveRecord(finders={"findLotAliasesByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals", 
+						     "findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals",
+							"findLotAliasesByLot"})
 public class LotAlias {
 
 	private static final Logger logger = LoggerFactory.getLogger(LotAlias.class);

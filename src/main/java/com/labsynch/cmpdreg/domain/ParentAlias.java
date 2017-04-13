@@ -15,7 +15,10 @@ import com.labsynch.cmpdreg.exceptions.ParentNotFoundException;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders={"findParentAliasesByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals", "findParentAliasesByParent", "findParentAliasesByAliasNameEquals"})
+@RooJpaActiveRecord(finders={"findParentAliasesByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals", 
+		"findParentAliasesByParent", "findParentAliasesByAliasNameEquals", 
+		"findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals",
+		"findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals"})
 public class ParentAlias {
 
 	private static final Logger logger = LoggerFactory.getLogger(ParentAlias.class);
@@ -38,8 +41,7 @@ public class ParentAlias {
 	
 	private Integer sortId;
 	
-    
-	
+
 	public ParentAlias(){
 	}
 	

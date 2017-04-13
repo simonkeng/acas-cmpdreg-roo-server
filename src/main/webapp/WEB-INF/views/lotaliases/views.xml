@@ -19,4 +19,7 @@
 <definition extends="default" name="lotaliases/findLotAliasesByLot">
         <put-attribute name="body" value="/WEB-INF/views/lotaliases/findLotAliasesByLot.jspx"/>
     </definition>
+<definition extends="default" name="lotaliases/findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals">
+        <put-attribute name="body" value="/WEB-INF/views/lotaliases/findLotAliasesByLotAndLsTypeEqualsAndLsKindEquals.jspx"/>
+    </definition>
 </tiles-definitions>

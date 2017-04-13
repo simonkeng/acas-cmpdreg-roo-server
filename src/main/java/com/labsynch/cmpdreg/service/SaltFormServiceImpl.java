@@ -103,7 +103,8 @@ public class SaltFormServiceImpl implements SaltFormService {
 		}
 		if (changedSaltForm){
 			if (mainConfig.getMetaLot().isSaltBeforeLot()){
-				//salt before lot - search for existing saltForms matching changed saltForm by set of isoSalts
+				// isSaltBeforeLot == true; Parent > SaltForm > Lot mode
+				//search for existing saltForms matching changed saltForm by set of isoSalts
 				boolean isNewSaltForm = true;
 				List<SaltForm> oldSaltForms = SaltForm.findSaltFormsByParent(parent).getResultList();
 				for (SaltForm oldSaltForm : oldSaltForms){
@@ -122,8 +123,7 @@ public class SaltFormServiceImpl implements SaltFormService {
 						saltForm.getLots().add(lot);
 						saltForm.merge();
 						break;
-					}
-					
+					}					
 				}
 				if (isNewSaltForm){
 					SaltForm newSaltForm = new SaltForm();
@@ -184,7 +184,8 @@ public class SaltFormServiceImpl implements SaltFormService {
 //					lot.merge();
 				}
 			}else{
-				//lot before salt - just update the saltForm in place
+				// isSaltBeforeLot == false; Parent > Lot mode
+				// just update the saltForm in place
 				logger.warn("SaltForm changed - updating saltForm and dependent lots");
 				double newTotalSaltWeight = 0;
 				for (IsoSalt isoSalt: isoSalts){
@@ -218,8 +219,12 @@ public class SaltFormServiceImpl implements SaltFormService {
 				Lot oldLot = Lot.findLot(lot.getId());
 				String oldLotCorpName = oldLot.getCorpName();
 				lot.setLotMolWeight(Lot.calculateLotMolWeight(oldLot));
-				lot.setCorpName(lot.generateCorpName());
-				String newLotCorpName = lot.getCorpName();
+				String newLotCorpName = oldLot.getCorpName();
+				if (!mainConfig.getServerSettings().getCorpBatchFormat().equalsIgnoreCase("cas_style_format")){
+					// if NOT cas_style lot corpName; generate a new lot corp name based on lot numbering
+					lot.setCorpName(lot.generateCorpName());
+					newLotCorpName = lot.getCorpName();
+				}
 				lot.merge();
 				if (!oldLotCorpName.equals(newLotCorpName)) changedLotCorpNameMessages.add(oldLotCorpName +" to "+newLotCorpName);
 				if (!changedLotCorpNameMessages.isEmpty()){

@@ -3,13 +3,13 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.FileList;
+import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.web.FileListController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.FileList;
-import com.labsynch.cmpdreg.domain.Lot;
 
 privileged aspect FileListController_Roo_Controller_Finder {
     
