@@ -344,6 +344,38 @@ privileged aspect LotDTO_Roo_JavaBean {
         this.synthesisDate = synthesisDate;
     }
     
+    public Double LotDTO.getTareWeight() {
+        return this.tareWeight;
+    }
+    
+    public void LotDTO.setTareWeight(Double tareWeight) {
+        this.tareWeight = tareWeight;
+    }
+    
+    public String LotDTO.getTareWeightUnitsCode() {
+        return this.tareWeightUnitsCode;
+    }
+    
+    public void LotDTO.setTareWeightUnitsCode(String tareWeightUnitsCode) {
+        this.tareWeightUnitsCode = tareWeightUnitsCode;
+    }
+    
+    public Double LotDTO.getTotalAmountStored() {
+        return this.totalAmountStored;
+    }
+    
+    public void LotDTO.setTotalAmountStored(Double totalAmountStored) {
+        this.totalAmountStored = totalAmountStored;
+    }
+    
+    public String LotDTO.getTotalAmountStoredUnitsCode() {
+        return this.totalAmountStoredUnitsCode;
+    }
+    
+    public void LotDTO.setTotalAmountStoredUnitsCode(String totalAmountStoredUnitsCode) {
+        this.totalAmountStoredUnitsCode = totalAmountStoredUnitsCode;
+    }
+    
     public String LotDTO.getVendorCode() {
         return this.vendorCode;
     }

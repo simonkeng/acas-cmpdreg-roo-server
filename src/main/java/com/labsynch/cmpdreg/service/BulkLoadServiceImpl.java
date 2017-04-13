@@ -767,6 +767,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setRetainLocation(getStringValueFromMappings(mol, "Lot Retain Location", mappings));
 		lot.setObservedMassOne(getNumericValueFromMappings(mol, "Lot Observed Mass #1", mappings));
 		lot.setObservedMassTwo(getNumericValueFromMappings(mol, "Lot Observed Mass #2", mappings));
+		lot.setTareWeight(getNumericValueFromMappings(mol, "Lot Tare Weight", mappings));
+		lot.setTotalAmountStored(getNumericValueFromMappings(mol, "Lot Total Amount Stored", mappings));
 
 		//conversions
 		lot.setIsVirtual(Boolean.valueOf(getStringValueFromMappings(mol, "Lot Is Virtual", mappings)));
@@ -825,6 +827,12 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			lookUpProperty = "Lot Solution Amount Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
 			if (lookUpString != null && lookUpString.length() > 0) lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByCodeEquals(lookUpString).getSingleResult());
+			lookUpProperty = "Lot Tare Weight Units";
+			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
+			if (lookUpString != null && lookUpString.length() > 0) lot.setTareWeightUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			lookUpProperty = "Lot Total Amount Stored Units";
+			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
+			if (lookUpString != null && lookUpString.length() > 0) lot.setTotalAmountStoredUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
 		}catch (Exception e){
 			logger.error("Caught error looking up lot property "+lookUpProperty+" with code "+lookUpString,e);
 			throw new Exception("An error has occurred looking up lot property "+lookUpProperty+" with code "+lookUpString);

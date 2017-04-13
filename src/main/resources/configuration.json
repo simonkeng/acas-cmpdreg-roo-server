@@ -14,11 +14,15 @@
     "marvin": {
         "marvinImplicitH": "heteroterm",
         "sketchBondLength": 20,
-        "delayShowStep2Next": 750
+        "delayShowStep2Next": 750,
+        "exportFormat": "mol"
     },
 	"regSearchResults": {
 		"hideVirtualOption": false
 	},
+    "searchForm": {
+        "defaultMaxResults": 100
+    },
     "metaLot": {
         "saltBeforeLot": false,
         "lotCalledBatch": false,
@@ -35,6 +39,7 @@
         "showSelectParentAnnotationList": true,
 	    "fileSaveDirNamedForBatchName": true,
 	    "useExactMass": true,
+        "useProjectRolesToRestrictLotDetails": false,
 		"disableAliasEdit": false
     },
     "serverSettings": {
@@ -105,6 +110,10 @@
 				{"name": "Lot Supplier Lot", "dataType": "string", "required": false},
 				{"name": "Lot Supplier", "dataType": "string", "required": false},
 				{"name": "Lot Synthesis Date", "dataType": "date", "required": false},
+                {"name": "Lot Tare Weight Units", "dataType": "string", "required": false},
+                {"name": "Lot Tare Weight", "dataType": "numeric", "required": false},
+                {"name": "Lot Total Amount Stored Units", "dataType": "string", "required": false},
+                {"name": "Lot Total Amount Stored", "dataType": "numeric", "required": false},
 				{"name": "Lot Vendor", "dataType": "string", "required": false},
 				{"name": "Parent Alias", "dateType": "string", "required": false},
 				{"name": "Parent Common Name", "dataType": "string", "required": false},
