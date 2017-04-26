@@ -1206,18 +1206,20 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public PurgeFileDependencyCheckResponseDTO checkPurgeFileDependencies(BulkLoadFile bulkLoadFile) {
 		Map<String, HashSet<String>> acasDependencies = new HashMap<String, HashSet<String>>();
 		Map<String, HashSet<String>> cmpdRegDependencies = new HashMap<String, HashSet<String>>();
+		HashSet<String> dependentSingleRegLots = new HashSet<String>();
 		//we make a map with a CorpName as each key, and a list of dependent CorpNames as each value
 		int numberOfParents = 0;
 		int numberOfSaltForms = 0;
 		int numberOfLots = 0;
 		Collection<Parent> parents = Parent.findParentsByBulkLoadFileEquals(bulkLoadFile).getResultList();
 		numberOfParents = parents.size();
+		String manuallyRegistered = "Manually Registered";
 		for (Parent parent: parents){
 			acasDependencies.put(parent.getCorpName(), new HashSet<String>());
 			if (parent.getSaltForms() != null){
 				for (SaltForm saltForm : parent.getSaltForms()){
 					acasDependencies.put(saltForm.getCorpName(), new HashSet<String>());
-					if (saltForm.getBulkLoadFile() != bulkLoadFile){
+					if (saltForm.getBulkLoadFile() != null &&saltForm.getBulkLoadFile() != bulkLoadFile){
 						if (cmpdRegDependencies.containsKey(parent.getCorpName())){
 							cmpdRegDependencies.get(parent.getCorpName()).add(saltForm.getBulkLoadFile().getFileName());
 						}
@@ -1230,7 +1232,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					if (saltForm.getLots() != null){
 						for (Lot lot : saltForm.getLots()){
 							acasDependencies.put(lot.getCorpName(), new HashSet<String>());
-							if (lot.getBulkLoadFile() != bulkLoadFile){
+							if (lot.getBulkLoadFile() == null){
+								dependentSingleRegLots.add(lot.getCorpName());
+							}else if (lot.getBulkLoadFile() != bulkLoadFile){
 								if (cmpdRegDependencies.containsKey(parent.getCorpName())){
 									cmpdRegDependencies.get(parent.getCorpName()).add(lot.getBulkLoadFile().getFileName());
 								}
@@ -1254,7 +1258,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			if (saltForm.getLots() != null){
 				for (Lot lot : saltForm.getLots()){
 					acasDependencies.put(lot.getCorpName(), new HashSet<String>());
-					if (lot.getBulkLoadFile() != bulkLoadFile){
+					if (lot.getBulkLoadFile() == null){
+						dependentSingleRegLots.add(lot.getCorpName());
+					}else if (lot.getBulkLoadFile() != bulkLoadFile){
 						if (cmpdRegDependencies.containsKey(saltForm.getCorpName())){
 							cmpdRegDependencies.get(saltForm.getCorpName()).add(lot.getBulkLoadFile().getFileName());
 						}
@@ -1299,8 +1305,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 		}
 		
-		if (!dependentFiles.isEmpty() || !dependentExperiments.isEmpty()){
-			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments);
+		if (!dependentFiles.isEmpty() || !dependentExperiments.isEmpty() || !dependentSingleRegLots.isEmpty()){
+			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments, dependentSingleRegLots);
 			return new PurgeFileDependencyCheckResponseDTO(summary, false);
 		}
 		else{
@@ -1326,7 +1332,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public String generateErrorCheckHtml(int numberOfParents,
 			int numberOfSaltForms, int numberOfLots,
 			HashSet<String> dependentFiles,
-			HashSet<String> dependentExperiments) {
+			HashSet<String> dependentExperiments, HashSet<String> dependentSingleRegLots) {
 		String summary = "<div>File cannot be purged.</div>";
 		summary+="<div style=\"margin-top:15px;\">";
 		summary+="<div>"+numberOfParents+" parent compounds were referenced."+"</div>";
@@ -1334,43 +1340,40 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		
 		boolean hasCmpdRegDependencies = !dependentFiles.isEmpty();
 		boolean hasAcasDependencies = !dependentExperiments.isEmpty();
-		if (hasCmpdRegDependencies || hasAcasDependencies){
+		boolean hasSingleRegDependencies = !dependentSingleRegLots.isEmpty();
+		if (hasCmpdRegDependencies || hasAcasDependencies || hasSingleRegDependencies){
 			summary+="<br>";
-			if (hasCmpdRegDependencies && hasAcasDependencies){
-				summary+= "<div>If you still want to purge this file, the following files must first be purged:</div>";
-				
+			summary+= "<div>If you still want to purge this file, the following must first be purged or deleted:</div>";
+			summary+="<br>";
+			if (hasCmpdRegDependencies){
+				summary+= "<div>Bulk loaded files:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
 				for (String dependent: dependentFiles){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
 				summary+="<br>";
-				summary+= "<div>The following ACAS experiments must also be purged:</div>";
+			}
+			if (hasAcasDependencies){
+				summary+= "<div>ACAS experiments:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
 				for (String dependent: dependentExperiments){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
-
+				summary+="<br>";
 			}
-			else if (hasCmpdRegDependencies){
-				summary+= "<div>If you still want to purge this file, the following files must first be purged:</div>";
+			if (hasSingleRegDependencies){
+				summary+= "<div>Manually registered lots:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
-				for (String dependent: dependentFiles){
+				for (String dependent: dependentSingleRegLots){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
+				summary+="<br>";
 			}
-			else if (hasAcasDependencies){
-				summary+= "<div>If you still want to purge this file, the following ACAS experiments must first be purged:</div>";
-				summary+="<div style=\"margin-left:15px;\">";
-				for (String dependent: dependentExperiments){
-						summary+= "<div>"+dependent+"</div>";
-				}
-				summary+="</div>";
-			}
-		}
 		summary+="</div>";
+		}
 
 		return summary;
 	}
