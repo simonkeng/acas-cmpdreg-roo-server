@@ -748,7 +748,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setNotebookPage(getStringValueFromMappings(mol, "Lot Notebook Page", mappings));
 		lot.setCorpName(getStringValueFromMappings(mol, "Lot Corp Name", mappings));
 		lot.setBarcode(getStringValueFromMappings(mol, "Lot Barcode", mappings));
-		lot.setColor(getStringValueFromMappings(mol, "Color", mappings));
+		lot.setColor(getStringValueFromMappings(mol, "Lot Color", mappings));
 		lot.setSupplier(getStringValueFromMappings(mol, "Lot Supplier", mappings));
 		lot.setSupplierID(getStringValueFromMappings(mol, "Lot Supplier ID", mappings));
 		lot.setComments(getStringValueFromMappings(mol, "Lot Comments", mappings));		
