@@ -1012,7 +1012,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lookUpStringList = getStringValuesFromMappings(mol, lookUpProperty, mappings);
 
 		if (lookUpStringList != null && !lookUpStringList.isEmpty()){
-			String aliasType = "external id";
+			String aliasType = "External ID";
 			String aliasKind = "LiveDesign Corp Name";
 			for (String lookUpStringEntry : lookUpStringList){
 				parent = addParentAlias(parent, aliasType, aliasKind, lookUpProperty, lookUpStringEntry);
@@ -1026,7 +1026,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lookUpStringList = getStringValuesFromMappings(mol, lookUpProperty, mappings);
 		if (lookUpStringList != null && !lookUpStringList.isEmpty()){
 			String aliasType = "other name";
-			String aliasKind = "Parent Common Name";
+			String aliasKind = "Common Name";
 			for (String lookUpStringEntry : lookUpStringList){
 				parent = addParentAlias(parent, aliasType, aliasKind, lookUpProperty, lookUpStringEntry);
 				logger.info("------------- adding alias set to the parent -------------------");
