@@ -9,7 +9,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(finders = { "findProjectsByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findProjectsByCodeEquals", "findProjectsByNameEquals" })
 @RooJson
 public class Project {
 

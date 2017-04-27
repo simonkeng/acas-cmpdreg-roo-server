@@ -3,9 +3,9 @@
 
 package com.labsynch.cmpdreg.web;
 
-import org.springframework.ui.Model;
-
 import com.labsynch.cmpdreg.domain.Isotope;
+import com.labsynch.cmpdreg.web.IsotopeController;
+import org.springframework.ui.Model;
 
 privileged aspect IsotopeController_Roo_Controller {
     

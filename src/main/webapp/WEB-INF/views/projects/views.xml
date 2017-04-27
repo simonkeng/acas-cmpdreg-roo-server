@@ -16,4 +16,7 @@
 <definition extends="default" name="projects/findProjectsByCodeEquals">
         <put-attribute name="body" value="/WEB-INF/views/projects/findProjectsByCodeEquals.jspx"/>
     </definition>
+<definition extends="default" name="projects/findProjectsByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/projects/findProjectsByNameEquals.jspx"/>
+    </definition>
 </tiles-definitions>

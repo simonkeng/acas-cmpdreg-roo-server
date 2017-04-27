@@ -19,4 +19,7 @@
 <definition extends="default" name="vendors/findVendorsByCodeLike">
         <put-attribute name="body" value="/WEB-INF/views/vendors/findVendorsByCodeLike.jspx"/>
     </definition>
+<definition extends="default" name="vendors/findVendorsByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/vendors/findVendorsByNameEquals.jspx"/>
+    </definition>
 </tiles-definitions>

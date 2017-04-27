@@ -803,39 +803,97 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			lookUpProperty = "Project";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
 			logger.info("Project lookup: " + lookUpString);
-			if (lookUpString != null && !lookUpString.equalsIgnoreCase("false") && lookUpString.length() > 0) lot.setProject(Project.findProjectsByCodeEquals(lookUpString).getSingleResult());
-
-			
+			if (lookUpString != null && !lookUpString.equalsIgnoreCase("false") && lookUpString.length() > 0){
+				try {
+					lot.setProject(Project.findProjectsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e) {
+					lot.setProject(Project.findProjectsByCodeEquals(lookUpString).getSingleResult());
+				}		
+			}
 			lookUpProperty = "Lot Purity Measured By";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByNameEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Physical State";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPhysicalState(PhysicalState.findPhysicalStatesByNameEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPhysicalState(PhysicalState.findPhysicalStatesByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPhysicalState(PhysicalState.findPhysicalStatesByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Vendor";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setVendor(Vendor.findVendorsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setVendor(Vendor.findVendorsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setVendor(Vendor.findVendorsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Purity Operator";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPurityOperator(Operator.findOperatorsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPurityOperator(Operator.findOperatorsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPurityOperator(Operator.findOperatorsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Amount Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setAmountUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setAmountUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setAmountUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Retain Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setRetainUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setRetainUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setRetainUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Solution Amount Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Tare Weight Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setTareWeightUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setTareWeightUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setTareWeightUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Total Amount Stored Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setTotalAmountStoredUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setTotalAmountStoredUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setTotalAmountStoredUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 		}catch (Exception e){
-			logger.error("Caught error looking up lot property "+lookUpProperty+" with code "+lookUpString,e);
-			throw new Exception("An error has occurred looking up lot property "+lookUpProperty+" with code "+lookUpString);
+			logger.error("Caught error looking up lot property "+lookUpProperty+" with name "+lookUpString,e);
+			throw new Exception("An error has occurred looking up lot property "+lookUpProperty+" with name "+lookUpString);
 		}
 
 		return lot;

@@ -19,4 +19,7 @@
 <definition extends="default" name="solutionunits/findSolutionUnitsByCodeLike">
         <put-attribute name="body" value="/WEB-INF/views/solutionunits/findSolutionUnitsByCodeLike.jspx"/>
     </definition>
+<definition extends="default" name="solutionunits/findSolutionUnitsByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/solutionunits/findSolutionUnitsByNameEquals.jspx"/>
+    </definition>
 </tiles-definitions>

@@ -3,12 +3,12 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.Isotope;
+import com.labsynch.cmpdreg.web.IsotopeController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.Isotope;
 
 privileged aspect IsotopeController_Roo_Controller_Finder {
     

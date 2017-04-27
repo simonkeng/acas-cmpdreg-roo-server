@@ -3,9 +3,9 @@
 
 package com.labsynch.cmpdreg.web;
 
-import org.springframework.ui.Model;
-
 import com.labsynch.cmpdreg.domain.PhysicalState;
+import com.labsynch.cmpdreg.web.PhysicalStateController;
+import org.springframework.ui.Model;
 
 privileged aspect PhysicalStateController_Roo_Controller {
     
