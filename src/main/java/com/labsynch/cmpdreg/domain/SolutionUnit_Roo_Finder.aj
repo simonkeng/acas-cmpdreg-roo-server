@@ -32,6 +32,14 @@ privileged aspect SolutionUnit_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long SolutionUnit.countFindSolutionUnitsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = SolutionUnit.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM SolutionUnit AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<SolutionUnit> SolutionUnit.findSolutionUnitsByCodeEquals(String code) {
         if (code == null || code.length() == 0) throw new IllegalArgumentException("The code argument is required");
         EntityManager em = SolutionUnit.entityManager();
@@ -89,6 +97,29 @@ privileged aspect SolutionUnit_Roo_Finder {
         }
         TypedQuery<SolutionUnit> q = em.createQuery(queryBuilder.toString(), SolutionUnit.class);
         q.setParameter("code", code);
+        return q;
+    }
+    
+    public static TypedQuery<SolutionUnit> SolutionUnit.findSolutionUnitsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = SolutionUnit.entityManager();
+        TypedQuery<SolutionUnit> q = em.createQuery("SELECT o FROM SolutionUnit AS o WHERE o.name = :name", SolutionUnit.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<SolutionUnit> SolutionUnit.findSolutionUnitsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = SolutionUnit.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM SolutionUnit AS o WHERE o.name = :name");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<SolutionUnit> q = em.createQuery(queryBuilder.toString(), SolutionUnit.class);
+        q.setParameter("name", name);
         return q;
     }
     

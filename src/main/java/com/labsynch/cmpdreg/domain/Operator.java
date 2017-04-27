@@ -10,7 +10,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findOperatorsByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findOperatorsByCodeEquals", "findOperatorsByNameEquals" })
 public class Operator {
 
     @Size(max = 255)

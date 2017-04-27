@@ -10,7 +10,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findUnitsByCodeLike", "findUnitsByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findUnitsByCodeLike", "findUnitsByCodeEquals", "findUnitsByNameEquals" })
 public class Unit {
 
     @Size(max = 255)

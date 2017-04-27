@@ -21,12 +21,14 @@
             <menu:item id="i_operator_new" messageCode="global_menu_new" url="/operators?form" z="348aQG/OMwcpfhf4YOVFumU9lXA="/>
             <menu:item id="i_operator_list" messageCode="global_menu_list" url="/operators?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Tz16FblnAMkG7trnwdzRokFAC6Q="/>
             <menu:item id="fi_operator_codeequals" messageCode="global_menu_find" url="/operators?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8JL8+ru+gaX6YnBv8HM6rnGGiS4="/>
+            <menu:item id="fi_operator_nameequals" messageCode="global_menu_find" url="/operators?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="bIX2Qy9BpJdrEGhcRr1Gyk8yJjs="/>
         </menu:category>
         <menu:category id="c_unit" render="false" z="user-managed">
             <menu:item id="i_unit_new" messageCode="global_menu_new" url="/units?form" z="oJDJNzw0PlIDkMTtID4g4gvkhTY="/>
             <menu:item id="i_unit_list" messageCode="global_menu_list" url="/units?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mqpJPY7uCke3Lrgup34MXG8RkII="/>
             <menu:item id="fi_unit_codeequals" messageCode="global_menu_find" url="/units?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="xzoRz0OblHLuU4iTtHXl8gW4KSw="/>
             <menu:item id="fi_unit_codelike" messageCode="global_menu_find" url="/units?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TzatNt6rvhoNHOC20qBZYtMdPrI="/>
+            <menu:item id="fi_unit_nameequals" messageCode="global_menu_find" url="/units?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="o2gi8NzDUmgaOITtqSdxG9dxnOU="/>
         </menu:category>
         <menu:category id="c_scientist" render="false" z="user-managed">
             <menu:item id="i_scientist_new" messageCode="global_menu_new" url="/scientists?form" z="wAgAaplPP7T9G7eBgiZTqiTx1eo="/>
@@ -45,6 +47,7 @@
             <menu:item id="i_solutionunit_list" messageCode="global_menu_list" url="/solutionunits?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Xxov5+isHXigALbrAFg10eGgpiI="/>
             <menu:item id="fi_solutionunit_codeequals" messageCode="global_menu_find" url="/solutionunits?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="geMzrw9gFm8et/nRkHhRERN+vUA="/>
             <menu:item id="fi_solutionunit_codelike" messageCode="global_menu_find" url="/solutionunits?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="7yQAqNl7Bi8wcDUW4MrKqpUHhEg="/>
+            <menu:item id="fi_solutionunit_nameequals" messageCode="global_menu_find" url="/solutionunits?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="jJhSmPzvCvNOtGYQRO4iYyxNJg0="/>
         </menu:category>
         <menu:category id="c_physicalstate" render="false" z="user-managed">
             <menu:item id="i_physicalstate_new" messageCode="global_menu_new" url="/physicalstates?form" z="lOaDCAIsIIPTDCFlzMgIFHDmVWo="/>
@@ -88,6 +91,7 @@
             <menu:item id="i_project_new" messageCode="global_menu_new" url="/projects?form" z="1BazRC1rLnod0a+MpP1flWTvehA="/>
             <menu:item id="i_project_list" messageCode="global_menu_list" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}" z="GHL05c3Rvr+eKDgRCk3Ttak0W+g="/>
             <menu:item id="fi_project_codeequals" messageCode="global_menu_find" url="/projects?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hbu4dPmttz2ZEHz5IRca2M3IJkc="/>
+            <menu:item id="fi_project_nameequals" messageCode="global_menu_find" url="/projects?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="PHoLE7CPDTBCaBBKL2bhgv2/wQg="/>
         </menu:category>
         <menu:category id="c_filelist" render="false" z="user-managed">
             <menu:item id="i_filelist_new" messageCode="global_menu_new" url="/filelists?form" z="T5zFpWbm4xPcs0m2oX0k7C0CCJw="/>
@@ -100,6 +104,7 @@
             <menu:item id="i_vendor_list" messageCode="global_menu_list" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}" z="PaHIFalbQwm47Wrz8iGe8DCcyXI="/>
             <menu:item id="fi_vendor_codeequals" messageCode="global_menu_find" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="69IaDPJSu71IVkN+va/S676ad1k="/>
             <menu:item id="fi_vendor_codelike" messageCode="global_menu_find" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="F5O/oxpbL9hdNr/GN/OwdQ5No8M="/>
+            <menu:item id="fi_vendor_nameequals" messageCode="global_menu_find" url="/vendors?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="a/DllJTHIcCZkLeDzkP9ZBAMzM8="/>
         </menu:category>
         <menu:category id="c_puritymeasuredby" render="false" z="user-managed">
             <menu:item id="i_puritymeasuredby_new" messageCode="global_menu_new" url="/puritymeasuredbys?form" z="tvshqP/oDSgqHaraSA/XFTHK7Zg="/>
@@ -133,12 +138,15 @@
             <menu:item id="fi_parentalias_aliasnameequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="rRE78zjA6mg+IWAAPMfjS7xS65U="/>
             <menu:item id="fi_parentalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="9zt66MzfFVmkN9mRuvm16RCe20s="/>
             <menu:item id="fi_parentalias_parent" messageCode="global_menu_find" url="/parentaliases?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TeasU75mfP4kzPs2h9Tw8q6allY="/>
+            <menu:item id="fi_parentalias_parentandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="HsxduslvcwnYrW81fGXY2H5PH6U="/>
+            <menu:item id="fi_parentalias_parentandlstypeequalsandlskindequalsandaliasnameequals" messageCode="global_menu_find" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="LpE4fCHUJThaxQItTfolHiRT9lA="/>
         </menu:category>
         <menu:category id="c_lotalias" render="false" z="user-managed">
             <menu:item id="i_lotalias_new" messageCode="global_menu_new" url="/lotaliases?form" z="7b7Z7gKs6/AHbRn1Y42KyALCZ9E="/>
             <menu:item id="i_lotalias_list" messageCode="global_menu_list" url="/lotaliases?page=1&amp;size=${empty param.size ? 10 : param.size}" z="tcQ2uLs/U2jHGEJfw4ygmyp49Kg="/>
             <menu:item id="fi_lotalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/lotaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="RnL4u288C415TNmFj1z/1XD7n1c="/>
             <menu:item id="fi_lotalias_lot" messageCode="global_menu_find" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hPeHvSNu9h5nWZ0LtatTsO0IOM4="/>
+            <menu:item id="fi_lotalias_lotandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/lotaliases?find=ByLotAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="CCTH5NRVbhe+YM52CNdiZFGhs3U="/>
         </menu:category>
         <menu:category id="c_lotaliaskind" render="false" z="user-managed">
             <menu:item id="i_lotaliaskind_new" messageCode="global_menu_new" url="/lotaliaskinds?form" z="70JcpgQKJnM1f+bosxXSp1N2uUQ="/>
