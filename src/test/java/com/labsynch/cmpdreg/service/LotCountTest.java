@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,24 +26,27 @@ public class LotCountTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(LotCountTest.class);
 
-//	@Before
-//	public void loginTestUser() {
-//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("cchemist", "cchemist"));
-//	}
+	@Autowired
+	private LotService lotService;
 
-	@Test
+	//	@Before
+	//	public void loginTestUser() {
+	//		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("cchemist", "cchemist"));
+	//	}
+
+	//	@Test
 	@Transactional
 	public void countLotBySaltFormTest(){
 		String corpName = "CMPD-587526";
 		List<SaltForm> saltForms = SaltForm.findSaltFormsByCorpNameEquals(corpName).getResultList();
 		logger.debug("total number of saltForms found: " + saltForms.size());
-		
+
 		Parent parent2 = Parent.findParent(5110L);
 		logger.debug("here is paren2: " + parent2.getCorpName());
 		Integer maxParentLot2 = Lot.getMaxParentLotNumber(parent2);
 		logger.debug("max lot number by parent2: " + maxParentLot2);	
-		
-		
+
+
 		if (saltForms.size() > 1){
 			SaltForm saltForm = saltForms.get(0);
 			if (saltForm != null){
@@ -50,7 +54,7 @@ public class LotCountTest {
 			} else {
 				logger.debug("saltForm is null");
 			}
-			
+
 			Integer maxSaltFormLot = Lot.getMaxSaltFormLotNumber(saltForm);
 			logger.debug("max lot number by saltForm: " + maxSaltFormLot);
 
@@ -67,7 +71,26 @@ public class LotCountTest {
 
 	}
 
+	@Test
+	@Transactional
+	public void countLotByParentTest(){
+		String parentCorpName = "CMPD-0000008";
+		Parent adoptiveParent = Parent.findParentsByCorpNameEquals(parentCorpName).getSingleResult();
+		logger.info("Found parent:  " + adoptiveParent.toJson());
 
+		//broken -- need to fix
+		Integer maxParentLot = Lot.getMaxParentLotNumber(adoptiveParent);
+		logger.info("max lot number by parent: " + maxParentLot);			
+	}
 
-
+	@Test
+	@Transactional
+	public void reParentLotTest(){
+		String lotCorpName = "CMPD-0000009-003";
+		String parentCorpName = "CMPD-0000008";
+		String modifiedByUser = "bob";
+		Lot adoptedLot = lotService.reparentLot(lotCorpName, parentCorpName, modifiedByUser);
+		logger.info(adoptedLot.toJson());			
+	}
+	
 }
