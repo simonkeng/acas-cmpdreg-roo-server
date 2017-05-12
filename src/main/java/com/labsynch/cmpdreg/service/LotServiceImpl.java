@@ -65,10 +65,15 @@ public class LotServiceImpl implements LotService {
 		// incoming lot
 		// name of new adoptive parent
 		// logic to deal with lot numbering  -- just increment existing lot number of adoptive parent
+		// note -- need to refactor to deal with more complicated parent/SaltForm/lot setups versus simpler parent/lot
 
 		Scientist modifiedUser = Scientist.checkValidUser(modifiedByUser);		
 
 		Parent adoptiveParent = Parent.findParentsByCorpNameEquals(parentCorpName).getSingleResult();
+		//renumber lot -- just increment to next number
+		Integer newLotNumber = Lot.getMaxParentLotNumber(adoptiveParent)+1;
+		logger.debug("next lot number for adoptive parent: " + newLotNumber);
+		
 		Lot queryLot = Lot.findLotsByCorpNameEquals(lotCorpName).getSingleResult();
 
 		//associate saltForm to new adoptive parent
@@ -80,11 +85,9 @@ public class LotServiceImpl implements LotService {
 		// recalculate salt form weight
 		saltFormService.updateSaltWeight(saltForm);
 
-		//renumber lot -- just increment to next number
-		Integer newLotNumber = Lot.getMaxParentLotNumber(adoptiveParent)+1;
-		//		queryLot.setLotNumber(queryLot.generateLotNumber());
+		logger.debug("new lot number before merge: " + newLotNumber);
 		queryLot.setLotNumber(newLotNumber);
-		logger.info("new lot number: " + queryLot.getLotNumber());
+		logger.debug("new lot number: " + queryLot.getLotNumber());
 		
 		//rename lot corp name if not cas style
 		MainConfigDTO mainConfig = Configuration.getConfigInfo();
