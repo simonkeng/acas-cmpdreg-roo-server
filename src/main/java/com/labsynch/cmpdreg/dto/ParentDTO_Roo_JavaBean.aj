@@ -14,11 +14,11 @@ import java.util.Set;
 
 privileged aspect ParentDTO_Roo_JavaBean {
     
-    public long ParentDTO.getId() {
+    public Long ParentDTO.getId() {
         return this.id;
     }
     
-    public void ParentDTO.setId(long id) {
+    public void ParentDTO.setId(Long id) {
         this.id = id;
     }
     

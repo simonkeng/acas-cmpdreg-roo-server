@@ -43,6 +43,8 @@ import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
+import flexjson.JSONSerializer;
+
 @Transactional
 @RooJavaBean
 @RooToString
@@ -205,6 +207,16 @@ public class Lot {
     
     private Double observedMassTwo;
     
+    private Double tareWeight;
+    
+    @ManyToOne
+    private Unit tareWeightUnits;
+    
+    private Double totalAmountStored;
+    
+    @ManyToOne
+    private Unit totalAmountStoredUnits;
+    
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "lot", fetch = FetchType.LAZY)
 	private Set<LotAlias> lotAliases = new HashSet<LotAlias>();
     
@@ -267,6 +279,65 @@ public class Lot {
         }
         return corpName;
     }
+    
+    public int generateLotNumber() {
+        MainConfigDTO mainConfig = Configuration.getConfigInfo();
+
+        int lotNumber = 0;
+        if (mainConfig.getMetaLot().isSaltBeforeLot()) {
+        	lotNumber = generateSaltFormLotNumber();
+        } else {
+        	lotNumber = generateParentLotNumber();
+        }
+        return lotNumber;
+    }
+    
+    private int generateParentLotNumber(){
+    	//set lot number
+		int lotNumber = this.getLotNumber();
+        if (this.getIsVirtual()) {
+            lotNumber = 0;
+        } else {
+        	if (this.lotNumber > 0){
+        		lotNumber = this.lotNumber;
+        	}else{
+        		int lotCount = 0;
+        		if (this.getParent().getId() == null){
+        			logger.debug("Setting lotCount of new parent = 0");
+        		}else if (Lot.getMaxParentLotNumber(this.getParent()) == null) {
+                    logger.debug("this is a null pointer exception. Set lotCount = 0");
+                } else {
+                    lotCount = Lot.getMaxParentLotNumber(this.getParent());
+                }
+                logger.debug("Lot Count = " + lotCount);
+                lotNumber = lotCount + 1;
+        	}
+        }
+        logger.debug("Lot Number = " + lotNumber);
+        return lotNumber;
+    }
+    
+    private int generateSaltFormLotNumber(){
+    	int lotNumber = 0;
+        if (this.getIsVirtual()) {
+            lotNumber = 0;
+        } else {
+        	if (this.lotNumber > 0){
+        		lotNumber = this.lotNumber;
+        	}else{
+        		 int lotCount = 0;
+                 if (Lot.getMaxSaltFormLotNumber(this.getSaltForm()) == null) {
+                     logger.error("this is a null pointer exception. Set lotCount = 0");
+                 } else {
+                     lotCount = Lot.getMaxSaltFormLotNumber(this.getSaltForm());
+                 }
+                 logger.debug("Lot Count = " + lotCount);
+                 lotNumber = lotCount + 1;
+        	}
+        }
+        logger.debug("Lot Number = " + lotNumber);
+        return lotNumber;
+    }
 
     public String generateCasStyleLotName() {
     	List seqList = generateCustomLotSequence();
@@ -290,24 +361,7 @@ public class Lot {
 		logger.info(lotName);
 
 		//set lot number
-		int lotNumber = this.getLotNumber();
-        if (this.getIsVirtual()) {
-            lotNumber = 0;
-        } else {
-        	if (this.lotNumber > 0){
-        		lotNumber = this.lotNumber;
-        	}else{
-        		int lotCount = 0;
-                if (Lot.getMaxParentLotNumber(this.getParent()) == null) {
-                    logger.debug("this is a null pointer exception. Set lotCount = 0");
-                } else {
-                    lotCount = Lot.getMaxParentLotNumber(this.getParent());
-                }
-                logger.debug("Lot Count = " + lotCount);
-                lotNumber = lotCount + 1;
-        	}
-        }
-        logger.debug("Lot Number = " + lotNumber);
+		int lotNumber = this.generateParentLotNumber();
         this.setLotNumber(lotNumber);
 		
     	return lotName;
@@ -317,24 +371,7 @@ public class Lot {
         logger.debug("generating the new lot corp name");
         corpName = this.getSaltForm().getParent().getCorpName();
         logger.debug("Parent corpName = " + corpName);
-        int lotNumber = this.getLotNumber();
-        if (this.getIsVirtual()) {
-            lotNumber = 0;
-        } else {
-        	if (this.lotNumber > 0){
-        		lotNumber = this.lotNumber;
-        	}else{
-        		int lotCount = 0;
-                if (Lot.getMaxParentLotNumber(this.getParent()) == null) {
-                    logger.debug("this is a null pointer exception. Set lotCount = 0");
-                } else {
-                    lotCount = Lot.getMaxParentLotNumber(this.getParent());
-                }
-                logger.debug("Lot Count = " + lotCount);
-                lotNumber = lotCount + 1;
-        	}
-        }
-        logger.debug("Lot Number = " + lotNumber);
+        int lotNumber = this.generateParentLotNumber();
         this.setLotNumber(lotNumber);
         
         if (formatBatchDigits == 0){
@@ -380,24 +417,7 @@ public class Lot {
 	private String generateSaltFormLotName() {
         corpName = this.getSaltForm().getCorpName();
         logger.debug("Salt corpName = " + corpName);
-        int lotNumber = 0;
-        if (this.getIsVirtual()) {
-            lotNumber = 0;
-        } else {
-        	if (this.lotNumber > 0){
-        		lotNumber = this.lotNumber;
-        	}else{
-        		 int lotCount = 0;
-                 if (Lot.getMaxSaltFormLotNumber(this.getSaltForm()) == null) {
-                     logger.error("this is a null pointer exception. Set lotCount = 0");
-                 } else {
-                     lotCount = Lot.getMaxSaltFormLotNumber(this.getSaltForm());
-                 }
-                 logger.debug("Lot Count = " + lotCount);
-                 lotNumber = lotCount + 1;
-        	}
-        }
-        logger.debug("Lot Number = " + lotNumber);
+        int lotNumber = this.generateSaltFormLotNumber();
         this.setLotNumber(lotNumber);
         
         String batchFormat = "%0"+ formatBatchDigits + "d";
@@ -706,4 +726,11 @@ public class Lot {
         
         return q;
     }
+    
+    public String toJsonIncludeAliases() {
+        return new JSONSerializer()
+        		.include("lotAliases")
+        .exclude("*.class").serialize(this);
+    }
+    
 }

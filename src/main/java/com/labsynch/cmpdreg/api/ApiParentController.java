@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
-import com.labsynch.cmpdreg.dto.ParentDTO;
+import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.service.ParentService;
+import com.labsynch.cmpdreg.utils.SecurityUtil;
 
 @RequestMapping(value = {"/api/v1/parents"})
 @Controller
@@ -153,4 +154,35 @@ public class ApiParentController {
 	}
 	
 
+	@RequestMapping(value = "/updateParent/metadata/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> updateParentMetaArray(@RequestBody String json){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+		try{
+			String modifiedByUser = SecurityUtil.getLoginUser().getCode();
+			String results = parentService.updateParentMetaArray(json, modifiedByUser);
+			return new ResponseEntity<String>(results, headers, HttpStatus.OK);
+		}catch(Exception e){
+			logger.error("Caught error trying to update parent",e);
+			return new ResponseEntity<String>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Transactional
+	@RequestMapping(value = "/updateParent/metadata", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> updateParentMeta(@RequestBody String json){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+		try{
+			String modifiedByUser = SecurityUtil.getLoginUser().getCode();
+			ParentEditDTO parentDTO = ParentEditDTO.fromJsonToParentEditDTO(json);
+			Parent parent = parentService.updateParentMeta(parentDTO, modifiedByUser);
+			return new ResponseEntity<String>(parent.toJson(), headers, HttpStatus.OK);
+		}catch(Exception e){
+			logger.error("Caught error trying to update parent",e);
+			return new ResponseEntity<String>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

@@ -19,4 +19,7 @@
 <definition extends="default" name="units/findUnitsByCodeLike">
         <put-attribute name="body" value="/WEB-INF/views/units/findUnitsByCodeLike.jspx"/>
     </definition>
+<definition extends="default" name="units/findUnitsByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/units/findUnitsByNameEquals.jspx"/>
+    </definition>
 </tiles-definitions>

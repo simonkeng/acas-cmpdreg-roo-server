@@ -1,6 +1,8 @@
 package com.labsynch.cmpdreg.dto;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
@@ -25,6 +27,7 @@ import com.labsynch.cmpdreg.domain.SaltForm;
 //@RooEntity
 @RooJson
 public class LotDTO {
+	private Long id;
 	private Double absorbance;
 	private Double amount;
 	private String amountUnitsCode;
@@ -40,7 +43,7 @@ public class LotDTO {
 	private Double lambda;
 	private String lotAliases;
 	private Double lotMolWeight;
-	private int lotNumber;
+	private Integer lotNumber;
 	private Double meltingPoint;
 	private String modifiedBy;
 	private Date modifiedDate;
@@ -66,6 +69,10 @@ public class LotDTO {
 	private String supplierID;
 	private String supplierLot;
 	private Date synthesisDate;
+	private Double tareWeight;
+	private String tareWeightUnitsCode;
+	private Double totalAmountStored;
+	private String totalAmountStoredUnitsCode;
 	private String vendorCode;
 	private String saltFormCorpName;
 	private String casNumber;
@@ -89,8 +96,11 @@ public class LotDTO {
 	private String parentCompoundTypeCode;
 	private String parentComment;
 	private Boolean parentIsMixture;
+//	private Set<LotAliasDTO> lotAliasSet = new HashSet<LotAliasDTO>();
+
 	
 	public LotDTO(Lot lot){
+		if (lot.getId() != null) this.id = lot.getId();
 		this.absorbance = lot.getAbsorbance();
 		this.amount = lot.getAmount();
 		if (lot.getAmountUnits() != null) this.amountUnitsCode = lot.getAmountUnits().getCode();
@@ -112,6 +122,8 @@ public class LotDTO {
 		this.observedMassOne = lot.getObservedMassOne();
 		this.observedMassTwo = lot.getObservedMassTwo();
 		this.notebookPage = lot.getNotebookPage();
+		this.observedMassOne = lot.getObservedMassOne();
+		this.observedMassTwo = lot.getObservedMassTwo();
 		this.percentEE = lot.getPercentEE();
 		if (lot.getPhysicalState() != null) this.physicalStateCode = lot.getPhysicalState().getCode();
 		if (lot.getProject() != null) this.project = lot.getProject().getCode();
@@ -131,6 +143,10 @@ public class LotDTO {
 		this.supplierID = lot.getSupplierID();
 		this.supplierLot = lot.getSupplierLot();
 		this.synthesisDate = lot.getSynthesisDate();
+		this.tareWeight = lot.getTareWeight();
+		if (lot.getTareWeightUnits() != null) this.tareWeightUnitsCode = lot.getTareWeightUnits().getCode();
+		this.totalAmountStored = lot.getTotalAmountStored();
+		if (lot.getTotalAmountStoredUnits() != null) this.totalAmountStoredUnitsCode = lot.getTotalAmountStoredUnits().getCode();
 		if (lot.getVendor() != null) this.vendorCode = lot.getVendor().getCode();
 		if (!lot.getLotAliases().isEmpty()){
 			String lotAliases = "";
@@ -182,5 +198,9 @@ public class LotDTO {
 		if (parent.getCompoundType() != null) this.parentCompoundTypeCode = parent.getCompoundType().getCode();
 		this.parentComment = parent.getComment();
 		
+	}
+
+	public LotDTO() {
+		// Empty constructor
 	}
 }

@@ -34,11 +34,11 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.dto.SearchFormDTO;
+
 import chemaxon.formats.MolFormatException;
 import chemaxon.struc.Molecule;
 import chemaxon.util.MolHandler;
-
-import com.labsynch.cmpdreg.dto.SearchFormDTO;
 
 @Transactional
 @RooJavaBean
@@ -289,6 +289,8 @@ public class Parent {
 		return parentCdIds;
 	}
 
+
+    
 	public static Parent update(Parent inputParent) {
 		Parent parent = Parent.findParent(inputParent.getId());
 		parent.setChemist(inputParent.getChemist());

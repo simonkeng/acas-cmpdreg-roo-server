@@ -3,8 +3,6 @@
 
 package com.labsynch.cmpdreg.web;
 
-import org.springframework.ui.Model;
-
 import com.labsynch.cmpdreg.domain.BulkLoadFile;
 import com.labsynch.cmpdreg.domain.CompoundType;
 import com.labsynch.cmpdreg.domain.Parent;
@@ -13,6 +11,8 @@ import com.labsynch.cmpdreg.domain.ParentAnnotation;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.domain.StereoCategory;
+import com.labsynch.cmpdreg.web.ParentController;
+import org.springframework.ui.Model;
 
 privileged aspect ParentController_Roo_Controller {
     

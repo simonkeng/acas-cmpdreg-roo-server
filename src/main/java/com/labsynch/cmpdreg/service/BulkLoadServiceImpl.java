@@ -537,7 +537,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				for (Parent foundParent : foundParents){
 					//same structure
 					boolean sameStereoCategory = (parent.getStereoCategory().getCode().equalsIgnoreCase(foundParent.getStereoCategory().getCode()));
-					boolean sameStereoComment = ((parent.getStereoComment() == null && foundParent.getStereoComment() == null)
+					boolean sameStereoComment = (((parent.getStereoComment() == null || parent.getStereoComment().length() < 1) && (foundParent.getStereoComment() == null || foundParent.getStereoComment().length() < 1))
 							|| (parent.getStereoComment() != null && foundParent.getStereoComment() != null && parent.getStereoComment().equalsIgnoreCase(foundParent.getStereoComment())));
 					boolean sameCorpName = (parent.getCorpName() != null && parent.getCorpName().equals(foundParent.getCorpName()));
 					boolean noCorpName = (parent.getCorpName() == null);
@@ -552,7 +552,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					}else if (sameStereoCategory & !sameStereoComment & sameCorpName & !noCorpName){
 						//stereo comment conflict for same corpName
 						logger.error("Mismatched stereo comments for same parent structure, stereo category and corp name! Corp name: "+parent.getCorpName()+" sdf stereo category: "+parent.getStereoCategory().getCode()+" sdf stereo comment: "+parent.getStereoComment()+" db stereo category: "+foundParent.getStereoCategory().getCode()+" db stereo comment: "+foundParent.getStereoComment());
-						throw new DupeParentException("Mismatched stereo categories for same parent structure and corp name!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
+						throw new DupeParentException("Mismatched stereo comments for same parent structure, stereo category and corp name!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
 					}else if (sameStereoCategory & !sameStereoComment & (!sameCorpName | noCorpName)){
 						//same stereo category, but different stereo comment => new parent
 						continue;
@@ -700,6 +700,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			lot.setLotNumber(0);
 		}else if (lot.getIsVirtual() != null && lot.getIsVirtual() == true){
 			throw new MissingPropertyException("Cannot register a virtual lot with lot number "+lot.getLotNumber() +". Try again with lot number = 0 for a virtual lot, or remove the isVirtual property if a non-virtual lot is desired.");
+		}else if (lot.getLotNumber() == -1){
+			lot.setLotNumber(lot.generateLotNumber());
 		}
 		if (mainConfig.getBulkLoadSettings().getUseProjectRoles()){
 			//check project is assigned and is in allowed list
@@ -746,7 +748,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setNotebookPage(getStringValueFromMappings(mol, "Lot Notebook Page", mappings));
 		lot.setCorpName(getStringValueFromMappings(mol, "Lot Corp Name", mappings));
 		lot.setBarcode(getStringValueFromMappings(mol, "Lot Barcode", mappings));
-		lot.setColor(getStringValueFromMappings(mol, "Color", mappings));
+		lot.setColor(getStringValueFromMappings(mol, "Lot Color", mappings));
 		lot.setSupplier(getStringValueFromMappings(mol, "Lot Supplier", mappings));
 		lot.setSupplierID(getStringValueFromMappings(mol, "Lot Supplier ID", mappings));
 		lot.setComments(getStringValueFromMappings(mol, "Lot Comments", mappings));		
@@ -765,6 +767,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setRetainLocation(getStringValueFromMappings(mol, "Lot Retain Location", mappings));
 		lot.setObservedMassOne(getNumericValueFromMappings(mol, "Lot Observed Mass #1", mappings));
 		lot.setObservedMassTwo(getNumericValueFromMappings(mol, "Lot Observed Mass #2", mappings));
+		lot.setTareWeight(getNumericValueFromMappings(mol, "Lot Tare Weight", mappings));
+		lot.setTotalAmountStored(getNumericValueFromMappings(mol, "Lot Total Amount Stored", mappings));
 
 		//conversions
 		lot.setIsVirtual(Boolean.valueOf(getStringValueFromMappings(mol, "Lot Is Virtual", mappings)));
@@ -799,33 +803,97 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			lookUpProperty = "Project";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
 			logger.info("Project lookup: " + lookUpString);
-			if (lookUpString != null && !lookUpString.equalsIgnoreCase("false") && lookUpString.length() > 0) lot.setProject(Project.findProjectsByCodeEquals(lookUpString).getSingleResult());
-
-			
+			if (lookUpString != null && !lookUpString.equalsIgnoreCase("false") && lookUpString.length() > 0){
+				try {
+					lot.setProject(Project.findProjectsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e) {
+					lot.setProject(Project.findProjectsByCodeEquals(lookUpString).getSingleResult());
+				}		
+			}
 			lookUpProperty = "Lot Purity Measured By";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByNameEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPurityMeasuredBy(PurityMeasuredBy.findPurityMeasuredBysByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Physical State";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPhysicalState(PhysicalState.findPhysicalStatesByNameEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPhysicalState(PhysicalState.findPhysicalStatesByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPhysicalState(PhysicalState.findPhysicalStatesByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Vendor";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setVendor(Vendor.findVendorsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setVendor(Vendor.findVendorsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setVendor(Vendor.findVendorsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Purity Operator";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setPurityOperator(Operator.findOperatorsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setPurityOperator(Operator.findOperatorsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setPurityOperator(Operator.findOperatorsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Amount Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setAmountUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setAmountUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setAmountUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Retain Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setRetainUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setRetainUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setRetainUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 			lookUpProperty = "Lot Solution Amount Units";
 			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
-			if (lookUpString != null && lookUpString.length() > 0) lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByCodeEquals(lookUpString).getSingleResult());
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setSolutionAmountUnits(SolutionUnit.findSolutionUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
+			lookUpProperty = "Lot Tare Weight Units";
+			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setTareWeightUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setTareWeightUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
+			lookUpProperty = "Lot Total Amount Stored Units";
+			lookUpString = getStringValueFromMappings(mol, lookUpProperty, mappings);
+			if (lookUpString != null && lookUpString.length() > 0){
+				try{
+					lot.setTotalAmountStoredUnits(Unit.findUnitsByNameEquals(lookUpString).getSingleResult());
+				}catch (Exception e){
+					lot.setTotalAmountStoredUnits(Unit.findUnitsByCodeEquals(lookUpString).getSingleResult());
+				}
+			}
 		}catch (Exception e){
-			logger.error("Caught error looking up lot property "+lookUpProperty+" with code "+lookUpString,e);
-			throw new Exception("An error has occurred looking up lot property "+lookUpProperty+" with code "+lookUpString);
+			logger.error("Caught error looking up lot property "+lookUpProperty+" with name "+lookUpString,e);
+			throw new Exception("An error has occurred looking up lot property "+lookUpProperty+" with name "+lookUpString);
 		}
 
 		return lot;
@@ -944,7 +1012,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lookUpStringList = getStringValuesFromMappings(mol, lookUpProperty, mappings);
 
 		if (lookUpStringList != null && !lookUpStringList.isEmpty()){
-			String aliasType = "external id";
+			String aliasType = "External ID";
 			String aliasKind = "LiveDesign Corp Name";
 			for (String lookUpStringEntry : lookUpStringList){
 				parent = addParentAlias(parent, aliasType, aliasKind, lookUpProperty, lookUpStringEntry);
@@ -958,7 +1026,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lookUpStringList = getStringValuesFromMappings(mol, lookUpProperty, mappings);
 		if (lookUpStringList != null && !lookUpStringList.isEmpty()){
 			String aliasType = "other name";
-			String aliasKind = "Parent Common Name";
+			String aliasKind = "Common Name";
 			for (String lookUpStringEntry : lookUpStringList){
 				parent = addParentAlias(parent, aliasType, aliasKind, lookUpProperty, lookUpStringEntry);
 				logger.info("------------- adding alias set to the parent -------------------");
@@ -1196,18 +1264,20 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public PurgeFileDependencyCheckResponseDTO checkPurgeFileDependencies(BulkLoadFile bulkLoadFile) {
 		Map<String, HashSet<String>> acasDependencies = new HashMap<String, HashSet<String>>();
 		Map<String, HashSet<String>> cmpdRegDependencies = new HashMap<String, HashSet<String>>();
+		HashSet<String> dependentSingleRegLots = new HashSet<String>();
 		//we make a map with a CorpName as each key, and a list of dependent CorpNames as each value
 		int numberOfParents = 0;
 		int numberOfSaltForms = 0;
 		int numberOfLots = 0;
 		Collection<Parent> parents = Parent.findParentsByBulkLoadFileEquals(bulkLoadFile).getResultList();
 		numberOfParents = parents.size();
+		String manuallyRegistered = "Manually Registered";
 		for (Parent parent: parents){
 			acasDependencies.put(parent.getCorpName(), new HashSet<String>());
 			if (parent.getSaltForms() != null){
 				for (SaltForm saltForm : parent.getSaltForms()){
 					acasDependencies.put(saltForm.getCorpName(), new HashSet<String>());
-					if (saltForm.getBulkLoadFile() != bulkLoadFile){
+					if (saltForm.getBulkLoadFile() != null &&saltForm.getBulkLoadFile() != bulkLoadFile){
 						if (cmpdRegDependencies.containsKey(parent.getCorpName())){
 							cmpdRegDependencies.get(parent.getCorpName()).add(saltForm.getBulkLoadFile().getFileName());
 						}
@@ -1220,7 +1290,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					if (saltForm.getLots() != null){
 						for (Lot lot : saltForm.getLots()){
 							acasDependencies.put(lot.getCorpName(), new HashSet<String>());
-							if (lot.getBulkLoadFile() != bulkLoadFile){
+							if (lot.getBulkLoadFile() == null){
+								dependentSingleRegLots.add(lot.getCorpName());
+							}else if (lot.getBulkLoadFile() != bulkLoadFile){
 								if (cmpdRegDependencies.containsKey(parent.getCorpName())){
 									cmpdRegDependencies.get(parent.getCorpName()).add(lot.getBulkLoadFile().getFileName());
 								}
@@ -1244,7 +1316,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			if (saltForm.getLots() != null){
 				for (Lot lot : saltForm.getLots()){
 					acasDependencies.put(lot.getCorpName(), new HashSet<String>());
-					if (lot.getBulkLoadFile() != bulkLoadFile){
+					if (lot.getBulkLoadFile() == null){
+						dependentSingleRegLots.add(lot.getCorpName());
+					}else if (lot.getBulkLoadFile() != bulkLoadFile){
 						if (cmpdRegDependencies.containsKey(saltForm.getCorpName())){
 							cmpdRegDependencies.get(saltForm.getCorpName()).add(lot.getBulkLoadFile().getFileName());
 						}
@@ -1289,8 +1363,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 		}
 		
-		if (!dependentFiles.isEmpty() || !dependentExperiments.isEmpty()){
-			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments);
+		if (!dependentFiles.isEmpty() || !dependentExperiments.isEmpty() || !dependentSingleRegLots.isEmpty()){
+			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments, dependentSingleRegLots);
 			return new PurgeFileDependencyCheckResponseDTO(summary, false);
 		}
 		else{
@@ -1316,7 +1390,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public String generateErrorCheckHtml(int numberOfParents,
 			int numberOfSaltForms, int numberOfLots,
 			HashSet<String> dependentFiles,
-			HashSet<String> dependentExperiments) {
+			HashSet<String> dependentExperiments, HashSet<String> dependentSingleRegLots) {
 		String summary = "<div>File cannot be purged.</div>";
 		summary+="<div style=\"margin-top:15px;\">";
 		summary+="<div>"+numberOfParents+" parent compounds were referenced."+"</div>";
@@ -1324,43 +1398,40 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		
 		boolean hasCmpdRegDependencies = !dependentFiles.isEmpty();
 		boolean hasAcasDependencies = !dependentExperiments.isEmpty();
-		if (hasCmpdRegDependencies || hasAcasDependencies){
+		boolean hasSingleRegDependencies = !dependentSingleRegLots.isEmpty();
+		if (hasCmpdRegDependencies || hasAcasDependencies || hasSingleRegDependencies){
 			summary+="<br>";
-			if (hasCmpdRegDependencies && hasAcasDependencies){
-				summary+= "<div>If you still want to purge this file, the following files must first be purged:</div>";
-				
+			summary+= "<div>If you still want to purge this file, the following must first be purged or deleted:</div>";
+			summary+="<br>";
+			if (hasCmpdRegDependencies){
+				summary+= "<div>Bulk loaded files:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
 				for (String dependent: dependentFiles){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
 				summary+="<br>";
-				summary+= "<div>The following ACAS experiments must also be purged:</div>";
+			}
+			if (hasAcasDependencies){
+				summary+= "<div>ACAS experiments:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
 				for (String dependent: dependentExperiments){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
-
+				summary+="<br>";
 			}
-			else if (hasCmpdRegDependencies){
-				summary+= "<div>If you still want to purge this file, the following files must first be purged:</div>";
+			if (hasSingleRegDependencies){
+				summary+= "<div>Manually registered lots:</div>";
 				summary+="<div style=\"margin-left:15px;\">";
-				for (String dependent: dependentFiles){
+				for (String dependent: dependentSingleRegLots){
 						summary+= "<div>"+dependent+"</div>";
 				}
 				summary+="</div>";
+				summary+="<br>";
 			}
-			else if (hasAcasDependencies){
-				summary+= "<div>If you still want to purge this file, the following ACAS experiments must first be purged:</div>";
-				summary+="<div style=\"margin-left:15px;\">";
-				for (String dependent: dependentExperiments){
-						summary+= "<div>"+dependent+"</div>";
-				}
-				summary+="</div>";
-			}
-		}
 		summary+="</div>";
+		}
 
 		return summary;
 	}

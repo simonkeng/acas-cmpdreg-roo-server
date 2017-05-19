@@ -153,14 +153,26 @@
 		<menu-item hidden="false" id="fi_parentalias_aliasnameequalsandlstypeequalsandlskindequals" labelCode="menu_item_parentalias_aliasnameequalsandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_parentalias_parent" labelCode="menu_item_parentalias_parent_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_parentalias_aliasnameequals" labelCode="menu_item_parentalias_aliasnameequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_parentalias_parentandlstypeequalsandlskindequalsandaliasnameequals" labelCode="menu_item_parentalias_parentandlstypeequalsandlskindequalsandaliasnameequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_parentalias_parentandlstypeequalsandlskindequals" labelCode="menu_item_parentalias_parentandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	
 
+
+<menu-item id="c_lotalias" labelCode="menu_category_lotalias_label" name="LotAlias">
+        <menu-item hidden="false" id="i_lotalias_new" labelCode="menu_item_lotalias_new_label" messageCode="global_menu_new" roles="" url="/lotaliases?form"/>
+    <menu-item hidden="false" id="i_lotalias_list" labelCode="menu_item_lotalias_list_label" messageCode="global_menu_list" roles="" url="/lotaliases?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_lotalias_aliasnameequalsandlstypeequalsandlskindequals" labelCode="menu_item_lotalias_aliasnameequalsandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_lotalias_lot" labelCode="menu_item_lotalias_lot_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_lotalias_lotandlstypeequalsandlskindequals" labelCode="menu_item_lotalias_lotandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByLotAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 <menu-item id="c_lotaliastype" labelCode="menu_category_lotaliastype_label" name="LotAliasType">
         <menu-item hidden="false" id="i_lotaliastype_new" labelCode="menu_item_lotaliastype_new_label" messageCode="global_menu_new" roles="" url="/lotaliastypes?form"/>
     <menu-item hidden="false" id="i_lotaliastype_list" labelCode="menu_item_lotaliastype_list_label" messageCode="global_menu_list" roles="" url="/lotaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
     </menu-item>
-
+<menu-item id="c_puritymeasuredby" labelCode="menu_category_puritymeasuredby_label" name="PurityMeasuredBy"/>
+<menu-item id="c_operator" labelCode="menu_category_operator_label" name="Operator"/>
+<menu-item id="c_cmpdregappsetting" labelCode="menu_category_cmpdregappsetting_label" name="CmpdRegAppSetting"/>
 <menu-item id="c_lotaliaskind" labelCode="menu_category_lotaliaskind_label" name="LotAliasKind">
         <menu-item hidden="false" id="i_lotaliaskind_new" labelCode="menu_item_lotaliaskind_new_label" messageCode="global_menu_new" roles="" url="/lotaliaskinds?form"/>
     <menu-item hidden="false" id="i_lotaliaskind_list" labelCode="menu_item_lotaliaskind_list_label" messageCode="global_menu_list" roles="" url="/lotaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>

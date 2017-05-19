@@ -17,6 +17,14 @@ privileged aspect Operator_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long Operator.countFindOperatorsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Operator.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Operator AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<Operator> Operator.findOperatorsByCodeEquals(String code) {
         if (code == null || code.length() == 0) throw new IllegalArgumentException("The code argument is required");
         EntityManager em = Operator.entityManager();
@@ -37,6 +45,29 @@ privileged aspect Operator_Roo_Finder {
         }
         TypedQuery<Operator> q = em.createQuery(queryBuilder.toString(), Operator.class);
         q.setParameter("code", code);
+        return q;
+    }
+    
+    public static TypedQuery<Operator> Operator.findOperatorsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Operator.entityManager();
+        TypedQuery<Operator> q = em.createQuery("SELECT o FROM Operator AS o WHERE o.name = :name", Operator.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<Operator> Operator.findOperatorsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Operator.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM Operator AS o WHERE o.name = :name");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<Operator> q = em.createQuery(queryBuilder.toString(), Operator.class);
+        q.setParameter("name", name);
         return q;
     }
     

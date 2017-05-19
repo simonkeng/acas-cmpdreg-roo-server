@@ -10,7 +10,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findVendorsByCodeLike", "findVendorsByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findVendorsByCodeLike", "findVendorsByCodeEquals", "findVendorsByNameEquals" })
 public class Vendor {
 
     @Size(max = 255)

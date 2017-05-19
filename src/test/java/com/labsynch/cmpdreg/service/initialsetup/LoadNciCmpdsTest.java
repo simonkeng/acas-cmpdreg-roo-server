@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import chemaxon.formats.MolFormatException;
 import chemaxon.formats.MolImporter;
@@ -101,7 +102,7 @@ public class LoadNciCmpdsTest {
 //			    	metaLot.setIsosalts(isoSalts);
 			    	
 			    	MetalotReturn results = metalotServ.save(metaLot);
-			    	logger.debug("lot saved: " + results.toJson());
+//			    	logger.debug("lot saved: " + results.toJson());
 			    	
 			    }	
 			    

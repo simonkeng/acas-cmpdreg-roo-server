@@ -22,7 +22,7 @@ import com.labsynch.cmpdreg.domain.StereoCategory;
 @RooJson
 public class ParentDTO{
 
-	private long id;
+	private Long id;
 	
 	private String corpName;
 

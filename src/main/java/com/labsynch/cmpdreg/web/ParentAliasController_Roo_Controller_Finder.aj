@@ -3,13 +3,13 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.Parent;
+import com.labsynch.cmpdreg.domain.ParentAlias;
+import com.labsynch.cmpdreg.web.ParentAliasController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.Parent;
-import com.labsynch.cmpdreg.domain.ParentAlias;
 
 privileged aspect ParentAliasController_Roo_Controller_Finder {
     
@@ -67,6 +67,46 @@ privileged aspect ParentAliasController_Roo_Controller_Finder {
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
             uiModel.addAttribute("parentaliases", ParentAlias.findParentAliasesByParent(parent, sortFieldName, sortOrder).getResultList());
+        }
+        return "parentaliases/list";
+    }
+    
+    @RequestMapping(params = { "find=ByParentAndLsTypeEqualsAndLsKindEquals", "form" }, method = RequestMethod.GET)
+    public String ParentAliasController.findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsForm(Model uiModel) {
+        uiModel.addAttribute("parents", Parent.findAllParents());
+        return "parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals";
+    }
+    
+    @RequestMapping(params = "find=ByParentAndLsTypeEqualsAndLsKindEquals", method = RequestMethod.GET)
+    public String ParentAliasController.findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals(@RequestParam("parent") Parent parent, @RequestParam("lsType") String lsType, @RequestParam("lsKind") String lsKind, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("parentaliases", ParentAlias.findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals(parent, lsType, lsKind, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) ParentAlias.countFindParentAliasesByParentAndLsTypeEqualsAndLsKindEquals(parent, lsType, lsKind) / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("parentaliases", ParentAlias.findParentAliasesByParentAndLsTypeEqualsAndLsKindEquals(parent, lsType, lsKind, sortFieldName, sortOrder).getResultList());
+        }
+        return "parentaliases/list";
+    }
+    
+    @RequestMapping(params = { "find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals", "form" }, method = RequestMethod.GET)
+    public String ParentAliasController.findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEqualsForm(Model uiModel) {
+        uiModel.addAttribute("parents", Parent.findAllParents());
+        return "parentaliases/findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals";
+    }
+    
+    @RequestMapping(params = "find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals", method = RequestMethod.GET)
+    public String ParentAliasController.findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals(@RequestParam("parent") Parent parent, @RequestParam("lsType") String lsType, @RequestParam("lsKind") String lsKind, @RequestParam("aliasName") String aliasName, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("parentaliases", ParentAlias.findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals(parent, lsType, lsKind, aliasName, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) ParentAlias.countFindParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals(parent, lsType, lsKind, aliasName) / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("parentaliases", ParentAlias.findParentAliasesByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals(parent, lsType, lsKind, aliasName, sortFieldName, sortOrder).getResultList());
         }
         return "parentaliases/list";
     }
