@@ -16,4 +16,7 @@
 <definition extends="default" name="operators/findOperatorsByCodeEquals">
         <put-attribute name="body" value="/WEB-INF/views/operators/findOperatorsByCodeEquals.jspx"/>
     </definition>
+<definition extends="default" name="operators/findOperatorsByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/operators/findOperatorsByNameEquals.jspx"/>
+    </definition>
 </tiles-definitions>

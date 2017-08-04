@@ -17,6 +17,14 @@ privileged aspect Project_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long Project.countFindProjectsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Project.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Project AS o WHERE o.name = :name", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<Project> Project.findProjectsByCodeEquals(String code) {
         if (code == null || code.length() == 0) throw new IllegalArgumentException("The code argument is required");
         EntityManager em = Project.entityManager();
@@ -37,6 +45,29 @@ privileged aspect Project_Roo_Finder {
         }
         TypedQuery<Project> q = em.createQuery(queryBuilder.toString(), Project.class);
         q.setParameter("code", code);
+        return q;
+    }
+    
+    public static TypedQuery<Project> Project.findProjectsByNameEquals(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Project.entityManager();
+        TypedQuery<Project> q = em.createQuery("SELECT o FROM Project AS o WHERE o.name = :name", Project.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<Project> Project.findProjectsByNameEquals(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        EntityManager em = Project.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM Project AS o WHERE o.name = :name");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<Project> q = em.createQuery(queryBuilder.toString(), Project.class);
+        q.setParameter("name", name);
         return q;
     }
     

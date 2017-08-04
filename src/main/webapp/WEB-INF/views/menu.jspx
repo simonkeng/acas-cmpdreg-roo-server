@@ -21,12 +21,14 @@
             <menu:item id="i_operator_new" messageCode="global_menu_new" url="/operators?form" z="348aQG/OMwcpfhf4YOVFumU9lXA="/>
             <menu:item id="i_operator_list" messageCode="global_menu_list" url="/operators?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Tz16FblnAMkG7trnwdzRokFAC6Q="/>
             <menu:item id="fi_operator_codeequals" messageCode="global_menu_find" url="/operators?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8JL8+ru+gaX6YnBv8HM6rnGGiS4="/>
+            <menu:item id="fi_operator_nameequals" messageCode="global_menu_find" url="/operators?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="bIX2Qy9BpJdrEGhcRr1Gyk8yJjs="/>
         </menu:category>
         <menu:category id="c_unit" render="false" z="user-managed">
             <menu:item id="i_unit_new" messageCode="global_menu_new" url="/units?form" z="oJDJNzw0PlIDkMTtID4g4gvkhTY="/>
             <menu:item id="i_unit_list" messageCode="global_menu_list" url="/units?page=1&amp;size=${empty param.size ? 10 : param.size}" z="mqpJPY7uCke3Lrgup34MXG8RkII="/>
             <menu:item id="fi_unit_codeequals" messageCode="global_menu_find" url="/units?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="xzoRz0OblHLuU4iTtHXl8gW4KSw="/>
             <menu:item id="fi_unit_codelike" messageCode="global_menu_find" url="/units?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TzatNt6rvhoNHOC20qBZYtMdPrI="/>
+            <menu:item id="fi_unit_nameequals" messageCode="global_menu_find" url="/units?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="o2gi8NzDUmgaOITtqSdxG9dxnOU="/>
         </menu:category>
         <menu:category id="c_scientist" render="false" z="user-managed">
             <menu:item id="i_scientist_new" messageCode="global_menu_new" url="/scientists?form" z="wAgAaplPP7T9G7eBgiZTqiTx1eo="/>
@@ -45,6 +47,7 @@
             <menu:item id="i_solutionunit_list" messageCode="global_menu_list" url="/solutionunits?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Xxov5+isHXigALbrAFg10eGgpiI="/>
             <menu:item id="fi_solutionunit_codeequals" messageCode="global_menu_find" url="/solutionunits?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="geMzrw9gFm8et/nRkHhRERN+vUA="/>
             <menu:item id="fi_solutionunit_codelike" messageCode="global_menu_find" url="/solutionunits?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="7yQAqNl7Bi8wcDUW4MrKqpUHhEg="/>
+            <menu:item id="fi_solutionunit_nameequals" messageCode="global_menu_find" url="/solutionunits?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="jJhSmPzvCvNOtGYQRO4iYyxNJg0="/>
         </menu:category>
         <menu:category id="c_physicalstate" render="false" z="user-managed">
             <menu:item id="i_physicalstate_new" messageCode="global_menu_new" url="/physicalstates?form" z="lOaDCAIsIIPTDCFlzMgIFHDmVWo="/>
@@ -88,6 +91,7 @@
             <menu:item id="i_project_new" messageCode="global_menu_new" url="/projects?form" z="1BazRC1rLnod0a+MpP1flWTvehA="/>
             <menu:item id="i_project_list" messageCode="global_menu_list" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}" z="GHL05c3Rvr+eKDgRCk3Ttak0W+g="/>
             <menu:item id="fi_project_codeequals" messageCode="global_menu_find" url="/projects?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hbu4dPmttz2ZEHz5IRca2M3IJkc="/>
+            <menu:item id="fi_project_nameequals" messageCode="global_menu_find" url="/projects?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="PHoLE7CPDTBCaBBKL2bhgv2/wQg="/>
         </menu:category>
         <menu:category id="c_filelist" render="false" z="user-managed">
             <menu:item id="i_filelist_new" messageCode="global_menu_new" url="/filelists?form" z="T5zFpWbm4xPcs0m2oX0k7C0CCJw="/>

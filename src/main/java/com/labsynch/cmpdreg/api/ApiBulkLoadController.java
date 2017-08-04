@@ -116,6 +116,7 @@ public class ApiBulkLoadController {
         	PurgeFileDependencyCheckResponseDTO responseDTO = bulkLoadService.checkPurgeFileDependencies(fileToCheck);
             return new ResponseEntity<String>(responseDTO.toJson(), headers, HttpStatus.OK);
         } catch (Exception e){
+        	logger.error("Caught error in checkDependencies",e);
             return new ResponseEntity<String>(e.toString(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
