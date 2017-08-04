@@ -3,12 +3,12 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.web.VendorController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.Vendor;
 
 privileged aspect VendorController_Roo_Controller_Finder {
     
@@ -46,6 +46,44 @@ privileged aspect VendorController_Roo_Controller_Finder {
             uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
         } else {
             uiModel.addAttribute("vendors", Vendor.findVendorsByCodeLike(code, sortFieldName, sortOrder).getResultList());
+        }
+        return "vendors/list";
+    }
+    
+    @RequestMapping(params = { "find=ByNameEquals", "form" }, method = RequestMethod.GET)
+    public String VendorController.findVendorsByNameEqualsForm(Model uiModel) {
+        return "vendors/findVendorsByNameEquals";
+    }
+    
+    @RequestMapping(params = "find=ByNameEquals", method = RequestMethod.GET)
+    public String VendorController.findVendorsByNameEquals(@RequestParam("name") String name, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("vendors", Vendor.findVendorsByNameEquals(name, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) Vendor.countFindVendorsByNameEquals(name) / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("vendors", Vendor.findVendorsByNameEquals(name, sortFieldName, sortOrder).getResultList());
+        }
+        return "vendors/list";
+    }
+    
+    @RequestMapping(params = { "find=ByNameLike", "form" }, method = RequestMethod.GET)
+    public String VendorController.findVendorsByNameLikeForm(Model uiModel) {
+        return "vendors/findVendorsByNameLike";
+    }
+    
+    @RequestMapping(params = "find=ByNameLike", method = RequestMethod.GET)
+    public String VendorController.findVendorsByNameLike(@RequestParam("name") String name, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("vendors", Vendor.findVendorsByNameLike(name, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) Vendor.countFindVendorsByNameLike(name) / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("vendors", Vendor.findVendorsByNameLike(name, sortFieldName, sortOrder).getResultList());
         }
         return "vendors/list";
     }

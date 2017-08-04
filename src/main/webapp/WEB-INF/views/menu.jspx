@@ -100,6 +100,8 @@
             <menu:item id="i_vendor_list" messageCode="global_menu_list" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}" z="PaHIFalbQwm47Wrz8iGe8DCcyXI="/>
             <menu:item id="fi_vendor_codeequals" messageCode="global_menu_find" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="69IaDPJSu71IVkN+va/S676ad1k="/>
             <menu:item id="fi_vendor_codelike" messageCode="global_menu_find" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="F5O/oxpbL9hdNr/GN/OwdQ5No8M="/>
+            <menu:item id="fi_vendor_nameequals" messageCode="global_menu_find" url="/vendors?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="a/DllJTHIcCZkLeDzkP9ZBAMzM8="/>
+            <menu:item id="fi_vendor_namelike" messageCode="global_menu_find" url="/vendors?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="nC7kVGkTqmTfIlPPCNoUTjfZbW8="/>
         </menu:category>
         <menu:category id="c_puritymeasuredby" render="false" z="user-managed">
             <menu:item id="i_puritymeasuredby_new" messageCode="global_menu_new" url="/puritymeasuredbys?form" z="tvshqP/oDSgqHaraSA/XFTHK7Zg="/>
@@ -133,12 +135,15 @@
             <menu:item id="fi_parentalias_aliasnameequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="rRE78zjA6mg+IWAAPMfjS7xS65U="/>
             <menu:item id="fi_parentalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/parentaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="9zt66MzfFVmkN9mRuvm16RCe20s="/>
             <menu:item id="fi_parentalias_parent" messageCode="global_menu_find" url="/parentaliases?find=ByParent&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="TeasU75mfP4kzPs2h9Tw8q6allY="/>
+            <menu:item id="fi_parentalias_parentandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="HsxduslvcwnYrW81fGXY2H5PH6U="/>
+            <menu:item id="fi_parentalias_parentandlstypeequalsandlskindequalsandaliasnameequals" messageCode="global_menu_find" url="/parentaliases?find=ByParentAndLsTypeEqualsAndLsKindEqualsAndAliasNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="LpE4fCHUJThaxQItTfolHiRT9lA="/>
         </menu:category>
         <menu:category id="c_lotalias" render="false" z="user-managed">
             <menu:item id="i_lotalias_new" messageCode="global_menu_new" url="/lotaliases?form" z="7b7Z7gKs6/AHbRn1Y42KyALCZ9E="/>
             <menu:item id="i_lotalias_list" messageCode="global_menu_list" url="/lotaliases?page=1&amp;size=${empty param.size ? 10 : param.size}" z="tcQ2uLs/U2jHGEJfw4ygmyp49Kg="/>
             <menu:item id="fi_lotalias_aliasnameequalsandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/lotaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="RnL4u288C415TNmFj1z/1XD7n1c="/>
             <menu:item id="fi_lotalias_lot" messageCode="global_menu_find" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="hPeHvSNu9h5nWZ0LtatTsO0IOM4="/>
+            <menu:item id="fi_lotalias_lotandlstypeequalsandlskindequals" messageCode="global_menu_find" url="/lotaliases?find=ByLotAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="CCTH5NRVbhe+YM52CNdiZFGhs3U="/>
         </menu:category>
         <menu:category id="c_lotaliaskind" render="false" z="user-managed">
             <menu:item id="i_lotaliaskind_new" messageCode="global_menu_new" url="/lotaliaskinds?form" z="70JcpgQKJnM1f+bosxXSp1N2uUQ="/>

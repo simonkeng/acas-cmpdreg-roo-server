@@ -144,7 +144,7 @@ public class PhysicalStateController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(PhysicalState.toJsonArray(PhysicalState.findAllPhysicalStates()), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(PhysicalState.toJsonArray(PhysicalState.findAllPhysicalStates("name", "ASC")), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

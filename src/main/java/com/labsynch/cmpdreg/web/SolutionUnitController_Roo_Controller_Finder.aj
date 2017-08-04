@@ -3,12 +3,12 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.labsynch.cmpdreg.domain.SolutionUnit;
+import com.labsynch.cmpdreg.web.SolutionUnitController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.labsynch.cmpdreg.domain.SolutionUnit;
 
 privileged aspect SolutionUnitController_Roo_Controller_Finder {
     

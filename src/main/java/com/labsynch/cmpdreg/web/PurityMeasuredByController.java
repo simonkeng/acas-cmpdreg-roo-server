@@ -51,7 +51,7 @@ public class PurityMeasuredByController {
 		headers.add("Pragma","no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
 
-        return new ResponseEntity<String>(PurityMeasuredBy.toJsonArray(PurityMeasuredBy.findAllPurityMeasuredBys()), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(PurityMeasuredBy.toJsonArray(PurityMeasuredBy.findAllPurityMeasuredBys("name", "ASC")), headers, HttpStatus.OK);
     }
 
 	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
