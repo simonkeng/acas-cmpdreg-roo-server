@@ -56,7 +56,7 @@ public class ApiVendorController {
 	    public ResponseEntity<String> validateNewVendor(@RequestBody String json) {
     	   logger.info("validateNewVendor -- incoming json: " + json);
     	    Vendor queryVendor = Vendor.fromJsonToVendor(json);
-    	    if (queryVendor.getCode() == null) {
+    	    if (queryVendor.getCode() == null || queryVendor.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
     	    	queryVendor.setCode(queryVendor.getName().toLowerCase());
     	    }
@@ -158,7 +158,7 @@ public class ApiVendorController {
 	    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJson(@RequestBody String json) {
 	    	Vendor newVendor = Vendor.fromJsonToVendor(json);
-    	    if (newVendor.getCode() == null) {
+    	    if (newVendor.getCode() == null || newVendor.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
     	    	newVendor.setCode(newVendor.getName().toLowerCase());
     	    }
@@ -176,6 +176,10 @@ public class ApiVendorController {
 	    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
 	        for (Vendor vendor : Vendor.fromJsonArrayToVendors(json)) {
+	    	    if (vendor.getCode() == null || vendor.getCode().equalsIgnoreCase("")) {
+	    	    	logger.info("creating the missing code name");
+	    	    	vendor.setCode(vendor.getName().toLowerCase());
+	    	    }
 	            vendor.persist();
 	        }
 	        HttpHeaders headers = new HttpHeaders();

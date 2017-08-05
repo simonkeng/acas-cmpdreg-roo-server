@@ -1,8 +1,5 @@
 package com.labsynch.cmpdreg.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.validation.constraints.Size;
@@ -26,8 +23,6 @@ public class Vendor {
 
     
     public static TypedQuery<Vendor> findVendorsBySearchTerm(String searchTerm) {
-		List<Vendor> vendors = new ArrayList<Vendor>();
-
         if (searchTerm == null || searchTerm.length() == 0) throw new IllegalArgumentException("The searchTerm argument is required");
         searchTerm = searchTerm.replace('*', '%');
         if (searchTerm.charAt(0) != '%') {
