@@ -69,7 +69,8 @@
     	"databaseType": "postgres",
     	"standardizeStructure": false,
     	"useExternalStandardizerConfig": false,
-    	"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml"
+    	"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml",
+    	"orderSelectLists": true
     },
     "bulkLoadSettings": {
         "useProjectRoles": false,

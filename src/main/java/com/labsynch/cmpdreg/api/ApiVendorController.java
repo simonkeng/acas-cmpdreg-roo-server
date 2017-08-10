@@ -17,13 +17,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.service.ErrorMessage;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RequestMapping(value = {"/api/v1/vendors"})
 @Controller
 public class ApiVendorController {
 	
 	Logger logger = LoggerFactory.getLogger(ApiVendorController.class);
+	
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
+
 	
 	//check if vendor already exists by code
 	// if exists -- return false else true
@@ -37,11 +42,8 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        
-	        List<Vendor> vendors = Vendor.findVendorsByCodeEquals(code).getResultList();
-	        int vendorCount = vendors.size();
-	        logger.info("number of vendors found: " + vendorCount);
-	        if (vendorCount > 0){
+
+	        if (Vendor.countFindVendorsByCodeEquals(code) > 0){
 	        	return new ResponseEntity<Boolean>(false, headers,HttpStatus.CONFLICT );
 	        } else {
 	        	return new ResponseEntity<Boolean>(true, headers,HttpStatus.ACCEPTED );	        	
@@ -63,7 +65,7 @@ public class ApiVendorController {
     	    logger.info("validateNewVendor -- query vendor: " + queryVendor.toJson());
 
             ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
-            boolean errorsFound = false;
+           // boolean errorsFound = false;
             
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/json; charset=utf-8");
@@ -74,12 +76,13 @@ public class ApiVendorController {
 	        headers.setExpires(0); // Expire the cache
 	        
 	        Long vendorByCodeCount = 0L;
-	        if (queryVendor.getCode() != null){
-		        vendorByCodeCount = Vendor.countFindVendorsByCodeEquals(queryVendor.getCode());
-		        logger.info("number of vendors found by code: " + vendorByCodeCount);
-		        Long vendorCountByName = Vendor.countFindVendorsByNameEquals(queryVendor.getName());
-		        logger.info("number of vendors found by name: " + vendorCountByName);
-	        }	        
+	        List<Vendor> queryVendors = Vendor.findVendorsByCodeEquals(queryVendor.getCode()).getResultList();
+	        for (Vendor vendor : queryVendors){
+	        	if (vendor.getId() != queryVendor.getId()){
+	        		++vendorByCodeCount;
+	        	}
+	        }
+	          
 	        if (vendorByCodeCount > 0  ){
 	        	ErrorMessage error = new ErrorMessage();
 	        	error.setLevel("ERROR");
@@ -152,7 +155,12 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors("name", "ASC")), headers, HttpStatus.OK);
+	        
+	        if (mainConfig.getServerSettings().isOrderSelectLists()){
+		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors("name", "ASC")), headers, HttpStatus.OK);
+	        } else {
+		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors()), headers, HttpStatus.OK);
+	        }
 	    }
 
 	    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

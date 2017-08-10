@@ -62,6 +62,7 @@ public class ServerSettingsConfigDTO {
     private boolean usePredefinedList;
     
     private boolean newUserIsChemist;
-
+    
+    private boolean orderSelectLists;
     
 }

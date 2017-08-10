@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.PurityMeasuredBy;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RooWebScaffold(path = "puritymeasuredbys", formBackingObject = PurityMeasuredBy.class)
 @RequestMapping(value = {"/puritymeasuredbys" , "/purityMeasuredBys"})
@@ -22,6 +24,9 @@ import com.labsynch.cmpdreg.domain.PurityMeasuredBy;
 @GvNIXDatatables(ajax = true)
 public class PurityMeasuredByController {
 
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
+
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
     public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
@@ -51,7 +56,11 @@ public class PurityMeasuredByController {
 		headers.add("Pragma","no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
 
-        return new ResponseEntity<String>(PurityMeasuredBy.toJsonArray(PurityMeasuredBy.findAllPurityMeasuredBys("name", "ASC")), headers, HttpStatus.OK);
+		if (mainConfig.getServerSettings().isOrderSelectLists()){
+	        return new ResponseEntity<String>(PurityMeasuredBy.toJsonArray(PurityMeasuredBy.findAllPurityMeasuredBys("name", "ASC")), headers, HttpStatus.OK);
+		} else {
+	        return new ResponseEntity<String>(PurityMeasuredBy.toJsonArray(PurityMeasuredBy.findAllPurityMeasuredBys()), headers, HttpStatus.OK);
+		}
     }
 
 	@RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

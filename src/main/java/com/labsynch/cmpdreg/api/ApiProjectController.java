@@ -1,6 +1,9 @@
 package com.labsynch.cmpdreg.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.Project;
 import com.labsynch.cmpdreg.dto.BatchProjectDTO;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.service.ProjectService;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RequestMapping(value = {"/api/v1/projects"})
 @Controller
@@ -25,6 +30,8 @@ public class ApiProjectController {
 	
 	Logger logger = LoggerFactory.getLogger(ApiProjectController.class);
 	
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
+
 	@Autowired
 	private ProjectService projectService;
 
@@ -51,7 +58,13 @@ public class ApiProjectController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Project.toJsonArray(projectService.getACASProjectsByUser(userName)), headers, HttpStatus.OK);
+	        Collection<Project> projects = projectService.getACASProjectsByUser(userName);
+	        ArrayList<Project> projectArray = new ArrayList<Project>();
+	        projectArray.addAll(projects);
+	        if (mainConfig.getServerSettings().isOrderSelectLists()) {
+	        	Project.sortProjectsByName(projectArray);
+	        }
+	        return new ResponseEntity<String>(Project.toJsonArray(projectArray), headers, HttpStatus.OK);
 	    }
 	
 	@RequestMapping(value = "/getBatchProjects", method = RequestMethod.POST, headers = "Accept=application/json")

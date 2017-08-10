@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.StereoCategory;
+import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RooWebScaffold(path = "stereocategorys", formBackingObject = StereoCategory.class)
 @RequestMapping({ "/stereoCategorys", "/stereocategorys", "/stereoCategories" })
@@ -24,6 +27,8 @@ import com.labsynch.cmpdreg.domain.StereoCategory;
 @GvNIXDatatables(ajax = true)
 @RooWebFinder
 public class StereoCategoryController {
+
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
@@ -52,7 +57,12 @@ public class StereoCategoryController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys("name","ASC")), headers, HttpStatus.OK);
+ 
+        if (mainConfig.getServerSettings().isOrderSelectLists()){
+            return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys("name","ASC")), headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys()), headers, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
