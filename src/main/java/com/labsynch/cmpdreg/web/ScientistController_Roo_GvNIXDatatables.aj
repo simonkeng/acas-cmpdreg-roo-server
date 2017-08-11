@@ -22,6 +22,8 @@ import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.web.ScientistController;
 import com.labsynch.cmpdreg.web.ScientistController_Roo_Controller;
 import com.labsynch.cmpdreg.web.ScientistController_Roo_GvNIXDatatables;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.types.path.PathBuilder;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -421,6 +423,34 @@ privileged aspect ScientistController_Roo_GvNIXDatatables {
         Class type = beanWrapper.getPropertyType(property);
         boolean response = DatatablesUtils.checkFilterExpressions(type,expression, messageSource_dtt);
         return new ResponseEntity<String>(String.format("{ \"response\": %s, \"property\": \"%s\"}",response, property), headers, org.springframework.http.HttpStatus.OK);
+    }
+    
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCodeEquals", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> ScientistController.findScientistsByCodeEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("code") String code) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<Scientist> entity = new PathBuilder<Scientist>(Scientist.class, "entity");
+        
+        if(code != null){
+            baseSearch.and(entity.getString("code").eq(code));
+        }else{
+            baseSearch.and(entity.getString("code").isNull());
+        }
+        
+        SearchResults<Scientist> searchResult = DatatablesUtils.findByCriteria(entity, Scientist.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
     }
     
     @RequestMapping(value = "/exportcsv", produces = "text/csv")

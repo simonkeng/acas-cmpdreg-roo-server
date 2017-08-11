@@ -108,7 +108,8 @@
 		<menu-item hidden="false" id="i_project_new" labelCode="menu_item_project_new_label" messageCode="global_menu_new" roles="" url="/projects?form"/>
 		<menu-item hidden="false" id="i_project_list" labelCode="menu_item_project_list_label" messageCode="global_menu_list" roles="" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_project_codeequals" labelCode="menu_item_project_codeequals_label" messageCode="global_menu_find" roles="" url="/projects?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_project_nameequals" labelCode="menu_item_project_nameequals_label" messageCode="global_menu_find" roles="" url="/projects?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_physicalstate" labelCode="menu_category_physicalstate_label" name="PhysicalState">
 		<menu-item hidden="false" id="i_physicalstate_new" labelCode="menu_item_physicalstate_new_label" messageCode="global_menu_new" roles="" url="/physicalstates?form"/>
 		<menu-item hidden="false" id="i_physicalstate_list" labelCode="menu_item_physicalstate_list_label" messageCode="global_menu_list" roles="" url="/physicalstates?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
