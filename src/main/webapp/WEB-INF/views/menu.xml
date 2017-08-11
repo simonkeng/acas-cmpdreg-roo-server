@@ -77,7 +77,9 @@
 		<menu-item hidden="false" id="i_vendor_list" labelCode="menu_item_vendor_list_label" messageCode="global_menu_list" roles="" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_vendor_codeequals" labelCode="menu_item_vendor_codeequals_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_vendor_codelike" labelCode="menu_item_vendor_codelike_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_vendor_nameequals" labelCode="menu_item_vendor_nameequals_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_vendor_namelike" labelCode="menu_item_vendor_namelike_label" messageCode="global_menu_find" roles="" url="/vendors?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_predef_corpname" labelCode="menu_category_predef_corpname_label" name="PreDef_CorpName">
 		<menu-item hidden="false" id="i_predef_corpname_new" labelCode="menu_item_predef_corpname_new_label" messageCode="global_menu_new" roles="" url="/predef_corpnames?form"/>
 		<menu-item hidden="false" id="i_predef_corpname_list" labelCode="menu_item_predef_corpname_list_label" messageCode="global_menu_list" roles="" url="/predef_corpnames?page=1&amp;size=${empty param.size ? 10 : param.size}"/>

@@ -3,6 +3,27 @@
 
 package com.labsynch.cmpdreg.web;
 
+import com.github.dandelion.datatables.core.ajax.DataSet;
+import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
+import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
+import com.github.dandelion.datatables.core.exception.ExportException;
+import com.github.dandelion.datatables.core.export.CsvExport;
+import com.github.dandelion.datatables.core.export.DatatablesExport;
+import com.github.dandelion.datatables.core.export.ExportConf;
+import com.github.dandelion.datatables.core.export.ExportType;
+import com.github.dandelion.datatables.core.export.ExportUtils;
+import com.github.dandelion.datatables.core.export.XmlExport;
+import com.github.dandelion.datatables.core.html.HtmlTable;
+import com.github.dandelion.datatables.extras.export.itext.PdfExport;
+import com.github.dandelion.datatables.extras.export.poi.XlsExport;
+import com.github.dandelion.datatables.extras.export.poi.XlsxExport;
+import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
+import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.web.VendorController;
+import com.labsynch.cmpdreg.web.VendorController_Roo_Controller;
+import com.labsynch.cmpdreg.web.VendorController_Roo_GvNIXDatatables;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.types.path.PathBuilder;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,12 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.gvnix.web.datatables.query.SearchResults;
@@ -41,25 +60,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.github.dandelion.datatables.core.ajax.DataSet;
-import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
-import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
-import com.github.dandelion.datatables.core.exception.ExportException;
-import com.github.dandelion.datatables.core.export.CsvExport;
-import com.github.dandelion.datatables.core.export.DatatablesExport;
-import com.github.dandelion.datatables.core.export.ExportConf;
-import com.github.dandelion.datatables.core.export.ExportType;
-import com.github.dandelion.datatables.core.export.ExportUtils;
-import com.github.dandelion.datatables.core.export.XmlExport;
-import com.github.dandelion.datatables.core.html.HtmlTable;
-import com.github.dandelion.datatables.extras.export.itext.PdfExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsxExport;
-import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
-import com.labsynch.cmpdreg.domain.Vendor;
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.path.PathBuilder;
 
 privileged aspect VendorController_Roo_GvNIXDatatables {
     
@@ -453,6 +453,34 @@ privileged aspect VendorController_Roo_GvNIXDatatables {
         return DatatablesResponse.build(dataSet,criterias);
     }
     
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByNameEquals", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> VendorController.findVendorsByNameEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("name") String name) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<Vendor> entity = new PathBuilder<Vendor>(Vendor.class, "entity");
+        
+        if(name != null){
+            baseSearch.and(entity.getString("name").eq(name));
+        }else{
+            baseSearch.and(entity.getString("name").isNull());
+        }
+        
+        SearchResults<Vendor> searchResult = DatatablesUtils.findByCriteria(entity, Vendor.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
+    }
+    
     @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCodeLike", produces = "application/json")
     @ResponseBody
     public DatatablesResponse<Map<String, String>> VendorController.findVendorsByCodeLike(@DatatablesParams DatatablesCriterias criterias, @RequestParam("code") String code) {
@@ -466,6 +494,34 @@ privileged aspect VendorController_Roo_GvNIXDatatables {
             baseSearch.and(entity.getString("code").toLowerCase().like("%".concat(code).toLowerCase().concat("%")));
         }else{
             baseSearch.and(entity.getString("code").isNull());
+        }
+        
+        SearchResults<Vendor> searchResult = DatatablesUtils.findByCriteria(entity, Vendor.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
+    }
+    
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByNameLike", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> VendorController.findVendorsByNameLike(@DatatablesParams DatatablesCriterias criterias, @RequestParam("name") String name) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<Vendor> entity = new PathBuilder<Vendor>(Vendor.class, "entity");
+        
+        if(name != null){
+            baseSearch.and(entity.getString("name").toLowerCase().like("%".concat(name).toLowerCase().concat("%")));
+        }else{
+            baseSearch.and(entity.getString("name").isNull());
         }
         
         SearchResults<Vendor> searchResult = DatatablesUtils.findByCriteria(entity, Vendor.entityManager(), criterias, baseSearch);
