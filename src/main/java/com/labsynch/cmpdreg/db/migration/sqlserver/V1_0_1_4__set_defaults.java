@@ -59,7 +59,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject = (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES ("
@@ -88,7 +88,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject =  (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES "
@@ -115,7 +115,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE abbrev = '"+object.getAbbrev()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				IsotopeObject foundObject = jdbcTemplate.queryForObject(select, new IsotopeRowMapper());
+				IsotopeObject foundObject = (IsotopeObject) jdbcTemplate.queryForObject(select, new IsotopeRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (abbrev, ignore, mass_change, name, version) VALUES "
@@ -143,7 +143,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject = (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES "
@@ -170,7 +170,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject = (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES "
@@ -196,7 +196,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject = (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES "
@@ -224,7 +224,7 @@ public class V1_0_1_4__set_defaults implements SpringJdbcMigration {
 				String select = "SELECT * FROM " + objectTable
 						+ " WHERE code = '"+object.getCode()+"' "
 						+ "AND  name = '"+object.getName()+"'";
-				CodeAndNameObject foundObject = jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
+				CodeAndNameObject foundObject = (CodeAndNameObject) jdbcTemplate.queryForObject(select, new CodeAndNameRowMapper());
 			}catch(EmptyResultDataAccessException e){
 				String insert = "INSERT INTO " + objectTable
 						+ " (code, name, version) VALUES "
