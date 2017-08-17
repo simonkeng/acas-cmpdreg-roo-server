@@ -78,8 +78,12 @@ public class ApiVendorController {
 	        Long vendorByCodeCount = 0L;
 	        List<Vendor> queryVendors = Vendor.findVendorsByCodeEquals(queryVendor.getCode()).getResultList();
 	        for (Vendor vendor : queryVendors){
-	        	if (vendor.getId() != queryVendor.getId()){
+	        	if (vendor.getId().longValue() != queryVendor.getId().longValue()){
 	        		++vendorByCodeCount;
+		        	logger.debug("current vendor: " + vendor.toJson());
+		        	logger.debug("vendor id: " + vendor.getId());
+		        	logger.debug("query vendor ID: " + queryVendor.getId());
+	        		logger.debug("incrementing the vendor count " + vendorByCodeCount);
 	        	}
 	        }
 	          
