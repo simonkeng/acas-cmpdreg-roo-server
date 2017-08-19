@@ -23,7 +23,6 @@ import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
 import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
 import chemaxon.struc.Molecule;
 import chemaxon.util.MolHandler;
 
@@ -136,7 +135,7 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 	@Transactional
 	@Override
-	public int qcCheckParentStructures() throws MolFormatException, IOException{
+	public int qcCheckParentStructures() throws CmpdRegMolFormatException, IOException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		QcCompound qcCompound;

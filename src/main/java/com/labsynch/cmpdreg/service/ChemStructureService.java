@@ -4,11 +4,11 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Service;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
 
 @Service
 public interface ChemStructureService {
@@ -36,13 +36,13 @@ public interface ChemStructureService {
 
 	public int saveStructure(String molfile, String structureTable, boolean checkForDupes);
 
-	public Molecule[] searchMols(String molfile, String structureTable,
+	public CmpdRegMolecule[] searchMols(String molfile, String structureTable,
 			int[] cdHitList, String plainTable, String searchType,
 			Float simlarityPercent);
 
 	public double getMolWeight(String molStructure);
 
-	public Molecule toMolecule(String molStructure);
+	public CmpdRegMolecule toMolecule(String molStructure);
 
 	public String toMolfile(String molStructure);
 
@@ -63,14 +63,14 @@ public interface ChemStructureService {
 
 	public boolean deleteJChemTableRows(String tableName, int[] cdIds);
 
-	boolean checkForSalt(String molfile) throws MolFormatException;
+	boolean checkForSalt(String molfile) throws CmpdRegMolFormatException;
 
-	public boolean updateStructure(Molecule mol, String structureTable, int cdId);
+	public boolean updateStructure(CmpdRegMolecule mol, String structureTable, int cdId);
 	double getExactMass(String molStructure);
 
 	boolean deleteStructure(String structureTable, int cdId);
 
-	public Molecule[] searchMols(String molfile, String structureTable,
+	public CmpdRegMolecule[] searchMols(String molfile, String structureTable,
 			int[] inputCdIdHitList, String plainTable, String searchType,
 			Float simlarityPercent, int maxResults);
 
@@ -86,9 +86,9 @@ public interface ChemStructureService {
 
 	String getCipStereo(String structure) throws IOException;
 
-	StrippedSaltDTO stripSalts(Molecule inputStructure);
+	StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure);
 
-	public String standardizeStructure(String molfile) throws MolFormatException, IOException;
+	public String standardizeStructure(String molfile) throws CmpdRegMolFormatException, IOException;
 
 	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
 

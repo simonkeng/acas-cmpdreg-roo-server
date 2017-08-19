@@ -8,9 +8,9 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 
-import chemaxon.struc.Molecule;
 import flexjson.JSONSerializer;
 
 @RooJavaBean
@@ -20,7 +20,7 @@ public class StrippedSaltDTO {
 		
 	private Map<Salt, Integer> saltCounts;
 	
-	private Set<Molecule> unidentifiedFragments;
+	private Set<CmpdRegMolecule> unidentifiedFragments;
 	
 	public StrippedSaltDTO(){
 		

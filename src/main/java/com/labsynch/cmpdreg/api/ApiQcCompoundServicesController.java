@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.QcCompound;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.QcCmpdService;
-
-import chemaxon.formats.MolFormatException;
 
 @RequestMapping(value = {"/api/v1/qcCompoundServices"})
 @Controller
@@ -62,7 +61,7 @@ public class ApiQcCompoundServicesController {
 	@Transactional
 	@RequestMapping(value = "/qcParentStructs", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws MolFormatException, IOException{
+	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws CmpdRegMolFormatException, IOException{
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");		
 		if (adminCode.equalsIgnoreCase("lajolla-check")){

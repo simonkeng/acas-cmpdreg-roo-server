@@ -44,6 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 		<querydsl.version>3.4.3</querydsl.version>
 		<spring-security.version>3.1.0.RELEASE</spring-security.version>
 		<jchem.version>16.4.25.0</jchem.version>
+		<indigo.version>1.2.3.r0</indigo.version>
 		<git-sha-1>${buildNumber}</git-sha-1>
 		<BuildScmBranch>${scmBranch}</BuildScmBranch>
 	</properties>
@@ -110,6 +111,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<url>http://spring-roo-repository.springsource.org/release</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<!-- Maven Build profile controls whether to use JChem or Indigo -->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.chemaxon</groupId>
+					<artifactId>jchem</artifactId>
+					<version>${jchem.version}</version>
+				</dependency>
+			</dependencies>		
+		</profile>
+		<profile>
+			<id>indigo</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo-inchi</artifactId>
+					<version>$indigo.version}</version>
+				</dependency>
+			</dependencies>		
+		</profile>
+	</profiles>
 	<dependencies>
 		<!-- General dependencies for standard applications -->
 		<dependency>
@@ -237,11 +266,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<version>1.7</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.chemaxon</groupId>
-			<artifactId>jchem</artifactId>
-			<version>${jchem.version}</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.trove4j/trove4j -->
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>

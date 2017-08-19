@@ -3,7 +3,7 @@
 
 package com.labsynch.cmpdreg.dto;
 
-import chemaxon.struc.Molecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
 import java.util.Map;
@@ -19,11 +19,11 @@ privileged aspect StrippedSaltDTO_Roo_JavaBean {
         this.saltCounts = saltCounts;
     }
     
-    public Set<Molecule> StrippedSaltDTO.getUnidentifiedFragments() {
+    public Set<CmpdRegMolecule> StrippedSaltDTO.getUnidentifiedFragments() {
         return this.unidentifiedFragments;
     }
     
-    public void StrippedSaltDTO.setUnidentifiedFragments(Set<Molecule> unidentifiedFragments) {
+    public void StrippedSaltDTO.setUnidentifiedFragments(Set<CmpdRegMolecule> unidentifiedFragments) {
         this.unidentifiedFragments = unidentifiedFragments;
     }
     

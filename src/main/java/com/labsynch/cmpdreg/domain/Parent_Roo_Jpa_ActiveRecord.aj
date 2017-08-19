@@ -14,7 +14,7 @@ privileged aspect Parent_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager Parent.entityManager;
     
-    public static final List<String> Parent.fieldNames4OrderClauseFilter = java.util.Arrays.asList("logger", "corpName", "parentNumber", "chemist", "commonName", "stereoCategory", "stereoComment", "molStructure", "molWeight", "exactMass", "molFormula", "CdId", "registrationDate", "registeredBy", "modifiedDate", "modifiedBy", "ignore", "saltForms", "parentAliases", "bulkLoadFile", "parentAnnotation", "compoundType", "comment", "isMixture");
+    public static final List<String> Parent.fieldNames4OrderClauseFilter = java.util.Arrays.asList("logger", "corpName", "parentNumber", "chemist", "commonName", "stereoCategory", "stereoComment", "molStructure", "molWeight", "exactMass", "molFormula", "CdId", "registrationDate", "registeredBy", "modifiedDate", "modifiedBy", "ignore", "saltForms", "parentAliases", "bulkLoadFile", "parentAnnotation", "compoundType", "comment", "isMixture", "chemStructureService");
     
     public static final EntityManager Parent.entityManager() {
         EntityManager em = new Parent().entityManager;
