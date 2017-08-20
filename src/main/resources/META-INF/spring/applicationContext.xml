@@ -72,7 +72,7 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean class="com.labsynch.cmpdreg.service.ChemStructureServiceImpl"
+	<bean class="com.labsynch.cmpdreg.chemclasses.jchem.ChemStructureServiceJChemImpl"
 		id="ChemStructureService">
 		<property name="jdbcTemplate" ref="basicJdbcTemplate" />
 		<property name="shouldCloseConnection" value="${cmpdreg.database.shouldCloseConnection}" />

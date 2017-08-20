@@ -121,7 +121,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<artifactId>jchem</artifactId>
 					<version>${jchem.version}</version>
 				</dependency>
-			</dependencies>		
+			</dependencies>	
+			<properties>
+				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/indigo/**</exclude.chemistry.package>
+			</properties>
 		</profile>
 		<profile>
 			<id>indigo</id>
@@ -131,12 +134,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<artifactId>indigo</artifactId>
 					<version>${indigo.version}</version>
 				</dependency>
-				<dependency>
-					<groupId>com.epam.indigo</groupId>
-					<artifactId>indigo-inchi</artifactId>
-					<version>$indigo.version}</version>
-				</dependency>
-			</dependencies>		
+			</dependencies>	
+			<properties>
+				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/jchem/**</exclude.chemistry.package>
+			</properties>
 		</profile>
 	</profiles>
 	<dependencies>
@@ -571,6 +572,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<excludes>
+						<exclude>${exclude.chemistry.package}</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -615,6 +619,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 						as default in the test-compile goal. Aspects in src/main/java are added in 
 						the test-compile goal if weaveWithAspectsInMainSourceFolder is set to true -->
 					<weaveWithAspectsInMainSourceFolder>false</weaveWithAspectsInMainSourceFolder>
+					<excludes>
+								<exclude>${exclude.chemistry.package}</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>

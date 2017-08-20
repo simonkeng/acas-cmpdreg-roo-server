@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -15,8 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import chemaxon.formats.MolFormatException;
 
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.FileList;
@@ -32,6 +29,7 @@ import com.labsynch.cmpdreg.dto.CorpNameDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.DupeParentException;
 import com.labsynch.cmpdreg.exceptions.DupeSaltFormCorpNameException;
 import com.labsynch.cmpdreg.exceptions.DupeSaltFormStructureException;
@@ -77,7 +75,7 @@ public class MetalotServiceImpl implements MetalotService {
 		try {
 			mr = this.processAndSave(metaLot, mr, errors);
 
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			ErrorMessage parentError = new ErrorMessage();
 			parentError.setLevel("error");
 			parentError.setMessage("Bad molformat. Please fix the molfile: ");
@@ -130,7 +128,7 @@ public class MetalotServiceImpl implements MetalotService {
 	public MetalotReturn processAndSave(Metalot metaLot, MetalotReturn mr, ArrayList<ErrorMessage> errors) 
 			throws UniqueNotebookException, DupeParentException, JsonParseException, 
 			DupeSaltFormCorpNameException, DupeSaltFormStructureException, SaltFormMolFormatException, 
-			SaltedCompoundException, IOException {
+			SaltedCompoundException, IOException, CmpdRegMolFormatException {
 
 		logger.info("attempting to save the metaLot. ");
 
@@ -279,7 +277,7 @@ public class MetalotServiceImpl implements MetalotService {
 				cdId = chemService.saveStructure(parent.getMolStructure(), "Parent_Structure", checkForDupe);
 				if (cdId == -1){
 					logger.error("Bad molformat. Please fix the molfile: " + parent.getMolStructure());
-					throw new MolFormatException();
+					throw new CmpdRegMolFormatException();
 				} else {
 					parent.setCdId(cdId);
 					if (parent.getCorpName() == null || parent.getCorpName().isEmpty() || parent.getCorpName().trim().equalsIgnoreCase("")){

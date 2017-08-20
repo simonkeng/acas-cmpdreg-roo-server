@@ -1,4 +1,4 @@
-package com.labsynch.cmpdreg.service;
+package com.labsynch.cmpdreg.chemclasses.indigo;
 
 import java.awt.Color;
 import java.io.File;
@@ -20,44 +20,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoException;
+import com.epam.indigo.IndigoObject;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-import chemaxon.calculations.cip.CIPStereoCalculator;
-import chemaxon.calculations.clean.Cleaner;
-import chemaxon.calculations.hydrogenize.Hydrogenize;
-import chemaxon.enumeration.supergraph.SupergraphException;
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.jchem.db.CacheRegistrationUtil;
-import chemaxon.jchem.db.DatabaseProperties;
-import chemaxon.jchem.db.DatabaseSearchException;
-import chemaxon.jchem.db.JChemSearch;
-//import chemaxon.jchem.db.PropertyNotSetException;
-import chemaxon.jchem.db.StructureTableOptions;
-import chemaxon.jchem.db.UpdateHandler;
-import chemaxon.license.LicenseException;
-import chemaxon.sss.SearchConstants;
-import chemaxon.sss.search.JChemSearchOptions;
-import chemaxon.sss.search.MolSearch;
-import chemaxon.sss.search.MolSearchOptions;
-import chemaxon.sss.search.SearchException;
-import chemaxon.standardizer.Standardizer;
-import chemaxon.struc.CIPStereoDescriptorIface;
-import chemaxon.struc.Molecule;
-import chemaxon.struc.MoleculeGraph;
-import chemaxon.util.ConnectionHandler;
-import chemaxon.util.HitColoringAndAlignmentOptions;
-import chemaxon.util.MolHandler;
 
+public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
-public class ChemStructureServiceJChemImpl implements ChemStructureService {
-
-	Logger logger = LoggerFactory.getLogger(ChemStructureServiceJChemImpl.class);
+	Logger logger = LoggerFactory.getLogger(ChemStructureServiceIndigoImpl.class);
 
 	private boolean shouldCloseConnection = false;
 
@@ -89,7 +67,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	private static int maxSearchResults = mainConfig.getServerSettings().getMaxSearchResults();
 	private static boolean useStandardizer = mainConfig.getServerSettings().isUseExternalStandardizerConfig();
 	private static String standardizerConfigFilePath = mainConfig.getServerSettings().getStandardizerConfigFilePath();
-
+	
+	private Indigo indigo = new Indigo();
+	
 	@Override
 	public int getCount(String structureTable) {
 		String sql = "select count(*) from " + structureTable;
@@ -111,28 +91,19 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		//logger.info("SearchType is: " + searchType);
 		boolean compoundsMatch = false;
 		try {
-			MolSearch molSearch = new MolSearch();
-			MolHandler mhQuery = new MolHandler(preMolStruct);
-			Molecule queryMol = mhQuery.getMolecule();
-			MolHandler mhTarget = new MolHandler(postMolStruct);
-			Molecule targetMol = mhTarget.getMolecule();
+			IndigoObject queryMol = indigo.loadMolecule(preMolStruct);
+			IndigoObject targetMol = indigo.loadMolecule(preMolStruct);
 
-			molSearch.setQuery(queryMol);
-			molSearch.setTarget(targetMol);
-			MolSearchOptions options = new MolSearchOptions(MolSearchOptions.DUPLICATE);
-			options.setTautomerSearch(MolSearchOptions.TAUTOMER_SEARCH_OFF);
-			options.setChargeMatching(MolSearchOptions.CHARGE_MATCHING_EXACT);
-			molSearch.setSearchOptions(options);
-			compoundsMatch = molSearch.isMatching();
+//			MolSearchOptions options = new MolSearchOptions(MolSearchOptions.DUPLICATE);
+//			options.setTautomerSearch(MolSearchOptions.TAUTOMER_SEARCH_OFF);
+//			options.setChargeMatching(MolSearchOptions.CHARGE_MATCHING_EXACT);
+			compoundsMatch = (indigo.exactMatch(queryMol, targetMol, "ALL") != null);
 			if (!compoundsMatch){
-				logger.info(queryMol.toFormat("smiles"));
-				logger.info(targetMol.toFormat("smiles"));				
+				logger.info(queryMol.smiles());
+				logger.info(targetMol.smiles());				
 			}
 
-		} catch (MolFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SearchException e) {
+		} catch (IndigoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -143,46 +114,16 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 	@Override
-	public String standardizeStructure(String molfile) throws LicenseException, MolFormatException, IOException {
-		// service to standardize input structure
-		// return standardized structre
-		// error conditions? 
-		// throw or catch errors
-		// create Standardizer based on a XML configuration file
-		String molOut = null;
-		try {
-			Standardizer standardizer = new Standardizer(new File(standardizerConfigFilePath));
-			MolHandler mh = new MolHandler(molfile);
-			Molecule molecule = mh.getMolecule();
-			// standardize molecule
-			standardizer.standardize(molecule);
-			// export standardized molecule
-			molOut = MolExporter.exportToFormat(molecule, "mol");
-			
-		} catch (MolFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return molOut;
+	public String standardizeStructure(String molfile){
+		//Indigo standardizer not yet implemented
+		logger.error("Standardizer with Indigo chemistry services is not implemented. Please fix your configuration!");
+		return molfile;
 	}
 
 
-	public Molecule standardizeMolecule(Molecule molecule) {
-		// service to standardize input structure
-		// return standardized structure
-		// create Standardizer based on a XML configuration file
-		Standardizer standardizer = new Standardizer(new File(standardizerConfigFilePath));
-		try {
-			// standardize molecule
-			standardizer.standardize(molecule);
-			// export standardized molecule
-		} catch (LicenseException e) {
-			e.printStackTrace();
-		}
+	public CmpdRegMolecule standardizeMolecule(CmpdRegMolecule molecule) {
+		//Indigo standardizer not yet implemented
+		logger.error("Standardizer with Indigo chemistry services is not implemented. Please fix your configuration!");
 
 		return molecule;
 	}
@@ -197,150 +138,12 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public int saveStructure(String molfile, String structureTable, boolean checkForDupes) {
-
-		logger.debug("saving structure " + molfile);
-		logger.debug("saving structure to table " + structureTable);
-
-
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		CacheRegistrationUtil cru = null;
-
-		try {
-			logger.debug("the connection closed: " + conn.isClosed());
-			conn.setAutoCommit(true);
-			ch.setConnection(conn);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			logger.error("the connection is closed");
-			e1.printStackTrace();
-		}
-
-		UpdateHandler uh2;
-
-		int cdId = 0;
-		boolean badStructureFlag = false;
-
-		MolHandler mh = null;
-		try {
-			mh = new MolHandler(molfile);
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-
-		boolean foundDupe = false;
-		if (checkForDupes){
-			int[] hitCount = this.searchMolStructures(molfile, structureTable, "DUPLICATE_TAUTOMER");
-			if (hitCount.length > 0){
-				foundDupe = true;
-			}
-		}
-
-
-		try {
-
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-
-			} else if (structureTable.equalsIgnoreCase("Parent_Structure")) {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-
-			} else if (structureTable.equalsIgnoreCase("Compound_Structure")) {
-				String cacheIdentifier = "labsynch_cmpd_dupe_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-
-			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
-				String cacheIdentifier = "labsynch_qc_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-
-			}  else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			}
-
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			uh2 = new UpdateHandler(ch,
-					UpdateHandler.INSERT, structureTable, "");
-
-			if (!badStructureFlag && !foundDupe){
-				Molecule mol = mh.getMolecule();
-				mol.aromatize();
-				uh2.setStructure(MolExporter.exportToFormat(mol, "mol"));
-				uh2.setEmptyStructuresAllowed(true);
-
-				cdId = uh2.execute(true);
-				uh2.saveUpdateLogs();
-			} else if (foundDupe){
-				cdId = 0;
-			} else {
-				logger.debug("offending molformat:  " + molfile);
-				cdId = -1;
-			}
-
-			uh2.close();
-
-			if (this.shouldCloseConnection) {
-				ch.close();
-				conn.close();
-			}
-
-		} catch (SQLException e) {
-			logger.error("Caught SQLException saving structure to "+structureTable +" table.",e);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-
-
-		System.out.println("here is the new saved cdId  " + cdId);		
-		return cdId;
-
-
+		return 0;
 	}
 
 	@Override
 	public void closeConnection() {
-
-		if (this.shouldCloseConnection) {
-
-			Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-			ConnectionHandler ch = new ConnectionHandler();	 
-			ch.setConnection(conn);
-
-			try {
-				ch.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-
-			System.out.println("closed the connection");		
-		}
-
+		//do nothing
 	}
 
 
@@ -560,9 +363,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 	@Override
-	public boolean checkForSalt(String molfile) throws MolFormatException{
-		MolHandler mh = new MolHandler(molfile);
-		Molecule mol = mh.getMolecule();
+	public boolean checkForSalt(String molfile) throws CmpdRegMolFormatException{
+		IndigoObject mol = indigo.loadMolecule(molfile);
 		int fragCount = mol.getFragCount(MoleculeGraph.FRAG_BASIC);
 		boolean foundNonCovalentSalt = false;
 		if (fragCount > 1){
@@ -574,8 +376,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	}
 
 	@Override
-	public StrippedSaltDTO stripSalts(Molecule inputStructure){
-		Molecule clone = inputStructure.clone();
+	public StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure){
+		Molecule clone = inputStructure.molecule.clone();
 		Molecule[] rawFrags = clone.findFrags(Molecule.class, MoleculeGraph.FRAG_BASIC);
 		List<Molecule> allFrags = new ArrayList<Molecule>();
 		for (Molecule fragment : rawFrags){
@@ -606,7 +408,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	@Transactional
-	public Molecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) {
+	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) {
 
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
@@ -837,7 +639,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	@Transactional
-	public Molecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, 
+	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, 
 			String plainTable, String searchType, Float simlarityPercent, int maxResults) {
 
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
@@ -1068,22 +870,19 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 	@Override
-	public Molecule toMolecule(String molStructure) {
-		MolHandler mh = null;
+	public CmpdRegMolecule toMolecule(String molStructure) {
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		String lineEnd = System.getProperty("line.separator");
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();		
-		} catch (MolFormatException e1) {
+			mol = indigo.loadMolecule(molStructure);	
+		} catch (IndigoException e1) {
 			logger.debug("failed first attempt: bad mol structure: " + molStructure);
 			// clean up the molString and try again
 			try {
 				molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
-				mh = new MolHandler(molStructure);
-				mol = mh.getMolecule();
-			} catch (MolFormatException e2) {
+				mol = indigo.loadMolecule(molStructure);
+			} catch (IndigoException e2) {
 				logger.debug("failed second attempt: bad mol structure: " + molStructure);
 				badStructureFlag = true;
 				logger.error("bad mol structure: " + molStructure);
@@ -1091,7 +890,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		}	
 
 		if (!badStructureFlag){
-			return mol;
+			return (CmpdRegMolecule) mol;
 		} else {
 			return null;
 		}
@@ -1201,13 +1000,11 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public String toInchi(String molStructure) {
-		MolHandler mh = null;
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
+			mol = indigo.loadMolecule(molStructure);			
+		} catch (IndigoException e) {
 			badStructureFlag = true;
 		}
 
@@ -1220,18 +1017,16 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public String toSmiles(String molStructure) {
-		MolHandler mh = null;
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
+			mol = indigo.loadMolecule(molStructure);			
+		} catch (IndigoException e) {
 			badStructureFlag = true;
 		}
 
 		if (!badStructureFlag){
-			return mol.toFormat("smiles");
+			return mol.smiles();
 		} else {
 			return molStructure;
 		}
@@ -1239,13 +1034,11 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public double getMolWeight(String molStructure) {
-		MolHandler mh = null;
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
+			mol = indigo.loadMolecule(molStructure);			
+		} catch (IndigoException e) {
 			badStructureFlag = true;
 		}
 
@@ -1258,13 +1051,11 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public double getExactMass(String molStructure) {
-		MolHandler mh = null;
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
+			mol = indigo.loadMolecule(molStructure);			
+		} catch (IndigoException e) {
 			badStructureFlag = true;
 		}
 
@@ -1277,18 +1068,16 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public  String getMolFormula(String molStructure) {
-		MolHandler mh = null;
 		boolean badStructureFlag = false;
-		Molecule mol = null;
+		IndigoObject mol = null;
 		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
+			mol = indigo.loadMolecule(molStructure);			
+		} catch (IndigoException e) {
 			badStructureFlag = true;
 		}
 
 		if (!badStructureFlag){
-			return mol.getFormula();
+			return mol.grossFormula();
 		} else {
 			return null;
 		}
@@ -1571,7 +1360,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	}	
 
 	@Override
-	public boolean updateStructure(Molecule mol, String structureTable, int cdId) {
+	public boolean updateStructure(CmpdRegMolecule mol, String structureTable, int cdId) {
 
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
@@ -1686,6 +1475,12 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			deleteSuccessful = false;
 		}
 		return deleteSuccessful;
+	}
+
+	@Override
+	public boolean standardizedMolCompare(String queryMol, String targetMol) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
 

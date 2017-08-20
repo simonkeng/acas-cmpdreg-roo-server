@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -127,7 +128,8 @@ public class Parent {
     private Boolean isMixture;
     
     @Autowired
-	public ChemStructureService chemStructureService;
+    @Transient
+	private ChemStructureService chemStructureService;
 
 	public String getMolFormula() {
 		if (this.molFormula == null && this.getMolStructure() != null){

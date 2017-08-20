@@ -19,6 +19,7 @@ import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.QcCompound;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 

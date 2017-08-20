@@ -14,9 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.jchem.db.DatabaseSearchException;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,7 +31,7 @@ public class SaltStructureServiceTest {
 	private static Logger logger = Logger.getRootLogger();
 	
 //	@Test
-	public void test_1() throws SQLException, DatabaseSearchException, IOException{
+	public void test_1() throws SQLException, IOException{
 //		int count = jcs.getCount();
 //		System.out.println("here is the count " + count);
 //		
@@ -51,7 +49,7 @@ public class SaltStructureServiceTest {
 	}
 	
 //	@Test
-	public void test_2() throws SQLException, DatabaseSearchException, IOException{
+	public void test_2() throws SQLException, IOException{
 //		int count = jcs.getCount();
 //		System.out.println("here is the count " + count);
 //		
@@ -94,9 +92,9 @@ public class SaltStructureServiceTest {
     public void updateSingleSalt() {
     
     Salt salt = Salt.findSalt(20702L);
-	Molecule mol = chemService.toMolecule("C(=O)(C(F)(F)F)O");
+	CmpdRegMolecule mol = chemService.toMolecule("C(=O)(C(F)(F)F)O");
 	salt.setOriginalStructure(salt.getMolStructure());
-	salt.setMolStructure(mol.toFormat("mol"));
+	salt.setMolStructure(mol.getMolStructure());
 	salt.setFormula(mol.getFormula());
 	salt.setMolWeight(mol.getMass());
 	salt.setCharge(mol.getTotalCharge());

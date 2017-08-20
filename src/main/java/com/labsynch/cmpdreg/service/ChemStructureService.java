@@ -9,7 +9,6 @@ import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
-
 @Service
 public interface ChemStructureService {
 
@@ -92,6 +91,6 @@ public interface ChemStructureService {
 
 	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
 
-
+	public boolean standardizedMolCompare(String queryMol, String targetMol) throws CmpdRegMolFormatException;
 
 }

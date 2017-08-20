@@ -23,8 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
@@ -127,18 +126,18 @@ public class SearchFormMulitQueryTest {
 //		String searchType = "SUBSTRUCTURE"; 
 //		float simlarityPercent = 0f;
 //
-//		Molecule[] parentStructureHits = structureService.searchMols( molfile,  structureTable, inputCdIdHitList, plainTable, searchType, simlarityPercent);
+//		CmpdRegMolecule[] parentStructureHits = structureService.searchMols( molfile,  structureTable, inputCdIdHitList, plainTable, searchType, simlarityPercent);
 //		logger.debug("number of mol hits := " + parentStructureHits.length);
 //		
-//		for (Molecule hitMol : parentStructureHits){
+//		for (CmpdRegMolecule hitMol : parentStructureHits){
 //			logger.debug("Parent mol cdId := " + hitMol.getProperty("cd_id"));
 //		}
 //
 //
-//		Molecule[] saltFormStructureHits = structureService.searchMols( molfile,  "SaltForm_Structure", null, "Salt_Form", searchType, simlarityPercent);
+//		CmpdRegMolecule[] saltFormStructureHits = structureService.searchMols( molfile,  "SaltForm_Structure", null, "Salt_Form", searchType, simlarityPercent);
 //		logger.debug("number of saltForm mol hits := " + saltFormStructureHits.length);
 //		
-//		for (Molecule hitMol : saltFormStructureHits){
+//		for (CmpdRegMolecule hitMol : saltFormStructureHits){
 //			logger.debug("SaltForm mol cdId := " + hitMol.getProperty("cd_id"));
 //			int CdId = Integer.parseInt( hitMol.getProperty("cd_id"));
 //			SaltForm saltForm = SaltForm.findSaltFormsByCdId(CdId).getSingleResult();
@@ -314,27 +313,27 @@ public class SearchFormMulitQueryTest {
 			List<Integer> saltFormCdIds = SaltForm.findSaltFormCdIdsByMeta(searchParams);
 			filterCdIds = ArrayUtils.toPrimitive(saltFormCdIds.toArray(new Integer[saltFormCdIds.size()]));
 			structureTable = "SaltForm_Structure";
-			Molecule[] saltFormStructureHits = structureService.searchMols( searchParams.getMolStructure(), structureTable,filterCdIds, plainTable, 
+			CmpdRegMolecule[] saltFormStructureHits = structureService.searchMols( searchParams.getMolStructure(), structureTable,filterCdIds, plainTable, 
 																			searchParams.getSearchType(), searchParams.getPercentSimilarity());
 
 			logger.debug("found: " + saltFormStructureHits.length + " saltForm structure hits");
 			
-			for (Molecule hitMol : saltFormStructureHits){
+			for (CmpdRegMolecule hitMol : saltFormStructureHits){
 				int hitCdId = Integer.parseInt(hitMol.getProperty("cd_id").trim());
 				SaltForm saltForm = SaltForm.findSaltFormsByCdId(hitCdId).getSingleResult();
-				saltForm.setMolStructure(hitMol.toFormat("mrv"));
+				saltForm.setMolStructure(hitMol.getMrvStructure());
 				saltFormMols.put(saltForm.getCorpName(), saltForm);				
 			}
 			
 			List<Integer> parentCdIds = Parent.findParentCdIdsByMeta(searchParams);
 			filterCdIds = ArrayUtils.toPrimitive(parentCdIds.toArray(new Integer[parentCdIds.size()]));;
 			structureTable = "Parent_Structure";
-			Molecule[] parentStructureHits = structureService.searchMols( searchParams.getMolStructure(),  structureTable, filterCdIds, plainTable, 
+			CmpdRegMolecule[] parentStructureHits = structureService.searchMols( searchParams.getMolStructure(),  structureTable, filterCdIds, plainTable, 
 																			searchParams.getSearchType(), searchParams.getPercentSimilarity());
 
 			logger.debug("found: " + parentStructureHits.length + " parent structure hits");
 			
-			for (Molecule hitMol : parentStructureHits){
+			for (CmpdRegMolecule hitMol : parentStructureHits){
 				int hitCdId = Integer.parseInt(hitMol.getProperty("cd_id").trim());
 				Parent parent = Parent.findParentsByCdId(hitCdId).getSingleResult();
 				saltForms = SaltForm.findSaltFormsByParentAndMeta(parent, searchParams).getResultList();
@@ -353,7 +352,7 @@ public class SearchFormMulitQueryTest {
 					if(saltFormMols.containsKey(saltForm.getCorpName())){
 						searchCompound.setMolStructure(saltFormMols.get(saltForm.getCorpName()).getMolStructure());
 					} else {
-						searchCompound.setMolStructure(hitMol.toFormat("mrv"));
+						searchCompound.setMolStructure(hitMol.getMrvStructure());
 					}
 					List<Lot> lots = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
 					for (Lot lot : lots){

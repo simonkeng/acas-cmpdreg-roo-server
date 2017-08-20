@@ -17,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.LotAlias;
@@ -32,7 +31,6 @@ import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.SearchFormReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchLotDTO;
-import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 @Service
@@ -388,7 +386,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 			logger.debug(structureTable + "   search type:= " + searchParams.getSearchType());
 //			logger.debug("Query Structure Smiles: " + structureService.toSmiles(searchParams.getMolStructure()));
 
-			Molecule[] saltFormStructureHits;
+			CmpdRegMolecule[] saltFormStructureHits;
 			if (searchParams.getMaxResults() != null){
 				saltFormStructureHits = structureService.searchMols( searchParams.getMolStructure(), structureTable, filterCdIds, plainTable, 
 						searchParams.getSearchType(), searchParams.getPercentSimilarity(), searchParams.getMaxResults());
@@ -399,12 +397,12 @@ public class SearchFormServiceImpl implements SearchFormService {
 
 			logger.debug("found: " + saltFormStructureHits.length + " saltForm structure hits");
 
-			for (Molecule hitMol : saltFormStructureHits){
+			for (CmpdRegMolecule hitMol : saltFormStructureHits){
 				logger.debug("did we find a saltForm hit: " + hitMol.toString());
 				int hitCdId = Integer.parseInt(hitMol.getProperty("cd_id").trim());
 				SaltForm saltForm = SaltForm.findSaltFormsByCdId(hitCdId).getSingleResult();
 				//				saltForm.setMolStructure(hitMol.toFormat("mrv"));
-				saltForm.setMolStructure(hitMol.toFormat("smiles"));
+				saltForm.setMolStructure(hitMol.getSmiles());
 				saltFormMols.put(saltForm.getCorpName(), saltForm);
 				saltForms.add(saltForm);
 			}
@@ -426,7 +424,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 			structureTable = "Parent_Structure";
 			logger.debug(structureTable + "   search type:= " + searchParams.getSearchType());
 
-			Molecule[] parentStructureHits;
+			CmpdRegMolecule[] parentStructureHits;
 			if (searchParams.getMaxResults() != null){
 				parentStructureHits = structureService.searchMols( searchParams.getMolStructure(), structureTable, filterCdIds, plainTable, 
 						searchParams.getSearchType(), searchParams.getPercentSimilarity(), searchParams.getMaxResults());
@@ -439,7 +437,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 
 				logger.debug("found: " + parentStructureHits.length + " parent structure hits");
 
-				for (Molecule hitMol : parentStructureHits){
+				for (CmpdRegMolecule hitMol : parentStructureHits){
 					int hitCdId = Integer.parseInt(hitMol.getProperty("cd_id").trim());
 					logger.debug("query parent hitCdId  " + hitCdId);
 					List<Parent> parents = Parent.findParentsByCdId(hitCdId).getResultList();
@@ -491,7 +489,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 								searchCompound.setCorpName(saltForm.getParent().getCorpName());
 								searchCompound.setCorpNameType("Parent");
 							}
-							searchCompound.setMolStructure(hitMol.toFormat("mol"));
+							searchCompound.setMolStructure(hitMol.getMolStructure());
 						}
 						List<Lot> lotsFound = Lot.findLotsBySaltFormAndMeta(saltForm, searchParams).getResultList();
 						List<Lot> lots = new ArrayList<Lot>();

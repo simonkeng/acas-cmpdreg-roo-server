@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import chemaxon.struc.Molecule;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.utils.Configuration;
 
@@ -25,9 +26,9 @@ public class SaltStructureServiceImpl implements SaltStructureService {
 	@Override
 	public Salt saveStructure(Salt salt) {		
 
-		Molecule mol = chemStructureService.toMolecule(salt.getMolStructure());
+		CmpdRegMolecule mol = chemStructureService.toMolecule(salt.getMolStructure());
 		salt.setOriginalStructure(salt.getMolStructure());
-		salt.setMolStructure(mol.toFormat("mol"));
+		salt.setMolStructure(mol.getMolStructure());
 		salt.setFormula(mol.getFormula());
 		if (Configuration.getConfigInfo().getMetaLot().isUseExactMass()){
 			salt.setMolWeight(mol.getExactMass());
@@ -62,9 +63,9 @@ public class SaltStructureServiceImpl implements SaltStructureService {
 
 	@Override
 	public Salt update(Salt salt) {
-		Molecule mol = chemStructureService.toMolecule(salt.getMolStructure());
+		CmpdRegMolecule mol = chemStructureService.toMolecule(salt.getMolStructure());
 		salt.setOriginalStructure(salt.getMolStructure());
-		salt.setMolStructure(mol.toFormat("mol"));
+		salt.setMolStructure(mol.getMolStructure());
 		salt.setFormula(mol.getFormula());
 		salt.setMolWeight(mol.getMass());
 		salt.setCharge(mol.getTotalCharge());

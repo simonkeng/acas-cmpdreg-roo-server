@@ -1,0 +1,91 @@
+package com.labsynch.cmpdreg.chemclasses.indigo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoObject;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+
+public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
+	
+	private Indigo indigo = new Indigo();
+	
+	IndigoObject molecule;
+	
+	public CmpdRegMoleculeIndigoImpl(String molStructure){
+		this.molecule = indigo.loadMolecule(molStructure);
+	}
+	
+	public CmpdRegMoleculeIndigoImpl(IndigoObject molecule){
+		this.molecule = molecule;
+	}
+	
+	public String getProperty(String key){
+		return molecule.getProperty(key);
+	}
+	
+	public void setProperty(String key, String value){
+		this.molecule.setProperty(key, value);
+	}
+
+	@Override
+	public String[] getPropertyKeys() {
+		List<String> propertyKeys = new ArrayList<String>();
+		for (IndigoObject prop:  this.molecule.iterateProperties()) {
+			propertyKeys.add(prop.name());
+		}
+		String[] keys = new String[propertyKeys.size()];
+		return propertyKeys.toArray(keys);
+	}
+
+	@Override
+	public String getPropertyType(String key) {
+		//Does not seem to exist
+		return null;
+	}
+
+	@Override
+	public String getMolStructure() {
+		return this.molecule.molfile();
+	}
+	
+	@Override
+	public String getSmiles() {
+		return this.molecule.smiles();
+	}
+	
+	@Override
+	public String getMrvStructure() {
+		// not implemented in Indigo
+		return null;
+	}; 
+
+	@Override
+	public String getFormula() {
+		return this.molecule.grossFormula();
+	}
+
+	@Override
+	public Double getExactMass() {
+		return (double) this.molecule.monoisotopicMass();
+	}
+
+	@Override
+	public Double getMass() {
+		return (double) this.molecule.molecularWeight();
+	}
+
+	@Override
+	public int getTotalCharge() {
+		return this.molecule.charge();
+	}
+
+	@Override
+	public CmpdRegMolecule replaceStructure(String newStructure) throws CmpdRegMolFormatException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

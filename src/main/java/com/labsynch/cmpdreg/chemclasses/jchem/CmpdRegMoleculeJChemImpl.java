@@ -1,13 +1,22 @@
-package com.labsynch.cmpdreg.chemclasses;
+package com.labsynch.cmpdreg.chemclasses.jchem;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 import chemaxon.formats.MolFormatException;
+import chemaxon.struc.MProp;
 import chemaxon.struc.Molecule;
 import chemaxon.util.MolHandler;
 
-
 public class CmpdRegMoleculeJChemImpl implements CmpdRegMolecule {
 	
-	public Molecule molecule;
+	Logger logger = LoggerFactory.getLogger(CmpdRegMoleculeJChemImpl.class);
+
+	
+	Molecule molecule;
 	
 	public CmpdRegMoleculeJChemImpl(String molStructure) throws MolFormatException{
 		MolHandler mh = null;
@@ -34,7 +43,7 @@ public class CmpdRegMoleculeJChemImpl implements CmpdRegMolecule {
 		if (!badStructureFlag){
 			this.molecule = mol;
 		} else {
-			throw MolFormatException("bad mol structure: " + molStructure);
+			this.molecule = null;
 		}
 	}
 	
@@ -42,20 +51,75 @@ public class CmpdRegMoleculeJChemImpl implements CmpdRegMolecule {
 		this.molecule = mol;
 	}
 	
+	@Override
 	public String getProperty(String key){
 		return molecule.getProperty(key);
 	}
 	
+	@Override
 	public void setProperty(String key, String value){
 		this.molecule.setProperty(key, value);
 	}; 
 	
+	@Override
 	public String[] getPropertyKeys(){
 		return this.molecule.properties().getKeys();
 	};
 
+	@Override
 	public String getPropertyType(String key){
 		MProp prop = molecule.properties().get(key);
 		return prop.getPropType();
+	}
+
+	@Override
+	public String getMolStructure() {
+		return this.molecule.toFormat("mol");
+	}
+	
+	@Override
+	public String getSmiles() {
+		return this.molecule.toFormat("smiles");
+	}
+	
+	@Override
+	public String getMrvStructure() {
+		return this.molecule.toFormat("mrv");
 	};
+
+	@Override
+	public String getFormula() {
+		return this.molecule.getFormula();
+	}
+
+	@Override
+	public Double getExactMass() {
+		return this.molecule.getExactMass();
+	}
+
+	@Override
+	public Double getMass() {
+		return this.molecule.getMass();
+	}
+
+	@Override
+	public int getTotalCharge() {
+		return this.molecule.getTotalCharge();
+	}
+
+	@Override
+	public CmpdRegMolecule replaceStructure(String newStructure) throws CmpdRegMolFormatException {
+		Molecule replacementMol;
+		try {
+			replacementMol = new CmpdRegMoleculeJChemImpl(newStructure).molecule;
+		} catch (MolFormatException e) {
+			throw new CmpdRegMolFormatException(e);
+		}
+		Molecule newMol = this.molecule.clone();
+		newMol.removeAll();
+		newMol.fuse(replacementMol);
+		CmpdRegMoleculeJChemImpl newMolecule = new CmpdRegMoleculeJChemImpl(newMol);
+		return newMolecule;
+	}
+
 }

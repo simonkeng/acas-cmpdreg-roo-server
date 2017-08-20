@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 import com.labsynch.cmpdreg.utils.SecurityUtil;
@@ -46,7 +45,7 @@ public class ParentStructureServiceImpl implements ParentStructureService {
 
 		try {
 			parent = processAndUpdate(parent);
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			logger.error("Bad molformat exception");
 		} 
@@ -55,12 +54,12 @@ public class ParentStructureServiceImpl implements ParentStructureService {
 
 	}
 
-	private Parent processAndUpdate(Parent inputParent) throws MolFormatException {
+	private Parent processAndUpdate(Parent inputParent) throws CmpdRegMolFormatException {
 		
 		Parent parent = Parent.update(inputParent);
 		
-		Molecule mol = chemService.toMolecule(inputParent.getMolStructure());
-		parent.setMolStructure(mol.toFormat("mol"));
+		CmpdRegMolecule mol = chemService.toMolecule(inputParent.getMolStructure());
+		parent.setMolStructure(mol.getMolStructure());
 		parent.setMolFormula(chemService.getMolFormula(inputParent.getMolStructure()));
 		boolean updateFlag = chemService.updateStructure(mol, "Parent_Structure", inputParent.getCdId());
 

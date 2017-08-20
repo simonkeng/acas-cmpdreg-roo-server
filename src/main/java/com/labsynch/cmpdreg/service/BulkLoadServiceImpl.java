@@ -37,6 +37,11 @@ import chemaxon.formats.MolFormatException;
 import chemaxon.sss.search.StandardizedMolSearch;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.BulkLoadFile;
 import com.labsynch.cmpdreg.domain.BulkLoadTemplate;
 import com.labsynch.cmpdreg.domain.CompoundType;
@@ -72,6 +77,7 @@ import com.labsynch.cmpdreg.dto.PurgeFileResponseDTO;
 import com.labsynch.cmpdreg.dto.SimpleBulkLoadPropertyDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.DupeLotException;
 import com.labsynch.cmpdreg.exceptions.DupeParentException;
 import com.labsynch.cmpdreg.exceptions.MissingPropertyException;
@@ -90,6 +96,15 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 	@Autowired
 	public MetalotService metalotService;
+	
+	@Autowired
+	public CmpdRegMoleculeFactory moleculeFactory;
+	
+	@Autowired
+	public CmpdRegSDFReaderFactory sdfReaderFactory;
+	
+	@Autowired
+	public CmpdRegSDFWriterFactory sdfWriterFactory;
 
 	@Override
 	public BulkLoadPropertiesDTO readSDFPropertiesFromFile(BulkLoadSDFPropertyRequestDTO requestDTO) {
@@ -104,7 +119,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		HashSet<ErrorMessage> errors = new HashSet<ErrorMessage>();
 		int numRecordsRead = 0;
 		try {
-			CmpdRegSDFReader molReader = new CmpdRegSDFReader(inputFileName);
+			CmpdRegSDFReader molReader = sdfReaderFactory.getCmpdRegSDFReader(inputFileName);
 			CmpdRegMolecule mol = null;
 			while ((numRowsToRead == -1 || numRecordsRead < numRowsToRead) && (mol = molReader.readNextMol()) != null){
 				numRecordsRead++;
@@ -117,7 +132,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					}
 				}
 			}
-			mi.close();
+			molReader.close();
 		} catch (Exception e){
 			logger.error(e.toString());
 			errors.add(new ErrorMessage("error",e.getMessage()));
@@ -258,12 +273,11 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			reportFiles.add(registeredCSVName);
 			reportFiles.add(reportName);
 
-			fis = new FileInputStream (inputFileName);
-			MolImporter mi = new MolImporter(fis);
+			CmpdRegSDFReader molReader = sdfReaderFactory.getCmpdRegSDFReader(inputFileName);
 
-			errorSDFOutStream = new FileOutputStream (errorSDFName, false);
+//			errorSDFOutStream = new FileOutputStream (errorSDFName, false);
 			errorCSVOutStream = new FileOutputStream (errorCSVName, false);
-			registeredSDFOutStream = new FileOutputStream (registeredSDFName, false);
+//			registeredSDFOutStream = new FileOutputStream (registeredSDFName, false);
 			registeredCSVOutStream = new FileOutputStream (registeredCSVName, false);
 			reportOutStream = new FileOutputStream (reportName, false);
 
@@ -282,15 +296,15 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					+ "Registration Level\n";
 			registeredCSVOutStream.write(registeredCSVHeaders.getBytes());
 
-			CmpdRegSDFWriter errorMolExporter = new CmpdRegSDFWriter(errorSDFOutStream);
-			CmpdRegSDFWriter registeredMolExporter = new CmpdRegSDFWriter(registeredSDFOutStream);
+			CmpdRegSDFWriter errorMolExporter = sdfWriterFactory.getCmpdRegSDFWriter(errorSDFName);
+			CmpdRegSDFWriter registeredMolExporter = sdfWriterFactory.getCmpdRegSDFWriter(registeredSDFName);
 
 			CmpdRegMolecule mol = null;
 			int numRecordsRead = 0;
 			Map<String, Integer> errorMap = new HashMap<String, Integer>();
 			int numNewParentsLoaded = 0;
 			int numNewLotsOldParentsLoaded = 0;
-			while ((mol = mi.readNextMol()) != null){
+			while ((mol = molReader.readNextMol()) != null){
 				numRecordsRead++;
 				boolean isNewParent = true;
 				//We are building up a Metalot, which will have a nested Lot, SaltForm, and Parent
@@ -387,13 +401,13 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			logger.debug(summaryHtml);
 
 			//close the input and output streams, importers and exporters
-			mi.close();
+			molReader.close();
 			errorMolExporter.close();
 			registeredMolExporter.close();
-			fis.close();	
-			errorSDFOutStream.close();
+//			fis.close();	
+//			errorSDFOutStream.close();
 			errorCSVOutStream.close();
-			registeredSDFOutStream.close();
+//			registeredSDFOutStream.close();
 			registeredCSVOutStream.close();
 			reportOutStream.close();
 
@@ -418,7 +432,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		}
 	}
 
-	public void writeRegisteredMol(int numRecordsRead, CmpdRegMolecule mol, MetalotReturn metalotReturn, Collection<BulkLoadPropertyMappingDTO> mappings, CmpdRegSDFWriter registeredMolExporter, FileOutputStream registeredCSVOutStream, Boolean isNewParent) throws IOException {
+	public void writeRegisteredMol(int numRecordsRead, CmpdRegMolecule mol, MetalotReturn metalotReturn, Collection<BulkLoadPropertyMappingDTO> mappings, CmpdRegSDFWriter registeredMolExporter, FileOutputStream registeredCSVOutStream, Boolean isNewParent) throws IOException, CmpdRegMolFormatException {
 		String sdfCorpName = "";
 		String dbCorpName = "";
 		BulkLoadPropertyMappingDTO mapping = BulkLoadPropertyMappingDTO.findMappingByDbPropertyEquals(mappings, "Lot Corp Name");
@@ -465,7 +479,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 	}
 
-	public void logError(Exception e, int numRecordsRead, CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, CmpdRegSDFWriter errorMolExporter, Map<String, Integer> errorMap, FileOutputStream errorCSVOutStream) throws IOException {
+	public void logError(Exception e, int numRecordsRead, CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, CmpdRegSDFWriter errorMolExporter, Map<String, Integer> errorMap, FileOutputStream errorCSVOutStream) throws IOException, CmpdRegMolFormatException {
 		logger.error("Caught exception on molecule number "+numRecordsRead, e);
 
 		String errorMessage = e.getMessage();
@@ -498,7 +512,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 		}
 		mol.setProperty("Error", errorMessage);
-		errorMolExporter.write(mol);
+		errorMolExporter.writeMol(mol);
 		String csvRow = numRecordsRead+","+sdfCorpName+","+dbCorpName+","+aliasCorpNames+","+errorMessage+"\n";
 		errorCSVOutStream.write(csvRow.getBytes());
 	}
@@ -579,14 +593,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			Parent foundParent = null;
 			try{
 				foundParent = Parent.findParentsByCorpNameEquals(parent.getCorpName()).getSingleResult();
-				CmpdRegMolecule parentMol = MolImporter.importMol(parent.getMolStructure());
-				CmpdRegMolecule foundParentMol = MolImporter.importMol(foundParent.getMolStructure());
-				StandardizedMolSearch molSearch = new StandardizedMolSearch();
-				molSearch.setQuery(parentMol);
-				molSearch.setTarget(foundParentMol);
-				int[][] hits = null;
-				hits = molSearch.findAll();
-				if (hits == null){
+				boolean structuresMatch = chemStructureService.standardizedMolCompare(parent.getMolStructure(), foundParent.getMolStructure());
+				
+				if (!structuresMatch){
 					logger.error("Parent corp name already exists for a different parent structure: "+foundParent.getCorpName());
 					throw new DupeParentException("Parent corp name already exists for a different parent structure: "+foundParent.getCorpName());
 				}
@@ -732,7 +741,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		//Here we try to fetch all of the possible Lot database properties from the sdf, according to the mappings
 		Lot lot = new Lot();
 		//set a couple properties that do not come in from mappings
-		lot.setAsDrawnStruct(mol.toFormat("mol"));
+		lot.setAsDrawnStruct(mol.getMolStructure());
 		lot.setRegistrationDate(registrationDate);
 		lot.setRegisteredBy(chemist);
 
@@ -983,7 +992,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public Parent createParent(CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, Scientist chemist) throws Exception{
 		//Here we try to fetch all of the possible Lot database properties from the sdf, according to the mappings
 		Parent parent = new Parent();
-		parent.setMolStructure(mol.toFormat("mol"));
+		parent.setMolStructure(mol.getMolStructure());
 		parent.setRegistrationDate(new Date());
 		parent.setRegisteredBy(chemist);
 
@@ -1534,18 +1543,17 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		return summary;
 	}
 	
-	public CmpdRegMolecule processForSaltStripping(CmpdRegMolecule inputMol, Collection<BulkLoadPropertyMappingDTO> mappings) throws MolFormatException{
-		boolean multipleFragments = chemStructureService.checkForSalt(inputMol.toFormat("mol"));
+	public CmpdRegMolecule processForSaltStripping(CmpdRegMolecule inputMol, Collection<BulkLoadPropertyMappingDTO> mappings) throws CmpdRegMolFormatException{
+		boolean multipleFragments = chemStructureService.checkForSalt(inputMol.getMolStructure());
 		boolean markedAsMixture = Boolean.valueOf(getStringValueFromMappings(inputMol, "Parent Is Mixture", mappings));
 		if (multipleFragments && !markedAsMixture){
 			//attempt salt stripping
 			StrippedSaltDTO strippedSaltDTO = chemStructureService.stripSalts(inputMol);
 			if (!strippedSaltDTO.getSaltCounts().isEmpty() && strippedSaltDTO.getUnidentifiedFragments().size() == 1){
 				logger.debug("Successful salt stripping! "+strippedSaltDTO.getSaltCounts().size()+" distinct salts found. No unidentified fragments.");
-				inputMol.removeAll();
-				inputMol.fuse(strippedSaltDTO.getUnidentifiedFragments().iterator().next());
+				inputMol = inputMol.replaceStructure(strippedSaltDTO.getUnidentifiedFragments().iterator().next().getMolStructure());
 				logger.debug("Cleaned parent structure (only fragment not identified as salt)");
-				logger.debug(inputMol.toFormat("mol"));
+				logger.debug(inputMol.getMolStructure());
 				String saltAbbrevString = "";
 				String saltEquivString = "";
 				if (getStringValueFromMappings(inputMol, "Lot Salt Abbrev", mappings) != null){
@@ -1587,7 +1595,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}else if (!strippedSaltDTO.getUnidentifiedFragments().isEmpty()){
 				logger.warn("Attempted salt stripping failed - could not identify "+strippedSaltDTO.getUnidentifiedFragments().size()+ " fragments.");
 				for (CmpdRegMolecule unidentifiedFragment : strippedSaltDTO.getUnidentifiedFragments()){
-					logger.warn(unidentifiedFragment.toFormat("mol"));
+					logger.warn(unidentifiedFragment.getMolStructure());
 				}
 				return inputMol;
 			}else{

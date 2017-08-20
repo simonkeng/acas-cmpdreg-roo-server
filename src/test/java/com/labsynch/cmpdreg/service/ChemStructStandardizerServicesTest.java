@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.QcCompound;
-
-import chemaxon.formats.MolFormatException;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -38,7 +37,7 @@ public class ChemStructStandardizerServicesTest {
 	private ParentService parentServ;
 
 	@Test
-	public void molconvertInchiTest() throws IOException {
+	public void molconvertInchiTest() throws IOException, CmpdRegMolFormatException {
 		String structure = "CCC";
 		String result = chemStructServ.standardizeStructure(structure);
 		logger.info(result);
@@ -56,7 +55,7 @@ public class ChemStructStandardizerServicesTest {
 	}
 
 	//	@Test
-	public void standardizeAllParents() throws MolFormatException, IOException{
+	public void standardizeAllParents() throws CmpdRegMolFormatException, IOException {
 		int numberOfParents = parentServ.restandardizeAllParentStructures();
 		logger.info("number of parents standardized: " + numberOfParents);
 	}
@@ -83,7 +82,7 @@ public class ChemStructStandardizerServicesTest {
 
 	//@Test
 	//@Transactional
-	public void qcCheckParents() throws MolFormatException, IOException{
+	public void qcCheckParents() throws CmpdRegMolFormatException, IOException{
 		//		parentServ.qcCheckParentStructures();
 		qcCmpdServ.qcCheckParentStructures();
 	}

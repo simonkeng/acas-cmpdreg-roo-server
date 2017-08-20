@@ -19,6 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.Lot;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.CompoundType;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
@@ -32,15 +36,11 @@ import com.labsynch.cmpdreg.dto.ParentDTO;
 import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
 
-import chemaxon.formats.MolFormatException;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -60,10 +60,16 @@ public class ParentServiceImpl implements ParentService {
 
 	@Autowired
 	public ParentAliasService parentAliasService;
+	
+	@Autowired
+	public CmpdRegSDFWriterFactory cmpdRegSDFWriterFactory;
+	
+	@Autowired
+	public CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	@Override
 	@Transactional
-	public ParentValidationDTO validateUniqueParent(Parent queryParent) throws MolFormatException {
+	public ParentValidationDTO validateUniqueParent(Parent queryParent) throws CmpdRegMolFormatException {
 		ParentValidationDTO validationDTO = new ParentValidationDTO();
 
 		if (queryParent.getCorpName() == null) validationDTO.getErrors().add(new ErrorMessage("error","Must provide corpName for parent to be validated"));
@@ -154,7 +160,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 
 	@Override
-	public int restandardizeAllParentStructures() throws MolFormatException, IOException{
+	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, IOException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		List<Lot> lots;
@@ -181,7 +187,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 	
 	@Override
-	public int restandardizeParentStructures(List<Long> parentIds) throws MolFormatException, IOException{
+	public int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException{
 		Parent parent;
 		List<Lot> lots;
 		Lot lot;
@@ -207,7 +213,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 	
 	@Override
-	public int restandardizeParentStructsWithDisplayChanges() throws MolFormatException, IOException{
+	public int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException{
 		List<Long> parentIds = QcCompound.findParentsWithDisplayChanges().getResultList();
 		int result = restandardizeParentStructures(parentIds);
 		return result;
@@ -221,10 +227,8 @@ public class ParentServiceImpl implements ParentService {
 		List<Parent> dupeParents = new ArrayList<Parent>();
 		int[] hits;
 		logger.info("number of parents to check: " + parentIds.size());
-		FileOutputStream dupeOutputStream = null;
 		try {
-			dupeOutputStream = new FileOutputStream (dupeCheckFile, false);
-			MolExporter dupeMolExporter = new MolExporter(dupeOutputStream, "sdf");
+			CmpdRegSDFWriter dupeMolExporter = cmpdRegSDFWriterFactory.getCmpdRegSDFWriter(dupeCheckFile);
 			for  (Long parentId : parentIds){
 				parent = Parent.findParent(parentId);
 				hits = chemStructureService.searchMolStructures(parent.getMolStructure(), "Parent_Structure", "DUPLICATE_TAUTOMER");
@@ -240,24 +244,22 @@ public class ParentServiceImpl implements ParentService {
 							logger.info("found dupe parents");
 							logger.info("query: " + parent.getCorpName() + "     dupe: " + searchResultParent.getCorpName());
 							dupeParents.add(searchResultParent);
-							MolHandler mh = new MolHandler(parent.getMolStructure());
-							Molecule parentMol = mh.getMolecule();
-							MoleculeUtil.setMolProperty(parentMol, "corpName", parent.getCorpName());
-							MoleculeUtil.setMolProperty(parentMol, "stereoCategory", parent.getStereoCategory().getName());
-							MoleculeUtil.setMolProperty(parentMol, "stereoComment", parent.getStereoComment());
-							MoleculeUtil.setMolProperty(parentMol, "dupeCorpName", searchResultParent.getCorpName());
-							MoleculeUtil.setMolProperty(parentMol, "dupeStereoCategory", searchResultParent.getStereoCategory().getName());
-							MoleculeUtil.setMolProperty(parentMol, "dupeStereoComment", searchResultParent.getStereoComment());
+							CmpdRegMolecule parentMol = cmpdRegMoleculeFactory.getCmpdRegMolecule(parent.getMolStructure());
+							parentMol.setProperty("corpName", parent.getCorpName());
+							parentMol.setProperty("stereoCategory", parent.getStereoCategory().getName());
+							parentMol.setProperty("stereoComment", parent.getStereoComment());
+							parentMol.setProperty("dupeCorpName", searchResultParent.getCorpName());
+							parentMol.setProperty("dupeStereoCategory", searchResultParent.getStereoCategory().getName());
+							parentMol.setProperty("dupeStereoComment", searchResultParent.getStereoComment());
 
 							//							MoleculeUtil.setMolProperty(parentMol, "dupeMolStructure", searchResultParent.getMolStructure());
-							MoleculeUtil.setMolProperty(parentMol, "dupeMolSmiles", chemStructureService.toSmiles(searchResultParent.getMolStructure()));
+							parentMol.setProperty("dupeMolSmiles", chemStructureService.toSmiles(searchResultParent.getMolStructure()));
 
-							dupeMolExporter.write(parentMol);
+							dupeMolExporter.writeMol(parentMol);
 						}
 					}
 				}
 			}
-			dupeOutputStream.close();
 			dupeMolExporter.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -268,6 +270,8 @@ public class ParentServiceImpl implements ParentService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (CmpdRegMolFormatException e) {
+			logger.error("Bad mol format",e);
 		}
 
 
@@ -285,12 +289,10 @@ public class ParentServiceImpl implements ParentService {
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		List<Parent> dupeParents = new ArrayList<Parent>();
-		FileOutputStream dupeOutputStream = null;
 		int[] hits;
 		logger.info("number of parents to check: " + parentIds.size());
 		try {
-			dupeOutputStream = new FileOutputStream (dupeCheckFile, false);
-			MolExporter dupeMolExporter = new MolExporter(dupeOutputStream, "sdf");
+			CmpdRegSDFWriter dupeMolExporter = cmpdRegSDFWriterFactory.getCmpdRegSDFWriter(dupeCheckFile);
 			for  (Long parentId : parentIds){
 				parent = Parent.findParent(parentId);
 				hits = chemStructureService.searchMolStructures(parent.getMolStructure(), "Parent_Structure", "DUPLICATE_TAUTOMER");
@@ -313,14 +315,13 @@ public class ParentServiceImpl implements ParentService {
 								dupeCorpNames = dupeCorpNames.concat(searchResult.getCorpName());
 								firstDupeHit = false;
 								dupeParents.add(searchResult);							
-								MolHandler mh = new MolHandler(parent.getMolStructure());
-								Molecule parentMol = mh.getMolecule();
-								MoleculeUtil.setMolProperty(parentMol, "corpName", parent.getCorpName());
-								MoleculeUtil.setMolProperty(parentMol, "dupeCorpName", searchResult.getCorpName());
-								MoleculeUtil.setMolProperty(parentMol, "stereoCategory", searchResult.getStereoCategory().getName());
-								MoleculeUtil.setMolProperty(parentMol, "stereoComment", searchResult.getStereoComment());
-								MoleculeUtil.setMolProperty(parentMol, "dupeMolSmiles", chemStructureService.toSmiles(searchResult.getMolStructure()));
-								dupeMolExporter.write(parentMol);
+								CmpdRegMolecule parentMol = cmpdRegMoleculeFactory.getCmpdRegMolecule(parent.getMolStructure());
+								parentMol.setProperty("corpName", parent.getCorpName());
+								parentMol.setProperty("dupeCorpName", searchResult.getCorpName());
+								parentMol.setProperty("stereoCategory", searchResult.getStereoCategory().getName());
+								parentMol.setProperty("stereoComment", searchResult.getStereoComment());
+								parentMol.setProperty("dupeMolSmiles", chemStructureService.toSmiles(searchResult.getMolStructure()));
+								dupeMolExporter.writeMol(parentMol);
 
 							} else {
 								logger.info("found different stereo codes and comments");
@@ -329,7 +330,6 @@ public class ParentServiceImpl implements ParentService {
 					}
 				}
 			}
-			dupeOutputStream.close();
 			dupeMolExporter.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -340,6 +340,8 @@ public class ParentServiceImpl implements ParentService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (CmpdRegMolFormatException e) {
+			logger.error("Bad mol format",e);
 		}
 		logger.info("total number of dupes found: " + dupeParents.size());
 		return (dupeParents.size());
@@ -351,7 +353,7 @@ public class ParentServiceImpl implements ParentService {
 
 	@Override
 	@Transactional
-	public void qcCheckParentStructures() throws MolFormatException, IOException{
+	public void qcCheckParentStructures() throws CmpdRegMolFormatException, IOException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		QcCompound qcCompound;
@@ -484,7 +486,7 @@ public class ParentServiceImpl implements ParentService {
 		ParentValidationDTO parentValidationDTO = null;
 		try {
 			parentValidationDTO = validateUniqueParent(parent);
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

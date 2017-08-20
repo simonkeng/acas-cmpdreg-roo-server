@@ -26,6 +26,7 @@ import com.labsynch.cmpdreg.dto.MolConvertInputDTO;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.MolInputDTO;
 import com.labsynch.cmpdreg.dto.ParentAliasDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.SearchFormService;
 
@@ -51,6 +52,9 @@ public class ApiStructureServicesController {
 			standardizedMol = chemStructureService.standardizeStructure(inputDTO.getStructure());
 		} catch (IOException e) {
 			logger.error(e.toString());
+			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error("Mol format exception in standardize route", e);
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
 		}
 		output.setStructure(standardizedMol);

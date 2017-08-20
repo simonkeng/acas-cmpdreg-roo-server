@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import chemaxon.formats.MolExporter;
 import chemaxon.formats.MolFormatException;
-import chemaxon.marvin.io.MPropHandler;
-import chemaxon.marvin.io.MolExportException;
 import chemaxon.struc.Molecule;
 import chemaxon.util.MolHandler;
 
