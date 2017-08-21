@@ -1,4 +1,4 @@
-package com.labsynch.cmpdreg.db.migration.postgres;
+package com.labsynch.cmpdreg.db.migration.postgres.jchem;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,19 +13,19 @@ import chemaxon.jchem.db.StructureTableOptions;
 import chemaxon.jchem.db.UpdateHandler;
 import chemaxon.util.ConnectionHandler;
 
-public class V1_0_3_4_1__Add_compound_Jchem_Tables implements JdbcMigration {
+public class V1_0_8_1__Add_qc_compound_Jchem_Tables implements JdbcMigration {
  
-	Logger logger = LoggerFactory.getLogger(V1_0_3_4_1__Add_compound_Jchem_Tables.class);
+	Logger logger = LoggerFactory.getLogger(V1_0_8_1__Add_qc_compound_Jchem_Tables.class);
 
 	//create the jchem table to store the compounds
 
 	public void migrate(Connection conn) throws Exception {
-		logger.info("Creating Compound Structure Table");
+		logger.info("Creating QC Compound Structure Table");
 		conn.setAutoCommit(true);
 		logger.info("connection autocommit mode: " + conn.getAutoCommit());
 		logger.info("getTransactionIsolation  " + conn.getTransactionIsolation());
 
-		createJChemTable(conn, "compound.compound_structure", true);
+		createJChemTable(conn, "compound.qc_compound_structure", true);
 
 		conn.setAutoCommit(false);
 		logger.info("connection autocommit mode: " + conn.getAutoCommit());

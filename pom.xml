@@ -124,6 +124,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			</dependencies>	
 			<properties>
 				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/indigo/**</exclude.chemistry.package>
+				<exclude.chemistry.migrations>com/labsynch/cmpdreg/db/migration/postgres/indigo/**</exclude.chemistry.migrations>
 			</properties>
 		</profile>
 		<profile>
@@ -137,6 +138,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			</dependencies>	
 			<properties>
 				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/jchem/**</exclude.chemistry.package>
+				<exclude.chemistry.migrations>com/labsynch/cmpdreg/db/migration/postgres/jchem/**</exclude.chemistry.migrations>
 			</properties>
 		</profile>
 	</profiles>
@@ -574,6 +576,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<excludes>
 						<exclude>${exclude.chemistry.package}</exclude>
+						<exclude>${exclude.chemistry.migrations}</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
@@ -621,6 +624,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<weaveWithAspectsInMainSourceFolder>false</weaveWithAspectsInMainSourceFolder>
 					<excludes>
 								<exclude>${exclude.chemistry.package}</exclude>
+								<exclude>${exclude.chemistry.migrations}</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

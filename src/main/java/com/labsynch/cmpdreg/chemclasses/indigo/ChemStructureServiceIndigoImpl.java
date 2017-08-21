@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,6 +27,7 @@ import com.epam.indigo.Indigo;
 import com.epam.indigo.IndigoException;
 import com.epam.indigo.IndigoObject;
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
@@ -94,9 +98,6 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			IndigoObject queryMol = indigo.loadMolecule(preMolStruct);
 			IndigoObject targetMol = indigo.loadMolecule(preMolStruct);
 
-//			MolSearchOptions options = new MolSearchOptions(MolSearchOptions.DUPLICATE);
-//			options.setTautomerSearch(MolSearchOptions.TAUTOMER_SEARCH_OFF);
-//			options.setChargeMatching(MolSearchOptions.CHARGE_MATCHING_EXACT);
 			compoundsMatch = (indigo.exactMatch(queryMol, targetMol, "ALL") != null);
 			if (!compoundsMatch){
 				logger.info(queryMol.smiles());
@@ -115,16 +116,17 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public String standardizeStructure(String molfile){
-		//Indigo standardizer not yet implemented
-		logger.error("Standardizer with Indigo chemistry services is not implemented. Please fix your configuration!");
-		return molfile;
+		//Call method below after parsing molfile
+		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
+		return standardizeMolecule(molWrapper.molecule).molfile();
 	}
 
 
-	public CmpdRegMolecule standardizeMolecule(CmpdRegMolecule molecule) {
-		//Indigo standardizer not yet implemented
-		logger.error("Standardizer with Indigo chemistry services is not implemented. Please fix your configuration!");
-
+	public IndigoObject standardizeMolecule(IndigoObject molecule) {
+		//Indigo standardizer configs
+		logger.error("Standardizer with Indigo chemistry services is not implemented!");
+//		indigo.setOption("standardize-stereo", true);
+		molecule.standardize();		
 		return molecule;
 	}
 
@@ -192,14 +194,11 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-
-		CacheRegistrationUtil cru = null;
+		
 		long maxTime = maxSearchTime;
 		int maxResultCount = maxResults;
-
-		logger.debug("Search table is  " + structureTable);		
+		//Indigo: the structures in the plainTable are being used. Ignore structureTable from here on out.
+		logger.debug("Search table is  " + plainTable);		
 		logger.debug("Search type is  " + searchType);		
 		logger.debug("Max number of results is  " + maxResults);		
 
@@ -208,51 +207,15 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			searchType = exactSearchDef;
 		}
 
-		MolHandler mh = null;
-		JChemSearch searcher = null;
-
 		try {
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			} else if (structureTable.equalsIgnoreCase("Compound_Structure")) {
-				String cacheIdentifier = "labsynch_cmpd_dupe_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);		
-			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
-				String cacheIdentifier = "labsynch_qc_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-			} else {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			}
-
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			mh = new MolHandler(molfile);
-			Molecule mol = mh.getMolecule();
-
+			CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
+			IndigoObject mol = molWrapper.molecule;
+			
+			String baseQuery = "SELECT id FROM " + plainTable + " WHERE mol_structure @ ";
+			String argFormat = null;
+			String bingoFunction = null;
+			String orderBy = " ORDER BY id";
+			
 			if (useStandardizer){
 				mol = standardizeMolecule(mol);
 				mol.aromatize();				
@@ -260,87 +223,81 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 				mol.aromatize();				
 			}
 
-			searcher = new JChemSearch();
-			searcher.setQueryStructure(mol);
-			searcher.setConnectionHandler(ch);
-			searcher.setStructureTable(structureTable);
-
 			logger.debug("definition of exact search: " + exactSearchDef);
 			logger.debug("selected search type: " + searchType);
-
-			JChemSearchOptions searchOptions = null;
-			if (searchType.equalsIgnoreCase("DUPLICATE")){
-				logger.debug("search type is DUPLICATE  ");
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-
-			} else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
-				logger.debug("Search type is DUPLICATE_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			} else if (searchType.equalsIgnoreCase("DUPLICATE_NO_TAUTOMER")){
-				logger.debug("Search type is DUPLICATE_NO_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-
-			}else if (searchType.equalsIgnoreCase("STEREO_IGNORE")){
-				logger.debug("Search type is no stereo");		
-				searchOptions = new JChemSearchOptions(SearchConstants.STEREO_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-
-			} else if (searchType.equalsIgnoreCase("FULL_TAUTOMER")){
-				logger.debug("Search type is exact FULL_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			} else if (searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				logger.debug("Search type is substructure");	
-				searchOptions = new JChemSearchOptions(SearchConstants.SUBSTRUCTURE);
-
-			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
-				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
-				searchOptions.setDissimilarityThreshold(simlarityPercent);
-				//				searchOptions.setMaxTime(maxTime);	
-			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Selected Search type is full with no tautomer search");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-			} else {
-				logger.debug("Default Search type is full with tautomer search");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
+			
+			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
+				bingoFunction = "::bingo.sub";
+				argFormat = "( :queryMol , :parameters )";
+			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
+				bingoFunction = "::bingo.sim";
+				argFormat = "( :minSimilarity , :maxSimilarity , :queryMol , :metric )";
+				orderBy = " ORDER BY "+argFormat+bingoFunction;
+			}else { 
+				bingoFunction = "::bingo.exact";
+				argFormat = "( :queryMol , :parameters )";
+			}
+			
+			EntityManager em = Parent.entityManager();
+			Query query = em.createQuery(baseQuery + argFormat + bingoFunction + orderBy);
+			
+			query.setParameter("queryMol", mol.molfile());
+			query.setMaxResults(maxResults);
+			
+			//May need additional research / decisions around which options to use
+			//Basic Indigo search types corresponding to JChem search types
+			//CReg: "DUPLICATE" or "DUPLICATE_NO_TAUTOMER" :: JChem: "DUPLICATE", "TAUTOMER_SEARCH_OFF" :: Bingo.Exact, "ALL"
+			//CReg: "DUPLICATE_TAUTOMER" :: JChem: "DUPLICATE", "TAUTOMER_SEARCH_ON" :: Bingo.Exact, "TAU"
+			//CReg: "STEREO_IGNORE" :: JChem: "STEREO_IGNORE" :: Bingo.Exact "ALL -STE"
+			//(NOT SURE ABOUT THIS) CReg: "FULL_TAUTOMER", or default/unrecognized searchType :: JChem: "FULL", "CHARGE_MATCHING_IGNORE", "ISOTOPE_MATCHING_IGNORE", "STEREO_IGNORE", "TAUTOMER_SEARCH_ON" :: Bingo.Exact "TAU ALL -ELE -MAS -STE"
+			//CReg: "SUBSTRUCTURE" :: JChem: "SUBSTRUCTURE" :: Bingo.Sub
+			//CReg: "SIMILARITY" :: JChem "SIMILARITY" :: Bingo.Sim > $min
+			//CReg: "FULL" :: JChem "FULL", "CHARGE_MATCHING_IGNORE", "ISOTOPE_MATCHING_IGNORE", "STEREO_IGNORE", "TAUTOMER_SEARCH_OFF" :: Bingo.Exact "ALL -ELE -MAS -STE"
+			
+			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
+				query.setParameter("parameters", "");
+			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
+				query.setParameter("minSimilarity", simlarityPercent);
+				query.setParameter("maxSimilarity", null);
+				query.setParameter("metric", "Tanimoto");
+			}else {
+				String parameters = null;
+				switch (searchType.toUpperCase()) {
+				case "DUPLICATE":
+					parameters = "ALL";
+					break;
+				case "DUPLICATE_TAUTOMER":
+					parameters = "TAU";
+					break;
+				case "STEREO_IGNORE":
+					parameters = "ALL -STE";
+					break;
+				case "FULL_TAUTOMER":
+					parameters = "TAU";
+					break;
+				case "FULL":
+					parameters = "ALL -ELE -MAS -STE";
+					break;
+				default:
+					//TODO: this should match FULL_TAUTOMER if possible
+					parameters = "ALL";
+					break;
+				}
+				query.setParameter("parameters", parameters);
+			}
+			if (logger.isDebugEnabled()) logger.debug(query.unwrap(org.hibernate.Query.class).getQueryString());
+			//TODO: should do an audit of the search types being used by CReg.
+			
+			List<Long> idHitList = query.getResultList();
+			//TODO: Change return type of this service.
+			
+			if (hitList.length > 0){
+				logger.debug("found a matching molecule!!!  " + hitList.length);
 			}
 
-
-			if (plainTable != null && searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				searchOptions.setFilterQuery("select cd_id from "+ plainTable + " where id > 0");				
-			}
-
-			searchOptions.setMaxResultCount(maxResultCount);
-			searcher.setOrder(JChemSearch.ORDERING_BY_ID_OR_SIMILARITY);
-			searcher.setSearchOptions(searchOptions);
-			searcher.setRunMode(JChemSearch.RUN_MODE_SYNCH_COMPLETE);
-			searcher.run();
-
-			if (this.shouldCloseConnection) {
-				ch.close();
-				conn.close();
-			}
-
-		} catch (MolFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DatabaseSearchException e) {
+			return hitList;
+			
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -351,14 +308,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			e.printStackTrace();
 		} 
 
-
-		int[] hitList = searcher.getResults();
-
-		if (hitList.length > 0){
-			logger.debug("found a matching molecule!!!  " + hitList.length);
-		}
-
-		return hitList;
+		
+		return null;
 	}
 
 
@@ -934,68 +885,27 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public String getCipStereo(String structure) throws IOException{	
-		MolHandler mh = new MolHandler(structure);
-		Molecule mol = mh.getMolecule();
-		Collection<CIPStereoDescriptorIface> output = CIPStereoCalculator.calculateCIPStereoDescriptors(mol);
-
-		if (logger.isDebugEnabled()){
-			for (CIPStereoDescriptorIface single : output){
-				logger.debug(single.toString());
-			}			
-		}
-
-		return output.toString();
+		//specific MarvinJS method
+		return null;
 	}
 
 	@Override
 	public String hydrogenizeMol(String structure, String inputFormat, String method) throws IOException{	
-		MolHandler mh = new MolHandler(structure);
-		Molecule mol = mh.getMolecule();
-		if (method.equalsIgnoreCase("HYDROGENIZE")){
-			Hydrogenize.convertImplicitHToExplicit(mol);				
-		} else {
-			Hydrogenize.convertExplicitHToImplicit(mol);
-		}
-		return MolExporter.exportToFormat(mol, "mrv");
+		//specific MarvinJS method
+		return null;
 	}
 
 	@Override
 	public MolConvertOutputDTO cleanStructure(String structure, int dim, String opts) throws IOException {				
-		boolean badStructureFlag = false;
-		MolConvertOutputDTO output = new MolConvertOutputDTO();		
-		Molecule mol = null;
-		try {
-			mol = MolImporter.importMol(structure);
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-		if (!badStructureFlag){
-			Cleaner.clean(mol, dim, opts);
-			output.setStructure(MolExporter.exportToFormat(mol, "mrv"));
-			output.setFormat("mrv");
-		} 
-		return output;
+		//specific MarvinJS method
+		return null;
 	}
 
 	@Override
 	public MolConvertOutputDTO toFormat(String structure, String inputFormat, String outputFormat) throws IOException {				
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		try {
-			mol = MolImporter.importMol(structure, inputFormat);
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-
-		MolConvertOutputDTO output = new MolConvertOutputDTO();		
-		if (!badStructureFlag){
-			output.setStructure(MolExporter.exportToFormat(mol, outputFormat));
-			output.setFormat(outputFormat);
-			String contentUrl = "TO DO: Download Link";
-			output.setContentUrl(contentUrl);
-		} 
-
-		return output;
+		//specific MarvinJS method
+		//TODO: see if this might serve both Ketcher and MarvinJS
+		return null;
 	}
 
 	@Override
@@ -1034,216 +944,52 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public double getMolWeight(String molStructure) {
-		boolean badStructureFlag = false;
-		IndigoObject mol = null;
-		try {
-			mol = indigo.loadMolecule(molStructure);			
-		} catch (IndigoException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.getMass();
-		} else {
-			return 0d;
-		}
+		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
+		return mol.getMass();
 	}
 
 	@Override
 	public double getExactMass(String molStructure) {
-		boolean badStructureFlag = false;
-		IndigoObject mol = null;
-		try {
-			mol = indigo.loadMolecule(molStructure);			
-		} catch (IndigoException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.getExactMass();
-		} else {
-			return 0d;
-		}
+		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
+		return mol.getExactMass();
 	}
 
 	@Override
 	public  String getMolFormula(String molStructure) {
-		boolean badStructureFlag = false;
-		IndigoObject mol = null;
-		try {
-			mol = indigo.loadMolecule(molStructure);			
-		} catch (IndigoException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.grossFormula();
-		} else {
-			return null;
-		}
+		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
+		return mol.getFormula();
 	}
 
 	@Override
 	public boolean createJChemTable(String tableName, boolean tautomerDupe) {
-		boolean tableCreated = false;
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		StructureTableOptions options = new StructureTableOptions(tableName, StructureTableOptions.TABLE_TYPE_MOLECULES);
-		options.setTautomerDuplicateChecking(tautomerDupe);
-
-		try {
-			String[] tables = UpdateHandler.getStructureTables(ch);
-			List<String> tableList = Arrays.asList(tables); 
-			if (!tableList.contains(tableName)){
-				UpdateHandler.createStructureTable(ch, options );
-				logger.info("created the Jchem structure table " + tableName );
-				tableCreated = true;
-			}
-		} catch (SQLException e) {
-			logger.error("SQL error. Unable to create the Jchem structure table " + tableName );
-			e.printStackTrace();
-		}
-
-		return tableCreated;
+		//no-op
+		return false;
 	}	
 
 	@Override
 	@Transactional
 	public boolean dropJChemTable(String tableName) {
-		boolean tableDropped = false;
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		logger.info("is the connection active: " + ch.isConnected());
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			String[] tables = UpdateHandler.getStructureTables(ch);
-			List<String> tableList = Arrays.asList(tables); 
-			for (String table : tableList){
-				logger.info("tables: " + table);
-			}
-			if (tableList.contains(tableName)){
-				UpdateHandler.dropStructureTable(ch, tableName);				
-			} else {
-				logger.info(tableName + " does not exist");
-			}
-			tables = UpdateHandler.getStructureTables(ch);
-			tableList = Arrays.asList(tables); 
-			if (tableList.contains(tableName)){
-				tableDropped = false;
-			} else {
-				tableDropped = true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return tableDropped;
+		//no-op
+		return false;
 	}	
 
 	@Override
 	@Transactional
 	public boolean deleteAllJChemTableRows(String tableName) {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		//		try {
-		//			conn.setAutoCommit(true);
-		//		} catch (SQLException e1) {
-		//			// TODO Auto-generated catch block
-		//			e1.printStackTrace();
-		//		}
-		try {
-			String[] results = UpdateHandler.getStructureTables(ch);
-
-			for (String single : results){
-				logger.info(single);
-			}
-
-			String[] tables = UpdateHandler.getStructureTables(ch);
-			List<String> tableList = Arrays.asList(tables); 
-			if (tableList.contains(tableName)){
-				UpdateHandler.deleteRows(ch, tableName, "where cd_id > 0");
-				logger.info("deleting all rows from table: " + tableName);
-				if (this.shouldCloseConnection) {
-					ch.close();
-					conn.close();
-				}
-			} else {
-				logger.info("did not see the query table  " + tableName);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
+		//no-op
 		return false;
 	}	
 
 	@Override
 	public boolean deleteJChemTableRows(String tableName, int[] cdIds) {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			String[] tables = UpdateHandler.getStructureTables(ch);
-			List<String> tableList = Arrays.asList(tables); 
-			if (tableList.contains(tableName)){
-				for (int cd_id:cdIds){
-					UpdateHandler.deleteRow(ch, tableName, cd_id);
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		//no-op
 		return false;
 	}	
 
 	@Override
 	public boolean createJchemPropertyTable() {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		boolean tableCreated = true;
-		try{
-			if (!DatabaseProperties.propertyTableExists(ch)){
-				DatabaseProperties.createPropertyTable(ch);				
-				logger.info("created the Jchem property table" );
-			}
-		} catch (SQLException e) {
-			logger.error("SQL error - unable to create the Jchem property table" );
-			tableCreated = false;
-		}
-
-		return tableCreated;
+		//no-op
+		return false;
 	}
 
 	@Override
@@ -1254,227 +1000,20 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public boolean updateStructure(String molStructure, String structureTable, int cdId) {
-
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		CacheRegistrationUtil cru = null;
-
-		boolean updatedStructure = false;
-
-		try {
-			logger.info("the connection closed: " + conn.isClosed());
-			conn.setAutoCommit(true);
-			ch.setConnection(conn);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			logger.error("the connection is closed");
-			e1.printStackTrace();
-		}
-
-		UpdateHandler uh2;
-		boolean badStructureFlag = false;
-
-		MolHandler mh = null;
-		String lineEnd = System.getProperty("line.separator");
-
-		try {
-			mh = new MolHandler(toMolfile(molStructure));
-		} catch (MolFormatException e) {
-			try {
-				logger.info("adding more new lines");
-				molStructure = lineEnd + lineEnd + molStructure;
-				mh = new MolHandler(molStructure);
-			} catch (MolFormatException e2){
-				badStructureFlag = true;				
-			}
-
-		}
-
-		logger.debug("attempt to update structure: " + molStructure);
-
-
-		try {
-
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-
-			} else if (structureTable.equalsIgnoreCase("Parent_Structure")) {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			}
-
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			uh2 = new UpdateHandler(ch,
-					UpdateHandler.UPDATE, structureTable, "");
-
-			if (!badStructureFlag){
-				Molecule mol = mh.getMolecule();
-				mol.aromatize();
-				uh2.setStructure(MolExporter.exportToFormat(mol, "mol"));
-				uh2.setEmptyStructuresAllowed(true);
-				uh2.setID(cdId);
-				uh2.execute(true);
-				uh2.saveUpdateLogs(); 
-				updatedStructure = true;
-			} else {
-				logger.debug("offending molformat:  " + molStructure);
-				updatedStructure = false;
-			}
-
-			uh2.close();
-			if (this.shouldCloseConnection) {
-				ch.close();
-				conn.close();
-			}
-
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-		return updatedStructure;
+		//no-op
+		return true;
 	}	
 
 	@Override
 	public boolean updateStructure(CmpdRegMolecule mol, String structureTable, int cdId) {
-
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		CacheRegistrationUtil cru = null;
-
-		boolean updatedStructure = false;
-
-		try {
-			logger.info("the connection closed: " + conn.isClosed());
-			conn.setAutoCommit(true);
-			ch.setConnection(conn);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			logger.error("the connection is closed");
-			e1.printStackTrace();
-		}
-
-		UpdateHandler uh2;
-		boolean badStructureFlag = false;
-
-		try {
-
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-			} else if (structureTable.equalsIgnoreCase("Parent_Structure")) {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
-				String cacheIdentifier = "labsynch_qc_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			}
-
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			uh2 = new UpdateHandler(ch,
-					UpdateHandler.UPDATE, structureTable, "");
-
-			if (!badStructureFlag){
-				mol.aromatize();
-				uh2.setStructure(MolExporter.exportToFormat(mol, "mol"));
-				uh2.setEmptyStructuresAllowed(true);
-				uh2.setID(cdId);
-				uh2.execute(true);
-				uh2.saveUpdateLogs(); 
-				updatedStructure = true;
-			} else {
-				logger.debug("offending molformat:  " + MolExporter.exportToFormat(mol, "mol"));
-				updatedStructure = false;
-			}
-
-			uh2.close();
-			if (this.shouldCloseConnection) {
-				ch.close();
-				conn.close();
-			}
-
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-		return updatedStructure;
+		//no-op
+		return true;
 	}
 
 	@Override
 	public boolean deleteStructure(String structureTable, int cdId){
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		CacheRegistrationUtil cru = null;
-
-		boolean deleteSuccessful = false;
-
-		try {
-			logger.info("the connection closed: " + conn.isClosed());
-			conn.setAutoCommit(true);
-			ch.setConnection(conn);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			logger.error("the connection is closed");
-			e1.printStackTrace();
-		}
-		try{
-			UpdateHandler.deleteRow(ch, structureTable, cdId);
-			deleteSuccessful = true;
-		}catch (Exception e){
-			logger.error("Caught exception trying to delete structure from "+structureTable+" with cdId "+cdId, e);
-			deleteSuccessful = false;
-		}
-		return deleteSuccessful;
+		//no-op
+		return true;
 	}
 
 	@Override

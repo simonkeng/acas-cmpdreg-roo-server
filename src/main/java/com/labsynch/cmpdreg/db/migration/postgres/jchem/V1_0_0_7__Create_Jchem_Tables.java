@@ -1,4 +1,4 @@
-package com.labsynch.cmpdreg.db.migration.postgres;
+package com.labsynch.cmpdreg.db.migration.postgres.jchem;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package com.labsynch.cmpdreg.db.migration.postgres;
+package com.labsynch.cmpdreg.db.migration.postgres.jchem;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -11,9 +11,9 @@ import chemaxon.jchem.db.UpdateHandlerException;
 import chemaxon.jchem.db.Updater;
 import chemaxon.util.ConnectionHandler;
 
-public class V1_0_8_1_1__Upgrade_Jchem_Tables implements JdbcMigration {
+public class V1_0_4_3__Upgrade_Jchem_Tables implements JdbcMigration {
  
-	Logger logger = LoggerFactory.getLogger(V1_0_8_1_1__Upgrade_Jchem_Tables.class);
+	Logger logger = LoggerFactory.getLogger(V1_0_4_3__Upgrade_Jchem_Tables.class);
 
 
 	public void migrate(Connection conn) throws Exception {
