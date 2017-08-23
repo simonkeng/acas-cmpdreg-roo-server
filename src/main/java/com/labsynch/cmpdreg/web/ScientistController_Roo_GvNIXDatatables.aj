@@ -453,6 +453,34 @@ privileged aspect ScientistController_Roo_GvNIXDatatables {
         return DatatablesResponse.build(dataSet,criterias);
     }
     
+    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCodeLike", produces = "application/json")
+    @ResponseBody
+    public DatatablesResponse<Map<String, String>> ScientistController.findScientistsByCodeLike(@DatatablesParams DatatablesCriterias criterias, @RequestParam("code") String code) {
+        BooleanBuilder baseSearch = new BooleanBuilder();
+        
+        // Base Search. Using BooleanBuilder, a cascading builder for
+        // Predicate expressions
+        PathBuilder<Scientist> entity = new PathBuilder<Scientist>(Scientist.class, "entity");
+        
+        if(code != null){
+            baseSearch.and(entity.getString("code").toLowerCase().like("%".concat(code).toLowerCase().concat("%")));
+        }else{
+            baseSearch.and(entity.getString("code").isNull());
+        }
+        
+        SearchResults<Scientist> searchResult = DatatablesUtils.findByCriteria(entity, Scientist.entityManager(), criterias, baseSearch);
+        
+        // Get datatables required counts
+        long totalRecords = searchResult.getTotalCount();
+        long recordsFound = searchResult.getResultsCount();
+        
+        // Entity pk field name
+        String pkFieldName = "id";
+        
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
+        return DatatablesResponse.build(dataSet,criterias);
+    }
+    
     @RequestMapping(value = "/exportcsv", produces = "text/csv")
     public void ScientistController.exportCsv(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Scientist scientist, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
         export(criterias, scientist, ExportType.CSV, new CsvExport(), request, response);

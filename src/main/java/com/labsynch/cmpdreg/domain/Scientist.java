@@ -2,6 +2,8 @@ package com.labsynch.cmpdreg.domain;
 
 import java.util.List;
 
+import javax.persistence.TypedQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -12,7 +14,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findScientistsByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findScientistsByCodeEquals", "findScientistsByCodeLike" })
 public class Scientist {
 
 	private static final Logger logger = LoggerFactory.getLogger(Scientist.class);
@@ -43,5 +45,6 @@ public class Scientist {
 		}
 		return validUser;
 	}
+
 	
 }

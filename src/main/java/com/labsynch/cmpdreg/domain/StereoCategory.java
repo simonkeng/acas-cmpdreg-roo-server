@@ -10,7 +10,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findStereoCategorysByCodeEquals" })
+@RooJpaActiveRecord(finders = { "findStereoCategorysByCodeEquals", "findStereoCategorysByCodeLike" })
 public class StereoCategory {
 
     @Size(max = 255)

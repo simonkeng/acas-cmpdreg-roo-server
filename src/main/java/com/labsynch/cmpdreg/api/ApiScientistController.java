@@ -17,53 +17,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.Lot;
-import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.service.ErrorMessage;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-@RequestMapping(value = {"/api/v1/vendors"})
+@RequestMapping(value = {"/api/v1/scientists"})
 @Controller
-public class ApiVendorController {
+public class ApiScientistController {
 	
-	Logger logger = LoggerFactory.getLogger(ApiVendorController.class);
+	Logger logger = LoggerFactory.getLogger(ApiScientistController.class);
 	
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
-	
-	//check if vendor already exists by code
-	// if exists -- return false else true
-    @RequestMapping(value = "/validate", method = RequestMethod.GET, headers = "Accept=application/json")
-	    @ResponseBody
-	    public ResponseEntity<Boolean> validate(@RequestParam(value="code", required = true) String code) {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/json; charset=utf-8");
-	        headers.add("Access-Control-Allow-Headers", "Content-Type");
-	        headers.add("Access-Control-Allow-Origin", "*");
-	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
-	        headers.add("Pragma", "no-cache"); //HTTP 1.0
-	        headers.setExpires(0); // Expire the cache
-
-	        if (Vendor.countFindVendorsByCodeEquals(code) > 0){
-	        	return new ResponseEntity<Boolean>(false, headers,HttpStatus.CONFLICT );
-	        } else {
-	        	return new ResponseEntity<Boolean>(true, headers,HttpStatus.ACCEPTED );	        	
-	        }
-	    }	
-
-	//validate vendor before saving
-    // is vendor code still unique?
-    // is vendor name unique? (optional)
     @RequestMapping(value = "/validateBeforeSave", method = RequestMethod.POST, headers = "Accept=application/json")
 	    @ResponseBody
-	    public ResponseEntity<String> validateNewVendor(@RequestBody String json) {
-    	   logger.info("validateNewVendor -- incoming json: " + json);
-    	    Vendor queryVendor = Vendor.fromJsonToVendor(json);
-    	    if (queryVendor.getCode() == null || queryVendor.getCode().equalsIgnoreCase("")) {
+	    public ResponseEntity<String> validateNewScientist(@RequestBody String json) {
+    	   logger.info("validateNewScientist -- incoming json: " + json);
+    	    Scientist queryScientist = Scientist.fromJsonToScientist(json);
+    	    if (queryScientist.getCode() == null || queryScientist.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
-    	    	queryVendor.setCode(queryVendor.getName().toLowerCase());
+    	    	queryScientist.setCode(queryScientist.getName().toLowerCase());
     	    }
-    	    logger.info("validateNewVendor -- query vendor: " + queryVendor.toJson());
+    	    logger.info("validateNewScientist -- query scientist: " + queryScientist.toJson());
 
             ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
            // boolean errorsFound = false;
@@ -76,26 +52,26 @@ public class ApiVendorController {
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
 	        
-	        Long vendorByCodeCount = 0L;
-	        List<Vendor> queryVendors = Vendor.findVendorsByCodeEquals(queryVendor.getCode()).getResultList();
-	        for (Vendor vendor : queryVendors){
-	        	if (vendor.getId().longValue() != queryVendor.getId().longValue()){
-	        		++vendorByCodeCount;
-		        	logger.debug("current vendor: " + vendor.toJson());
-		        	logger.debug("vendor id: " + vendor.getId());
-		        	logger.debug("query vendor ID: " + queryVendor.getId());
-	        		logger.debug("incrementing the vendor count " + vendorByCodeCount);
+	        Long scientistByCodeCount = 0L;
+	        List<Scientist> queryScientists = Scientist.findScientistsByCodeEquals(queryScientist.getCode()).getResultList();
+	        for (Scientist scientist : queryScientists){
+	        	if (scientist.getId().longValue() != queryScientist.getId().longValue()){
+	        		++scientistByCodeCount;
+		        	logger.debug("current vendor: " + scientist.toJson());
+		        	logger.debug("vendor id: " + scientist.getId());
+		        	logger.debug("query vendor ID: " + queryScientist.getId());
+	        		logger.debug("incrementing the vendor count " + scientistByCodeCount);
 	        	}
 	        }
 	          
-	        if (vendorByCodeCount > 0  ){
+	        if (scientistByCodeCount > 0  ){
 	        	ErrorMessage error = new ErrorMessage();
 	        	error.setLevel("ERROR");
-	        	error.setMessage("Found another vendor with the same code name");
+	        	error.setMessage("Found another scientist with the same code name");
 	        	errors.add(error);
 	        	return new ResponseEntity<String>(ErrorMessage.toJsonArray(errors), headers,HttpStatus.CONFLICT );
 	        } else {
-	        	return new ResponseEntity<String>(queryVendor.toJson(), headers,HttpStatus.OK );	        	
+	        	return new ResponseEntity<String>(queryScientist.toJson(), headers,HttpStatus.OK );	        	
 	        }
 	    }
     
@@ -109,13 +85,12 @@ public class ApiVendorController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        List<Vendor> vendors = Vendor.findVendorsByCodeEquals(code).getResultList();
-        logger.debug("number of vendors found: " + vendors.size());
-        if (vendors.size() != 1){
-        	
+        List<Scientist> scientists = Scientist.findScientistsByCodeEquals(code).getResultList();
+        logger.debug("number of scientists found: " + scientists.size());
+        if (scientists.size() != 1){
             return new ResponseEntity<String>("[]", headers, HttpStatus.CONFLICT);       	
         } else {
-            return new ResponseEntity<String>(vendors.get(0).toJson(), headers, HttpStatus.OK);
+            return new ResponseEntity<String>(scientists.get(0).toJson(), headers, HttpStatus.OK);
         }
                
     }	 
@@ -130,13 +105,13 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findVendorsByCodeLike(code).getResultList()), headers, HttpStatus.OK);
+	        return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findScientistsByCodeLike(code).getResultList()), headers, HttpStatus.OK);
 	    }	 
 
 	    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	    @ResponseBody
 	    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-	        Vendor vendor = Vendor.findVendor(id);
+	        Scientist scientist = Scientist.findScientist(id);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -144,10 +119,10 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (vendor == null) {
+	        if (scientist == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
-	        return new ResponseEntity<String>(vendor.toJson(), headers, HttpStatus.OK);
+	        return new ResponseEntity<String>(scientist.toJson(), headers, HttpStatus.OK);
 	    }
 
 	    @RequestMapping(headers = "Accept=application/json")
@@ -162,20 +137,20 @@ public class ApiVendorController {
 	        headers.setExpires(0); // Expire the cache
 	        
 	        if (mainConfig.getServerSettings().isOrderSelectLists()){
-		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors("name", "ASC")), headers, HttpStatus.OK);
+		        return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists("name", "ASC")), headers, HttpStatus.OK);
 	        } else {
-		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors()), headers, HttpStatus.OK);
+		        return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists()), headers, HttpStatus.OK);
 	        }
 	    }
 
 	    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJson(@RequestBody String json) {
-	    	Vendor newVendor = Vendor.fromJsonToVendor(json);
-    	    if (newVendor.getCode() == null || newVendor.getCode().equalsIgnoreCase("")) {
+	    	Scientist scientist = Scientist.fromJsonToScientist(json);
+    	    if (scientist.getCode() == null || scientist.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
-    	    	newVendor.setCode(newVendor.getName().toLowerCase());
+    	    	scientist.setCode(scientist.getName().toLowerCase());
     	    }
-	    	newVendor.persist();
+    	    scientist.persist();
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -183,17 +158,17 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(newVendor.toJson(), headers, HttpStatus.CREATED);
+	        return new ResponseEntity<String>(scientist.toJson(), headers, HttpStatus.CREATED);
 	    }
 
 	    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-	        for (Vendor vendor : Vendor.fromJsonArrayToVendors(json)) {
-	    	    if (vendor.getCode() == null || vendor.getCode().equalsIgnoreCase("")) {
+	        for (Scientist scientist : Scientist.fromJsonArrayToScientists(json)) {
+	    	    if (scientist.getCode() == null || scientist.getCode().equalsIgnoreCase("")) {
 	    	    	logger.info("creating the missing code name");
-	    	    	vendor.setCode(vendor.getName().toLowerCase());
+	    	    	scientist.setCode(scientist.getName().toLowerCase());
 	    	    }
-	            vendor.persist();
+	    	    scientist.persist();
 	        }
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
@@ -204,7 +179,7 @@ public class ApiVendorController {
 	        headers.setExpires(0); // Expire the cache
 	        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	    }
-
+	    
 	    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
 	    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
 	        HttpHeaders headers = new HttpHeaders();
@@ -214,7 +189,7 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (Vendor.fromJsonToVendor(json).merge() == null) {
+	        if (Scientist.fromJsonToScientist(json).merge() == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
 	        return new ResponseEntity<String>(headers, HttpStatus.OK);
@@ -229,8 +204,8 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        for (Vendor vendor : Vendor.fromJsonArrayToVendors(json)) {
-	            if (vendor.merge() == null) {
+	        for (Scientist scientist : Scientist.fromJsonArrayToScientists(json)) {
+	            if (scientist.merge() == null) {
 	                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	            }
 	        }
@@ -239,7 +214,7 @@ public class ApiVendorController {
 
 	    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
-	        Vendor vendor = Vendor.findVendor(id);
+	        Scientist scientist = Scientist.findScientist(id);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -247,38 +222,26 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (vendor == null) {
+	        if (scientist == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
+	        
             ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
 	        try {
-		        vendor.remove();
+	        	scientist.remove();
 	        } catch (Exception e){
 	        	logger.info("Hit an exception: " + e);
-	        	Long lotCount = Lot.countLotsByVendor(vendor);
-	        	logger.info("Unable to delete the vendor. " + lotCount + " lots associated with the vendor " + vendor.getName());
+	        	Long lotCount = Lot.countLotsByRegisteredBy(scientist);
+	        	logger.info("Unable to delete the registered by scientists. " + lotCount + " lots associated with the scientist " + scientist.getName());
 	        	ErrorMessage error = new ErrorMessage();
 	        	error.setLevel("ERROR");
-	        	error.setMessage("Unable to delete the vendor. " + lotCount + " lots associated with the vendor " + vendor.getName());
+	        	error.setMessage("Unable to delete the scientist. " + lotCount + " lots associated with the scientist " + scientist.getName());
 	        	errors.add(error);
 	        	return new ResponseEntity<String>(ErrorMessage.toJsonArray(errors), headers,HttpStatus.CONFLICT );
 	        }
 	        
 	        return new ResponseEntity<String>(headers, HttpStatus.OK);
 	    }
-
-	    @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json")
-	    @ResponseBody
-	    public ResponseEntity<String> searchBySearchTerms(@RequestParam(value="searchTerm", required = true) String searchTerm) {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/json; charset=utf-8");
-	        headers.add("Access-Control-Allow-Headers", "Content-Type");
-	        headers.add("Access-Control-Allow-Origin", "*");
-	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
-	        headers.add("Pragma", "no-cache"); //HTTP 1.0
-	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findVendorsBySearchTerm(searchTerm).getResultList()), headers, HttpStatus.OK);
-	    }	
 	    
 	    @RequestMapping(method = RequestMethod.OPTIONS)
 	    public ResponseEntity<String> getOptions() {

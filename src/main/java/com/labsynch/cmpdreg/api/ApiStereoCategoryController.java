@@ -16,23 +16,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.labsynch.cmpdreg.domain.Lot;
-import com.labsynch.cmpdreg.domain.Vendor;
+import com.labsynch.cmpdreg.domain.Parent;
+import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.service.ErrorMessage;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-@RequestMapping(value = {"/api/v1/vendors"})
+@RequestMapping(value = {"/api/v1/stereoCategories"})
 @Controller
-public class ApiVendorController {
+public class ApiStereoCategoryController {
 	
-	Logger logger = LoggerFactory.getLogger(ApiVendorController.class);
+	Logger logger = LoggerFactory.getLogger(ApiStereoCategoryController.class);
 	
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
-	
-	//check if vendor already exists by code
-	// if exists -- return false else true
     @RequestMapping(value = "/validate", method = RequestMethod.GET, headers = "Accept=application/json")
 	    @ResponseBody
 	    public ResponseEntity<Boolean> validate(@RequestParam(value="code", required = true) String code) {
@@ -44,26 +41,23 @@ public class ApiVendorController {
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
 
-	        if (Vendor.countFindVendorsByCodeEquals(code) > 0){
+	        if (StereoCategory.countFindStereoCategorysByCodeEquals(code) > 0){
 	        	return new ResponseEntity<Boolean>(false, headers,HttpStatus.CONFLICT );
 	        } else {
 	        	return new ResponseEntity<Boolean>(true, headers,HttpStatus.ACCEPTED );	        	
 	        }
 	    }	
 
-	//validate vendor before saving
-    // is vendor code still unique?
-    // is vendor name unique? (optional)
     @RequestMapping(value = "/validateBeforeSave", method = RequestMethod.POST, headers = "Accept=application/json")
 	    @ResponseBody
-	    public ResponseEntity<String> validateNewVendor(@RequestBody String json) {
-    	   logger.info("validateNewVendor -- incoming json: " + json);
-    	    Vendor queryVendor = Vendor.fromJsonToVendor(json);
-    	    if (queryVendor.getCode() == null || queryVendor.getCode().equalsIgnoreCase("")) {
+	    public ResponseEntity<String> validateNewStereoCategory(@RequestBody String json) {
+    	   logger.info("validateNewStereoCategory -- incoming json: " + json);
+    	    StereoCategory queryStereoCategory = StereoCategory.fromJsonToStereoCategory(json);
+    	    if (queryStereoCategory.getCode() == null || queryStereoCategory.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
-    	    	queryVendor.setCode(queryVendor.getName().toLowerCase());
+    	    	queryStereoCategory.setCode(queryStereoCategory.getName().toLowerCase());
     	    }
-    	    logger.info("validateNewVendor -- query vendor: " + queryVendor.toJson());
+    	    logger.info("validateNewStereoCategory -- query stereoCategory: " + queryStereoCategory.toJson());
 
             ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
            // boolean errorsFound = false;
@@ -76,26 +70,26 @@ public class ApiVendorController {
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
 	        
-	        Long vendorByCodeCount = 0L;
-	        List<Vendor> queryVendors = Vendor.findVendorsByCodeEquals(queryVendor.getCode()).getResultList();
-	        for (Vendor vendor : queryVendors){
-	        	if (vendor.getId().longValue() != queryVendor.getId().longValue()){
-	        		++vendorByCodeCount;
-		        	logger.debug("current vendor: " + vendor.toJson());
-		        	logger.debug("vendor id: " + vendor.getId());
-		        	logger.debug("query vendor ID: " + queryVendor.getId());
-	        		logger.debug("incrementing the vendor count " + vendorByCodeCount);
+	        Long stereoCategoryByCodeCount = 0L;
+	        List<StereoCategory> queryStereoCategorys = StereoCategory.findStereoCategorysByCodeEquals(queryStereoCategory.getCode()).getResultList();
+	        for (StereoCategory stereoCategory : queryStereoCategorys){
+	        	if (stereoCategory.getId().longValue() != queryStereoCategory.getId().longValue()){
+	        		++stereoCategoryByCodeCount;
+		        	logger.debug("current stereoCategory: " + stereoCategory.toJson());
+		        	logger.debug("stereoCategory id: " + stereoCategory.getId());
+		        	logger.debug("query stereoCategory ID: " + queryStereoCategory.getId());
+	        		logger.debug("incrementing the stereoCategory count " + stereoCategoryByCodeCount);
 	        	}
 	        }
 	          
-	        if (vendorByCodeCount > 0  ){
+	        if (stereoCategoryByCodeCount > 0  ){
 	        	ErrorMessage error = new ErrorMessage();
 	        	error.setLevel("ERROR");
-	        	error.setMessage("Found another vendor with the same code name");
+	        	error.setMessage("Found another stereo category with the same code name");
 	        	errors.add(error);
 	        	return new ResponseEntity<String>(ErrorMessage.toJsonArray(errors), headers,HttpStatus.CONFLICT );
 	        } else {
-	        	return new ResponseEntity<String>(queryVendor.toJson(), headers,HttpStatus.OK );	        	
+	        	return new ResponseEntity<String>(queryStereoCategory.toJson(), headers,HttpStatus.OK );	        	
 	        }
 	    }
     
@@ -109,13 +103,13 @@ public class ApiVendorController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        List<Vendor> vendors = Vendor.findVendorsByCodeEquals(code).getResultList();
-        logger.debug("number of vendors found: " + vendors.size());
-        if (vendors.size() != 1){
+        List<StereoCategory> stereoCategorys = StereoCategory.findStereoCategorysByCodeEquals(code).getResultList();
+        logger.debug("number of stereoCategorys found: " + stereoCategorys.size());
+        if (stereoCategorys.size() != 1){
         	
             return new ResponseEntity<String>("[]", headers, HttpStatus.CONFLICT);       	
         } else {
-            return new ResponseEntity<String>(vendors.get(0).toJson(), headers, HttpStatus.OK);
+            return new ResponseEntity<String>(stereoCategorys.get(0).toJson(), headers, HttpStatus.OK);
         }
                
     }	 
@@ -130,13 +124,13 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findVendorsByCodeLike(code).getResultList()), headers, HttpStatus.OK);
+	        return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findStereoCategorysByCodeLike(code).getResultList()), headers, HttpStatus.OK);
 	    }	 
 
 	    @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	    @ResponseBody
 	    public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
-	        Vendor vendor = Vendor.findVendor(id);
+	        StereoCategory stereoCategory = StereoCategory.findStereoCategory(id);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -144,10 +138,10 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (vendor == null) {
+	        if (stereoCategory == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
-	        return new ResponseEntity<String>(vendor.toJson(), headers, HttpStatus.OK);
+	        return new ResponseEntity<String>(stereoCategory.toJson(), headers, HttpStatus.OK);
 	    }
 
 	    @RequestMapping(headers = "Accept=application/json")
@@ -162,20 +156,20 @@ public class ApiVendorController {
 	        headers.setExpires(0); // Expire the cache
 	        
 	        if (mainConfig.getServerSettings().isOrderSelectLists()){
-		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors("name", "ASC")), headers, HttpStatus.OK);
+		        return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys("name", "ASC")), headers, HttpStatus.OK);
 	        } else {
-		        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findAllVendors()), headers, HttpStatus.OK);
+		        return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys()), headers, HttpStatus.OK);
 	        }
 	    }
 
 	    @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJson(@RequestBody String json) {
-	    	Vendor newVendor = Vendor.fromJsonToVendor(json);
-    	    if (newVendor.getCode() == null || newVendor.getCode().equalsIgnoreCase("")) {
+	    	StereoCategory newStereoCategory = StereoCategory.fromJsonToStereoCategory(json);
+    	    if (newStereoCategory.getCode() == null || newStereoCategory.getCode().equalsIgnoreCase("")) {
     	    	logger.info("creating the missing code name");
-    	    	newVendor.setCode(newVendor.getName().toLowerCase());
+    	    	newStereoCategory.setCode(newStereoCategory.getName().toLowerCase());
     	    }
-	    	newVendor.persist();
+	    	newStereoCategory.persist();
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -183,17 +177,17 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(newVendor.toJson(), headers, HttpStatus.CREATED);
+	        return new ResponseEntity<String>(newStereoCategory.toJson(), headers, HttpStatus.CREATED);
 	    }
 
 	    @RequestMapping(value = "/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
 	    public ResponseEntity<String> createFromJsonArray(@RequestBody String json) {
-	        for (Vendor vendor : Vendor.fromJsonArrayToVendors(json)) {
-	    	    if (vendor.getCode() == null || vendor.getCode().equalsIgnoreCase("")) {
+	        for (StereoCategory stereoCategory : StereoCategory.fromJsonArrayToStereoCategorys(json)) {
+	    	    if (stereoCategory.getCode() == null || stereoCategory.getCode().equalsIgnoreCase("")) {
 	    	    	logger.info("creating the missing code name");
-	    	    	vendor.setCode(vendor.getName().toLowerCase());
+	    	    	stereoCategory.setCode(stereoCategory.getName().toLowerCase());
 	    	    }
-	            vendor.persist();
+	            stereoCategory.persist();
 	        }
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
@@ -204,7 +198,7 @@ public class ApiVendorController {
 	        headers.setExpires(0); // Expire the cache
 	        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
 	    }
-
+	    
 	    @RequestMapping(method = RequestMethod.PUT, headers = "Accept=application/json")
 	    public ResponseEntity<String> updateFromJson(@RequestBody String json) {
 	        HttpHeaders headers = new HttpHeaders();
@@ -214,7 +208,7 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (Vendor.fromJsonToVendor(json).merge() == null) {
+	        if (StereoCategory.fromJsonToStereoCategory(json).merge() == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
 	        return new ResponseEntity<String>(headers, HttpStatus.OK);
@@ -229,8 +223,8 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        for (Vendor vendor : Vendor.fromJsonArrayToVendors(json)) {
-	            if (vendor.merge() == null) {
+	        for (StereoCategory stereoCategory : StereoCategory.fromJsonArrayToStereoCategorys(json)) {
+	            if (stereoCategory.merge() == null) {
 	                return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	            }
 	        }
@@ -239,7 +233,7 @@ public class ApiVendorController {
 
 	    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE, headers = "Accept=application/json")
 	    public ResponseEntity<String> deleteFromJson(@PathVariable("id") Long id) {
-	        Vendor vendor = Vendor.findVendor(id);
+	        StereoCategory stereoCategory = StereoCategory.findStereoCategory(id);
 	        HttpHeaders headers = new HttpHeaders();
 	        headers.add("Content-Type", "application/text; charset=utf-8");
 	        headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -247,38 +241,26 @@ public class ApiVendorController {
 	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 	        headers.add("Pragma", "no-cache"); //HTTP 1.0
 	        headers.setExpires(0); // Expire the cache
-	        if (vendor == null) {
+	        if (stereoCategory == null) {
 	            return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 	        }
+	        
             ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
 	        try {
-		        vendor.remove();
+	        	stereoCategory.remove();
 	        } catch (Exception e){
 	        	logger.info("Hit an exception: " + e);
-	        	Long lotCount = Lot.countLotsByVendor(vendor);
-	        	logger.info("Unable to delete the vendor. " + lotCount + " lots associated with the vendor " + vendor.getName());
+	        	Long parentCount = Parent.countParentsByStereoCategory(stereoCategory);
+	        	logger.info("Unable to delete the stereoCategory. " + parentCount + " parents associated with the stereoCategory " + stereoCategory.getName());
 	        	ErrorMessage error = new ErrorMessage();
 	        	error.setLevel("ERROR");
-	        	error.setMessage("Unable to delete the vendor. " + lotCount + " lots associated with the vendor " + vendor.getName());
+	        	error.setMessage("Unable to delete the stereoCategory. " + parentCount + " parents associated with the stereoCategory " + stereoCategory.getName());
 	        	errors.add(error);
 	        	return new ResponseEntity<String>(ErrorMessage.toJsonArray(errors), headers,HttpStatus.CONFLICT );
 	        }
 	        
 	        return new ResponseEntity<String>(headers, HttpStatus.OK);
 	    }
-
-	    @RequestMapping(value = "/search", method = RequestMethod.GET, headers = "Accept=application/json")
-	    @ResponseBody
-	    public ResponseEntity<String> searchBySearchTerms(@RequestParam(value="searchTerm", required = true) String searchTerm) {
-	        HttpHeaders headers = new HttpHeaders();
-	        headers.add("Content-Type", "application/json; charset=utf-8");
-	        headers.add("Access-Control-Allow-Headers", "Content-Type");
-	        headers.add("Access-Control-Allow-Origin", "*");
-	        headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
-	        headers.add("Pragma", "no-cache"); //HTTP 1.0
-	        headers.setExpires(0); // Expire the cache
-	        return new ResponseEntity<String>(Vendor.toJsonArray(Vendor.findVendorsBySearchTerm(searchTerm).getResultList()), headers, HttpStatus.OK);
-	    }	
 	    
 	    @RequestMapping(method = RequestMethod.OPTIONS)
 	    public ResponseEntity<String> getOptions() {

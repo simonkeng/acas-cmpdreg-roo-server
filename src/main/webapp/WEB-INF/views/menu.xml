@@ -103,7 +103,8 @@
 		<menu-item hidden="false" id="i_scientist_new" labelCode="menu_item_scientist_new_label" messageCode="global_menu_new" roles="" url="/scientists?form"/>
 		<menu-item hidden="false" id="i_scientist_list" labelCode="menu_item_scientist_list_label" messageCode="global_menu_list" roles="" url="/scientists?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_scientist_codeequals" labelCode="menu_item_scientist_codeequals_label" messageCode="global_menu_find" roles="" url="/scientists?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_scientist_codelike" labelCode="menu_item_scientist_codelike_label" messageCode="global_menu_find" roles="" url="/scientists?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_project" labelCode="menu_category_project_label" name="Project">
 		<menu-item hidden="false" id="i_project_new" labelCode="menu_item_project_new_label" messageCode="global_menu_new" roles="" url="/projects?form"/>
 		<menu-item hidden="false" id="i_project_list" labelCode="menu_item_project_list_label" messageCode="global_menu_list" roles="" url="/projects?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
