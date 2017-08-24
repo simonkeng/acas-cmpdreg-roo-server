@@ -40,7 +40,11 @@
 	    "fileSaveDirNamedForBatchName": true,
 	    "useExactMass": true,
         "useProjectRolesToRestrictLotDetails": false,
-		"disableAliasEdit": false
+		"disableAliasEdit": false,
+		"showTareWeight": false,
+		"showTotalAmountStored": false,
+		"disableAliasEdit": false,
+		"disableEditMyLots": false
     },
     "serverSettings": {
 		"corpPrefix": "CMPD",
