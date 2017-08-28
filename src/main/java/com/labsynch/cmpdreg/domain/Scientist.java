@@ -2,6 +2,7 @@ package com.labsynch.cmpdreg.domain;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -45,6 +46,21 @@ public class Scientist {
 		}
 		return validUser;
 	}
+	
+	public static TypedQuery<Scientist> findScientistsBySearchTerm(String searchTerm) {
+        if (searchTerm == null || searchTerm.length() == 0) throw new IllegalArgumentException("The searchTerm argument is required");
+        searchTerm = searchTerm.replace('*', '%');
+        if (searchTerm.charAt(0) != '%') {
+        	searchTerm = "%" + searchTerm;
+        }
+        if (searchTerm.charAt(searchTerm.length() - 1) != '%') {
+        	searchTerm = searchTerm + "%";
+        }
+        EntityManager em = Scientist.entityManager();
+        TypedQuery<Scientist> q = em.createQuery("SELECT DISTINCT o FROM Scientist AS o WHERE (LOWER(o.code) LIKE LOWER(:searchTerm) OR LOWER(o.name) LIKE LOWER(:searchTerm))", Scientist.class);
+        q.setParameter("searchTerm", searchTerm);
+        return q;
+    }
 
 	
 }
