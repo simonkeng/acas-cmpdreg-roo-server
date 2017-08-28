@@ -105,6 +105,7 @@
             <menu:item id="fi_vendor_codeequals" messageCode="global_menu_find" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="69IaDPJSu71IVkN+va/S676ad1k="/>
             <menu:item id="fi_vendor_codelike" messageCode="global_menu_find" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="F5O/oxpbL9hdNr/GN/OwdQ5No8M="/>
             <menu:item id="fi_vendor_nameequals" messageCode="global_menu_find" url="/vendors?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="a/DllJTHIcCZkLeDzkP9ZBAMzM8="/>
+            <menu:item id="fi_vendor_namelike" messageCode="global_menu_find" url="/vendors?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="nC7kVGkTqmTfIlPPCNoUTjfZbW8="/>
         </menu:category>
         <menu:category id="c_puritymeasuredby" render="false" z="user-managed">
             <menu:item id="i_puritymeasuredby_new" messageCode="global_menu_new" url="/puritymeasuredbys?form" z="tvshqP/oDSgqHaraSA/XFTHK7Zg="/>

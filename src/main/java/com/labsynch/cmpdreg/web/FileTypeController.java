@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.FileType;
+import com.labsynch.cmpdreg.domain.PhysicalState;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RooWebScaffold(path = "filetypes", formBackingObject = FileType.class)
 @RequestMapping(value = {"/fileTypes", "/filetypes"})
@@ -19,6 +22,8 @@ import com.labsynch.cmpdreg.domain.FileType;
 @GvNIXWebJQuery
 @GvNIXDatatables(ajax = true)
 public class FileTypeController {
+
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
 	@RequestMapping(headers = "Accept=application/json")
     @ResponseBody
@@ -31,7 +36,12 @@ public class FileTypeController {
 		headers.add("Pragma","no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
 
-        return new ResponseEntity<String>(FileType.toJsonArray(FileType.findAllFileTypes()), headers, HttpStatus.OK);
+		if (mainConfig.getServerSettings().isOrderSelectLists()){
+	        return new ResponseEntity<String>(FileType.toJsonArray(FileType.findAllFileTypes("name", "ASC")), headers, HttpStatus.OK);
+		} else {
+	        return new ResponseEntity<String>(FileType.toJsonArray(FileType.findAllFileTypes()), headers, HttpStatus.OK);
+		}
+		
     }
 	
 	@RequestMapping(method = RequestMethod.OPTIONS)

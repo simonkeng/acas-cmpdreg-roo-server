@@ -223,4 +223,12 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.newUserIsChemist = newUserIsChemist;
     }
     
+    public boolean ServerSettingsConfigDTO.isOrderSelectLists() {
+        return this.orderSelectLists;
+    }
+    
+    public void ServerSettingsConfigDTO.setOrderSelectLists(boolean orderSelectLists) {
+        this.orderSelectLists = orderSelectLists;
+    }
+    
 }

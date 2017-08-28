@@ -40,7 +40,10 @@
 	    "fileSaveDirNamedForBatchName": true,
 	    "useExactMass": true,
         "useProjectRolesToRestrictLotDetails": false,
-		"disableAliasEdit": false
+		"showTareWeight": false,
+		"showTotalAmountStored": false,
+		"disableAliasEdit": false,
+		"disableEditMyLots": false
     },
     "serverSettings": {
 		"corpPrefix": "CMPD",
@@ -69,7 +72,8 @@
     	"databaseType": "postgres",
     	"standardizeStructure": false,
     	"useExternalStandardizerConfig": false,
-    	"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml"
+    	"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml",
+    	"orderSelectLists": true
     },
     "bulkLoadSettings": {
         "useProjectRoles": false,

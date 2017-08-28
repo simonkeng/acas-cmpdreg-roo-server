@@ -53,7 +53,7 @@ public class ParentAnnotationController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(ParentAnnotation.toJsonArray(ParentAnnotation.findAllParentAnnotations()), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(ParentAnnotation.toJsonArray(ParentAnnotation.findAllParentAnnotations("displayOrder","ASC")), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

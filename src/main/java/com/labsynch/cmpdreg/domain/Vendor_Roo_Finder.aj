@@ -40,6 +40,21 @@ privileged aspect Vendor_Roo_Finder {
         return ((Long) q.getSingleResult());
     }
     
+    public static Long Vendor.countFindVendorsByNameLike(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        name = name.replace('*', '%');
+        if (name.charAt(0) != '%') {
+            name = "%" + name;
+        }
+        if (name.charAt(name.length() - 1) != '%') {
+            name = name + "%";
+        }
+        EntityManager em = Vendor.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM Vendor AS o WHERE LOWER(o.name) LIKE LOWER(:name)", Long.class);
+        q.setParameter("name", name);
+        return ((Long) q.getSingleResult());
+    }
+    
     public static TypedQuery<Vendor> Vendor.findVendorsByCodeEquals(String code) {
         if (code == null || code.length() == 0) throw new IllegalArgumentException("The code argument is required");
         EntityManager em = Vendor.entityManager();
@@ -112,6 +127,43 @@ privileged aspect Vendor_Roo_Finder {
         if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
         EntityManager em = Vendor.entityManager();
         StringBuilder queryBuilder = new StringBuilder("SELECT o FROM Vendor AS o WHERE o.name = :name");
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            queryBuilder.append(" ORDER BY ").append(sortFieldName);
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                queryBuilder.append(" ").append(sortOrder);
+            }
+        }
+        TypedQuery<Vendor> q = em.createQuery(queryBuilder.toString(), Vendor.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<Vendor> Vendor.findVendorsByNameLike(String name) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        name = name.replace('*', '%');
+        if (name.charAt(0) != '%') {
+            name = "%" + name;
+        }
+        if (name.charAt(name.length() - 1) != '%') {
+            name = name + "%";
+        }
+        EntityManager em = Vendor.entityManager();
+        TypedQuery<Vendor> q = em.createQuery("SELECT o FROM Vendor AS o WHERE LOWER(o.name) LIKE LOWER(:name)", Vendor.class);
+        q.setParameter("name", name);
+        return q;
+    }
+    
+    public static TypedQuery<Vendor> Vendor.findVendorsByNameLike(String name, String sortFieldName, String sortOrder) {
+        if (name == null || name.length() == 0) throw new IllegalArgumentException("The name argument is required");
+        name = name.replace('*', '%');
+        if (name.charAt(0) != '%') {
+            name = "%" + name;
+        }
+        if (name.charAt(name.length() - 1) != '%') {
+            name = name + "%";
+        }
+        EntityManager em = Vendor.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM Vendor AS o WHERE LOWER(o.name) LIKE LOWER(:name)");
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {

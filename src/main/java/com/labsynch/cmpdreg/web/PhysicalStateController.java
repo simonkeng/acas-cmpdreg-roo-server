@@ -27,6 +27,8 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.labsynch.cmpdreg.domain.PhysicalState;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RooWebScaffold(path = "physicalstates", formBackingObject = PhysicalState.class)
 @RequestMapping({ "/physicalstates", "/physicalStates" })
@@ -36,6 +38,8 @@ import com.labsynch.cmpdreg.domain.PhysicalState;
 @GvNIXDatatables(ajax = true)
 @RooWebFinder
 public class PhysicalStateController {
+	
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid PhysicalState physicalState, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -144,7 +148,12 @@ public class PhysicalStateController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(PhysicalState.toJsonArray(PhysicalState.findAllPhysicalStates()), headers, HttpStatus.OK);
+        
+		if (mainConfig.getServerSettings().isOrderSelectLists()){
+	        return new ResponseEntity<String>(PhysicalState.toJsonArray(PhysicalState.findAllPhysicalStates("name", "ASC")), headers, HttpStatus.OK);
+		} else {
+	        return new ResponseEntity<String>(PhysicalState.toJsonArray(PhysicalState.findAllPhysicalStates()), headers, HttpStatus.OK);
+		}
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
