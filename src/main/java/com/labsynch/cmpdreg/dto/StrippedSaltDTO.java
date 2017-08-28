@@ -20,7 +20,7 @@ public class StrippedSaltDTO {
 		
 	private Map<Salt, Integer> saltCounts;
 	
-	private Set<CmpdRegMolecule> unidentifiedFragments;
+	private Set< ? extends CmpdRegMolecule> unidentifiedFragments;
 	
 	public StrippedSaltDTO(){
 		

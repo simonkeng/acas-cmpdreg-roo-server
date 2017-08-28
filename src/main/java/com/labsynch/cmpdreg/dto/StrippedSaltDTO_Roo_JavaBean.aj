@@ -19,11 +19,11 @@ privileged aspect StrippedSaltDTO_Roo_JavaBean {
         this.saltCounts = saltCounts;
     }
     
-    public Set<CmpdRegMolecule> StrippedSaltDTO.getUnidentifiedFragments() {
+    public Set<? extends CmpdRegMolecule> StrippedSaltDTO.getUnidentifiedFragments() {
         return this.unidentifiedFragments;
     }
     
-    public void StrippedSaltDTO.setUnidentifiedFragments(Set<CmpdRegMolecule> unidentifiedFragments) {
+    public void StrippedSaltDTO.setUnidentifiedFragments(Set<? extends CmpdRegMolecule> unidentifiedFragments) {
         this.unidentifiedFragments = unidentifiedFragments;
     }
     

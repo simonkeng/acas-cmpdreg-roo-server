@@ -17,6 +17,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -140,7 +141,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public int saveStructure(String molfile, String structureTable, boolean checkForDupes) {
-		return 0;
+		return  (int) Parent.countParents() + 1;
 	}
 
 	@Override
@@ -211,10 +212,10 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
 			IndigoObject mol = molWrapper.molecule;
 			
-			String baseQuery = "SELECT id FROM " + plainTable + " WHERE mol_structure @ ";
+			String baseQuery = "SELECT cd_id FROM " + plainTable + " WHERE mol_structure @ ";
 			String argFormat = null;
 			String bingoFunction = null;
-			String orderBy = " ORDER BY id";
+			String orderBy = " ORDER BY cd_id";
 			
 			if (useStandardizer){
 				mol = standardizeMolecule(mol);
@@ -288,35 +289,28 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			if (logger.isDebugEnabled()) logger.debug(query.unwrap(org.hibernate.Query.class).getQueryString());
 			//TODO: should do an audit of the search types being used by CReg.
 			
-			List<Long> idHitList = query.getResultList();
-			//TODO: Change return type of this service.
+			List<Integer> hitListList = query.getResultList();
 			
-			if (hitList.length > 0){
-				logger.debug("found a matching molecule!!!  " + hitList.length);
+			if (hitListList.size() > 0){
+				logger.debug("found a matching molecule!!!  " + hitListList.size());
 			}
+			
+			int[] hitList = ArrayUtils.toPrimitive(hitListList.toArray(new Integer[hitListList.size()]));
 
 			return hitList;
 			
-		} catch (CmpdRegMolFormatException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-
-		
-		return null;
+			return null;
+		}
 	}
 
 
 	@Override
 	public boolean checkForSalt(String molfile) throws CmpdRegMolFormatException{
 		IndigoObject mol = indigo.loadMolecule(molfile);
-		int fragCount = mol.getFragCount(MoleculeGraph.FRAG_BASIC);
+		int fragCount = mol.countComponents();
 		boolean foundNonCovalentSalt = false;
 		if (fragCount > 1){
 			foundNonCovalentSalt = true;
@@ -328,16 +322,18 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure){
-		Molecule clone = inputStructure.molecule.clone();
-		Molecule[] rawFrags = clone.findFrags(Molecule.class, MoleculeGraph.FRAG_BASIC);
-		List<Molecule> allFrags = new ArrayList<Molecule>();
-		for (Molecule fragment : rawFrags){
-			allFrags.add(fragment);
-		}
+		CmpdRegMoleculeIndigoImpl molWrapper = (CmpdRegMoleculeIndigoImpl) inputStructure;
+		IndigoObject rawMolecule = molWrapper.molecule;
+		IndigoObject clone = rawMolecule.clone();
+		List<CmpdRegMoleculeIndigoImpl> allFrags = new ArrayList<CmpdRegMoleculeIndigoImpl>();
+		for (IndigoObject component : clone.iterateComponents()){
+			CmpdRegMoleculeIndigoImpl fragMolecule = new CmpdRegMoleculeIndigoImpl(component.clone());
+			allFrags.add(fragMolecule);
+		}		
 		Map<Salt, Integer> saltCounts = new HashMap<Salt, Integer>();
-		Set<Molecule> unidentifiedFragments = new HashSet<Molecule>();
-		for (Molecule fragment : allFrags){
-			int[] cdIdMatches = searchMolStructures(fragment.toFormat("mol"), "Salt_Structure", "DUPLICATE_TAUTOMER");
+		Set<CmpdRegMoleculeIndigoImpl> unidentifiedFragments = new HashSet<CmpdRegMoleculeIndigoImpl>();
+		for (CmpdRegMoleculeIndigoImpl fragment : allFrags){
+			int[] cdIdMatches = searchMolStructures(fragment.getMolStructure(), "Salt_Structure", "DUPLICATE_TAUTOMER");
 			if (cdIdMatches.length>0){
 				Salt foundSalt = Salt.findSaltsByCdId(cdIdMatches[0]).getSingleResult();
 				if (saltCounts.containsKey(foundSalt)) saltCounts.put(foundSalt, saltCounts.get(foundSalt)+1);
@@ -360,232 +356,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	@Override
 	@Transactional
 	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) {
-
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
-		try {
-			conn.setAutoCommit(true);
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		CacheRegistrationUtil cru = null;
-
-		long maxTime = maxSearchTime;
-		int maxResultCount = maxSearchResults;
-
-		logger.debug("Search table is  " + structureTable);		
-		logger.debug("Search type is  " + searchType);	
-		logger.debug("search mol is: " + molfile);
-
-		if (searchType.equalsIgnoreCase("EXACT")){
-			searchType = exactSearchDef;
-		}
-
-		MolHandler mh = null;
-		JChemSearch searcher = null;
-		Molecule[] hitList = null;
-
-		try {
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);		
-			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
-				String cacheIdentifier = "labsynch_qc_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
-			} else {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			}
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			mh = new MolHandler(molfile);
-			Molecule mol = mh.getMolecule();
-			mol.aromatize();
-			searcher = new JChemSearch();
-			searcher.setQueryStructure(mol);
-			searcher.setConnectionHandler(ch);
-			searcher.setStructureTable(structureTable);
-			JChemSearchOptions searchOptions = null;
-
-			logger.debug("definition of exact search: " + exactSearchDef);
-			logger.debug("selected search type: " + searchType);
-
-
-			HitColoringAndAlignmentOptions hitColorOptions = null;
-			if (searchType.equalsIgnoreCase("DUPLICATE")){
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-				logger.debug("selected DUPLICATE search for " + searchType);
-
-			}else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			}else if (searchType.equalsIgnoreCase("DUPLICATE_NO_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_NO_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-
-			}else if (searchType.equalsIgnoreCase("STEREO_IGNORE")){
-				System.out.println("Search type is  no stereo");		
-				searchOptions = new JChemSearchOptions(SearchConstants.STEREO_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-
-			} else if (searchType.equalsIgnoreCase("FULL_TAUTOMER")){
-				System.out.println("Search type is exact FULL_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			} else if (searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				System.out.println("Search type is substructure");	
-				searchOptions = new JChemSearchOptions(SearchConstants.SUBSTRUCTURE);
-				// One can also specify coloring and alignment options 
-				hitColorOptions = new HitColoringAndAlignmentOptions();
-				boolean coloringEnabled = true;
-				Color hitColor = Color.blue;
-				Color nonHitColor = Color.black;
-				hitColorOptions.coloring = true;
-				hitColorOptions.hitColor = hitColor;
-				hitColorOptions.nonHitColor = nonHitColor;						
-				//				hitColorOptions.setColoringEnabled(coloringEnabled);
-				//				hitColorOptions.setHitColor(hitColor);
-				//				hitColorOptions.setNonHitColor(nonHitColor);
-
-			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
-				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
-				searchOptions.setDissimilarityThreshold(simlarityPercent);
-				//				searchOptions.setMaxTime(maxTime);
-				hitColorOptions = new HitColoringAndAlignmentOptions();	
-				boolean coloringEnabled = true;		
-				Color hitColor = Color.blue;
-				Color nonHitColor = Color.black;
-				//				hitColorOptions.coloring = true;
-				//				hitColorOptions.hitColor = hitColor;
-				//				hitColorOptions.nonHitColor = nonHitColor;					
-				hitColorOptions.setColoringEnabled(coloringEnabled);
-				hitColorOptions.setHitColor(hitColor);
-				hitColorOptions.setNonHitColor(nonHitColor);
-
-			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Default Search type is full with no tautomer search");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-			} else {
-				logger.debug("Default Search type is exact");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-			}
-
-			if (inputCdIdHitList != null && inputCdIdHitList.length > 0){
-				searcher.setFilterIDList(inputCdIdHitList);		
-			} 
-			else if (plainTable != null && inputCdIdHitList == null && searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				searchOptions.setFilterQuery("select cd_id from "+ plainTable + " where id > 0");				
-			}
-
-			logger.debug("max result count is: " + maxResultCount );
-			logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
-			logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
-
-			searchOptions.setMaxResultCount(maxResultCount);
-			searcher.setOrder(JChemSearch.ORDERING_BY_ID_OR_SIMILARITY);
-			searcher.setSearchOptions(searchOptions);
-			searcher.setRunMode(JChemSearch.RUN_MODE_SYNCH_COMPLETE);
-			searcher.run();
-
-			// Specifying database fields to retrieve
-			List<String> fieldNames = new ArrayList<String>(); 
-			fieldNames.add("cd_id"); 
-			fieldNames.add("cd_formula"); 
-			fieldNames.add("cd_molweight");
-
-			// ArrayList for returned database field values
-			//			List<Object[]> fieldValues = new ArrayList<Object[]>();
-			List<Object[]> fieldValues = new ArrayList<Object[]>();
-
-			// Retrieving result molecules // filedValues will be also filled!
-
-			int[] hitList_cdId = searcher.getResults();
-
-			logger.info("Found number of hits: " + hitList_cdId.length);
-
-			hitList = searcher.getHitsAsMolecules(hitList_cdId, hitColorOptions, fieldNames, fieldValues);
-
-			for (int i = 0; i < hitList_cdId.length; i++) { 
-				System.out.println("ID: " + hitList_cdId[i]);
-				hitList[i].setProperty("cd_id", Integer.toString(hitList_cdId[i]));
-				Object[] values = (Object[]) fieldValues.get(i); 
-				for (int j = 0; j < values.length; j++) {
-					System.out.println(fieldNames.get(j) + ": " + values[j]);
-				}
-				System.out.println();
-			}
-
-
-			if (hitList.length > 0){
-				logger.debug("found a matching molecule!!!  " + hitList.length);
-			}
-
-			if (this.shouldCloseConnection) {
-				ch.close();
-				conn.close();
-			}
-
-		} catch (MolFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DatabaseSearchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SearchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SupergraphException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
-
-
-		return hitList;
+		int maxResults = maxSearchResults;
+		return searchMols(molfile, structureTable, inputCdIdHitList, plainTable, searchType, simlarityPercent, maxResults);
 	}
 
 	@Override
@@ -594,229 +366,139 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			String plainTable, String searchType, Float simlarityPercent, int maxResults) {
 
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
-		ConnectionHandler ch = new ConnectionHandler();
-		ch.setConnection(conn);
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		CacheRegistrationUtil cru = null;
-
+		
 		long maxTime = maxSearchTime;
 		int maxResultCount = maxResults;
+		//Indigo: the structures in the plainTable are being used. Ignore structureTable from here on out.
+		logger.debug("Search table is  " + plainTable);		
+		logger.debug("Search type is  " + searchType);		
+		logger.debug("Max number of results is  " + maxResults);		
 
-		logger.debug("Search table is  " + structureTable);		
-		logger.debug("Search type is  " + searchType);	
-		logger.debug("search mol is: " + molfile);
 
 		if (searchType.equalsIgnoreCase("EXACT")){
 			searchType = exactSearchDef;
 		}
-
-		MolHandler mh = null;
-		JChemSearch searcher = null;
-		Molecule[] hitList = null;
-
+		
+		List<CmpdRegMoleculeIndigoImpl> moleculeList = new ArrayList<CmpdRegMoleculeIndigoImpl>();
 		try {
-			cru = new CacheRegistrationUtil(ch);
-			if (structureTable.equalsIgnoreCase("SaltForm_Structure")){
-				String cacheIdentifier = "labsynch_saltform_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);	
-			} else if (structureTable.equalsIgnoreCase("Salt_Structure")) {
-				String cacheIdentifier = "labsynch_salt_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}	
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
-			} else if (structureTable.equalsIgnoreCase("QC_Compound_Structure")) {
-				String cacheIdentifier = "labsynch_qc_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);
+			CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
+			IndigoObject mol = molWrapper.molecule;
+			
+			String baseQuery = "SELECT new Map( cd_id, mol_structure) FROM " + plainTable + " WHERE mol_structure @ ";
+			String argFormat = null;
+			String bingoFunction = null;
+			String orderBy = " ORDER BY cd_id";
+			String filterIdsClause = "";
+			
+			if (useStandardizer){
+				mol = standardizeMolecule(mol);
+				mol.aromatize();				
 			} else {
-				String cacheIdentifier = "labsynch_cmpd_cache";
-				if (!cru.isCacheIDRegistered(cacheIdentifier)){
-					cru.registerPermanentCache(cacheIdentifier);	
-				}
-				CacheRegistrationUtil.setPermanentCacheID(cacheIdentifier);				
+				mol.aromatize();				
 			}
-
-			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
-
-			mh = new MolHandler(molfile);
-			Molecule mol = mh.getMolecule();
-			mol.aromatize();
-			searcher = new JChemSearch();
-			searcher.setQueryStructure(mol);
-			searcher.setConnectionHandler(ch);
-			searcher.setStructureTable(structureTable);
-			JChemSearchOptions searchOptions = null;
 
 			logger.debug("definition of exact search: " + exactSearchDef);
 			logger.debug("selected search type: " + searchType);
-
-
-			HitColoringAndAlignmentOptions hitColorOptions = null;
-			if (searchType.equalsIgnoreCase("DUPLICATE")){
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-				logger.debug("selected DUPLICATE search for " + searchType);
-
-			}else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			}else if (searchType.equalsIgnoreCase("DUPLICATE_NO_TAUTOMER")){
-				System.out.println("Search type is DUPLICATE_NO_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-
-			}else if (searchType.equalsIgnoreCase("STEREO_IGNORE")){
-				System.out.println("Search type is  no stereo");		
-				searchOptions = new JChemSearchOptions(SearchConstants.STEREO_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-
-			} else if (searchType.equalsIgnoreCase("FULL_TAUTOMER")){
-				System.out.println("Search type is exact FULL_TAUTOMER");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
-
-			} else if (searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				System.out.println("Search type is substructure");	
-				searchOptions = new JChemSearchOptions(SearchConstants.SUBSTRUCTURE);
-				// One can also specify coloring and alignment options 
-				hitColorOptions = new HitColoringAndAlignmentOptions();
-				boolean coloringEnabled = true;
-				Color hitColor = Color.blue;
-				Color nonHitColor = Color.black;
-				hitColorOptions.coloring = true;
-				hitColorOptions.hitColor = hitColor;
-				hitColorOptions.nonHitColor = nonHitColor;						
-				//				hitColorOptions.setColoringEnabled(coloringEnabled);
-				//				hitColorOptions.setHitColor(hitColor);
-				//				hitColorOptions.setNonHitColor(nonHitColor);
-
-			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
-				searchOptions = new JChemSearchOptions(SearchConstants.SIMILARITY);
-				searchOptions.setDissimilarityThreshold(simlarityPercent);
-				//				searchOptions.setMaxTime(maxTime);
-				hitColorOptions = new HitColoringAndAlignmentOptions();	
-				boolean coloringEnabled = true;		
-				Color hitColor = Color.blue;
-				Color nonHitColor = Color.black;
-				//				hitColorOptions.coloring = true;
-				//				hitColorOptions.hitColor = hitColor;
-				//				hitColorOptions.nonHitColor = nonHitColor;					
-				hitColorOptions.setColoringEnabled(coloringEnabled);
-				hitColorOptions.setHitColor(hitColor);
-				hitColorOptions.setNonHitColor(nonHitColor);
-
-			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Default Search type is full with no tautomer search");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-			} else {
-				logger.debug("Default Search type is exact");		
-				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
-				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
-				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
-				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
-				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
+			
+			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
+				bingoFunction = "::bingo.sub";
+				argFormat = "( :queryMol , :parameters )";
+			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
+				bingoFunction = "::bingo.sim";
+				argFormat = "( :minSimilarity , :maxSimilarity , :queryMol , :metric )";
+				orderBy = " ORDER BY "+argFormat+bingoFunction;
+			}else { 
+				bingoFunction = "::bingo.exact";
+				argFormat = "( :queryMol , :parameters )";
 			}
-
-			if (inputCdIdHitList != null && inputCdIdHitList.length > 0){
-				searcher.setFilterIDList(inputCdIdHitList);		
-			} 
-			else if (plainTable != null && inputCdIdHitList == null && searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				searchOptions.setFilterQuery("select cd_id from "+ plainTable + " where id > 0");				
-			}
-
-			logger.debug("max result count is: " + maxResultCount );
-			logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
-			logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
-
-			searchOptions.setMaxResultCount(maxResultCount);
-			searcher.setOrder(JChemSearch.ORDERING_BY_ID_OR_SIMILARITY);
-			searcher.setSearchOptions(searchOptions);
-			searcher.setRunMode(JChemSearch.RUN_MODE_SYNCH_COMPLETE);
-			searcher.run();
-
-			// Specifying database fields to retrieve
-			List<String> fieldNames = new ArrayList<String>(); 
-			fieldNames.add("cd_id"); 
-			fieldNames.add("cd_formula"); 
-			fieldNames.add("cd_molweight");
-
-			// ArrayList for returned database field values
-			//			List<Object[]> fieldValues = new ArrayList<Object[]>();
-			List<Object[]> fieldValues = new ArrayList<Object[]>();
-
-			// Retrieving result molecules // filedValues will be also filled!
-
-			int[] hitList_cdId = searcher.getResults();
-
-
-			hitList = searcher.getHitsAsMolecules(hitList_cdId, hitColorOptions, fieldNames, fieldValues);
-
-			for (int i = 0; i < hitList_cdId.length; i++) { 
-				System.out.println("ID: " + hitList_cdId[i]);
-				hitList[i].setProperty("cd_id", Integer.toString(hitList_cdId[i]));
-				Object[] values = (Object[]) fieldValues.get(i); 
-				for (int j = 0; j < values.length; j++) {
-					System.out.println(fieldNames.get(j) + ": " + values[j]);
+			
+			if (inputCdIdHitList.length > 0) filterIdsClause = " AND cd_id IN :filterCdIds ";
+			
+			EntityManager em = Parent.entityManager();
+			Query query = em.createQuery(baseQuery + argFormat + bingoFunction + filterIdsClause + orderBy);
+			
+			query.setParameter("queryMol", mol.molfile());
+			query.setMaxResults(maxResults);
+			
+			if (inputCdIdHitList.length > 0) query.setParameter("filterCdIds", Arrays.asList(inputCdIdHitList));
+			
+			//May need additional research / decisions around which options to use
+			//Basic Indigo search types corresponding to JChem search types
+			//CReg: "DUPLICATE" or "DUPLICATE_NO_TAUTOMER" :: JChem: "DUPLICATE", "TAUTOMER_SEARCH_OFF" :: Bingo.Exact, "ALL"
+			//CReg: "DUPLICATE_TAUTOMER" :: JChem: "DUPLICATE", "TAUTOMER_SEARCH_ON" :: Bingo.Exact, "TAU"
+			//CReg: "STEREO_IGNORE" :: JChem: "STEREO_IGNORE" :: Bingo.Exact "ALL -STE"
+			//(NOT SURE ABOUT THIS) CReg: "FULL_TAUTOMER", or default/unrecognized searchType :: JChem: "FULL", "CHARGE_MATCHING_IGNORE", "ISOTOPE_MATCHING_IGNORE", "STEREO_IGNORE", "TAUTOMER_SEARCH_ON" :: Bingo.Exact "TAU ALL -ELE -MAS -STE"
+			//CReg: "SUBSTRUCTURE" :: JChem: "SUBSTRUCTURE" :: Bingo.Sub
+			//CReg: "SIMILARITY" :: JChem "SIMILARITY" :: Bingo.Sim > $min
+			//CReg: "FULL" :: JChem "FULL", "CHARGE_MATCHING_IGNORE", "ISOTOPE_MATCHING_IGNORE", "STEREO_IGNORE", "TAUTOMER_SEARCH_OFF" :: Bingo.Exact "ALL -ELE -MAS -STE"
+			
+			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
+				query.setParameter("parameters", "");
+			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
+				query.setParameter("minSimilarity", simlarityPercent);
+				query.setParameter("maxSimilarity", null);
+				query.setParameter("metric", "Tanimoto");
+			}else {
+				String parameters = null;
+				switch (searchType.toUpperCase()) {
+				case "DUPLICATE":
+					parameters = "ALL";
+					break;
+				case "DUPLICATE_TAUTOMER":
+					parameters = "TAU";
+					break;
+				case "STEREO_IGNORE":
+					parameters = "ALL -STE";
+					break;
+				case "FULL_TAUTOMER":
+					parameters = "TAU";
+					break;
+				case "FULL":
+					parameters = "ALL -ELE -MAS -STE";
+					break;
+				default:
+					//TODO: this should match FULL_TAUTOMER if possible
+					parameters = "ALL";
+					break;
 				}
-				System.out.println();
+				query.setParameter("parameters", parameters);
+			}
+			if (logger.isDebugEnabled()) logger.debug(query.unwrap(org.hibernate.Query.class).getQueryString());
+			//TODO: should do an audit of the search types being used by CReg.
+			
+			//list of maps of {"cdId": ###, "molStructure": "molfile string"}
+			List<Map<String, Object>> hitListList = query.getResultList();
+			for (Map<String, Object> hit : hitListList) {
+				Integer cdId = (Integer) hit.get("cd_id");
+				String molStructure = (String) hit.get("mol_structure");
+				CmpdRegMoleculeIndigoImpl molecule = new  CmpdRegMoleculeIndigoImpl(molStructure);
+				molecule.setProperty("cd_id", String.valueOf(cdId));
+				moleculeList.add(molecule);
 			}
 
 
-			if (hitList.length > 0){
-				logger.debug("found a matching molecule!!!  " + hitList.length);
+			if (moleculeList.size() > 0){
+				logger.debug("found a matching molecule!!!  " + moleculeList.size());
 			}
 
 			if (this.shouldCloseConnection) {
-				ch.close();
 				conn.close();
 			}
 
-		} catch (MolFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DatabaseSearchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SearchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SupergraphException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-
-
-
-		return hitList;
+		CmpdRegMoleculeIndigoImpl[] moleculeHits = moleculeList.toArray(new CmpdRegMoleculeIndigoImpl[0]);
+		
+		return moleculeHits;
 	}
 
 
@@ -849,38 +531,11 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public String toMolfile(String molStructure) {
-		logger.debug("here is the incoming molStructure: " +  molStructure);
-		MolHandler mh = null;
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		String lineEnd = System.getProperty("line.separator");
-		try {
-			//molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();
-			mol.dearomatize();
-		} catch (MolFormatException e1) {
-			logger.debug("failed first attempt: bad mol structure: " + molStructure);
-			// clean up the molString and try again
-			try {
-				molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
-				mh = new MolHandler(molStructure);
-				mol = mh.getMolecule();
-				mol.dearomatize();				
-			} catch (MolFormatException e2) {
-				logger.debug("failed second attempt: bad mol structure: " + molStructure);
-				badStructureFlag = true;
-				logger.error("bad mol structure: " + molStructure);
-			}
-		}
-		logger.debug("The badStructureFlag " + badStructureFlag);
-		logger.debug("The molfile " + mol.toFormat("mol"));
-
-		if (!badStructureFlag){
-			return mol.toFormat("mol");
-		} else {
-			return molStructure;
-		}
+		CmpdRegMoleculeIndigoImpl molecule = new CmpdRegMoleculeIndigoImpl(molStructure);
+		IndigoObject rawMolecule = molecule.molecule;
+		rawMolecule.dearomatize();
+		return rawMolecule.molfile();
+		
 	}
 
 	@Override
@@ -910,19 +565,21 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public String toInchi(String molStructure) {
-		boolean badStructureFlag = false;
-		IndigoObject mol = null;
-		try {
-			mol = indigo.loadMolecule(molStructure);			
-		} catch (IndigoException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.toFormat("inchi");
-		} else {
-			return molStructure;
-		}
+//		boolean badStructureFlag = false;
+//		IndigoObject mol = null;
+//		try {
+//			mol = indigo.loadMolecule(molStructure);			
+//		} catch (IndigoException e) {
+//			badStructureFlag = true;
+//		}
+//
+//		if (!badStructureFlag){
+//			return mol.toFormat("inchi");
+//		} else {
+//			return molStructure;
+//		}
+		logger.error("inChi not implemented with Indigo Services");
+		return molStructure;
 	}
 
 	@Override
