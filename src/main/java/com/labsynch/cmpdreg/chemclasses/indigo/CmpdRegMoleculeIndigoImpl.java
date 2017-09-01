@@ -1,5 +1,6 @@
 package com.labsynch.cmpdreg.chemclasses.indigo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,6 +87,17 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	public CmpdRegMolecule replaceStructure(String newStructure) throws CmpdRegMolFormatException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException {
+		IndigoObject mol = ((CmpdRegMoleculeIndigoImpl) molecule).molecule;
+		return mol.serialize();
+	}
+
+	@Override
+	public void dearomatize() {
+		this.molecule.dearomatize();
 	}
 
 }

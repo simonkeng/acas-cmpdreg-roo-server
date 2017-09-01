@@ -29,12 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import chemaxon.formats.MolFormatException;
-import chemaxon.sss.search.StandardizedMolSearch;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
@@ -905,7 +900,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public SaltForm createSaltForm(CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings) throws Exception{
 		//Here we try to fetch all of the possible Lot database properties from the sdf, according to the mappings
 		SaltForm saltForm = new SaltForm();
-		//		saltForm.setMolStructure(mol.toFormat("mol"));
+		//		saltForm.setMolStructure(mol.getMolStructure());
 		saltForm.setRegistrationDate(new Date());
 
 		//regular fields that do not require lookups or conversions

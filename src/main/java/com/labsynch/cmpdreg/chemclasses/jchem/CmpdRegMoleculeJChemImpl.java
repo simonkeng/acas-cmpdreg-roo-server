@@ -1,11 +1,14 @@
 package com.labsynch.cmpdreg.chemclasses.jchem;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
+import chemaxon.formats.MolExporter;
 import chemaxon.formats.MolFormatException;
 import chemaxon.struc.MProp;
 import chemaxon.struc.Molecule;
@@ -120,6 +123,12 @@ public class CmpdRegMoleculeJChemImpl implements CmpdRegMolecule {
 		newMol.fuse(replacementMol);
 		CmpdRegMoleculeJChemImpl newMolecule = new CmpdRegMoleculeJChemImpl(newMol);
 		return newMolecule;
+	}
+
+	@Override
+	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException {
+		Molecule mol = ((CmpdRegMoleculeJChemImpl) molecule).molecule;
+		return MolExporter.exportToBinFormat(mol, format);
 	}
 
 }

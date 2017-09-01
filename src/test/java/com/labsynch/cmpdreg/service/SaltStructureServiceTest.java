@@ -38,7 +38,7 @@ public class SaltStructureServiceTest {
 //		String molfile = "CCC";
 //		MolHandler mh = new MolHandler(molfile);
 //		Molecule mol = mh.getMolecule();
-//		String saltStructure = mol.toFormat("mol");
+//		String saltStructure = mol.getMolStructure();
 //	
 //		Integer cdId = jcs.saveStructure(saltStructure);
 //		System.out.println("here is the new structure id: " + cdId);
@@ -56,7 +56,7 @@ public class SaltStructureServiceTest {
 //		String molfile = "CCC";
 //		MolHandler mh = new MolHandler(molfile);
 //		Molecule mol = mh.getMolecule();
-//		String saltStructure = mol.toFormat("mol");
+//		String saltStructure = mol.getMolStructure();
 //	
 //		Integer cdId = jcs.saveStructure(saltStructure);
 //		System.out.println("here is the new structure id: " + cdId);

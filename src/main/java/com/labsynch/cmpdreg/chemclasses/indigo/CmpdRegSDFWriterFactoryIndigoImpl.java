@@ -15,4 +15,9 @@ public class CmpdRegSDFWriterFactoryIndigoImpl implements CmpdRegSDFWriterFactor
 		return new CmpdRegSDFWriterIndigoImpl(fileName);
 	}
 
+	@Override
+	public CmpdRegSDFWriter getCmpdRegSDFBufferWriter() {
+		return new CmpdRegSDFWriterIndigoImpl();
+	}
+
 }

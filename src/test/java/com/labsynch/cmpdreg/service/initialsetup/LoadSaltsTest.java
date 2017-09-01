@@ -14,11 +14,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
 import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
@@ -32,6 +32,9 @@ public class LoadSaltsTest {
 
 	@Autowired
 	private ChemStructureService saltStructServ;
+	
+	@Autowired
+	private CmpdRegSDFReaderFactory sdfReaderFactory;
 
 	@Test
 	public void loadSalts() {
@@ -41,28 +44,24 @@ public class LoadSaltsTest {
 
 			String fileName = "src/test/resources/Initial_Salts.sdf";
 
-			FileInputStream fis;	
-
 
 			// Open an input stream
 			try {
-				fis = new FileInputStream (fileName);
-				MolImporter mi = new MolImporter(fis);
-				Molecule mol = null;
+				CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(fileName);
+				CmpdRegMolecule mol = null;
 
-				while ((mol = mi.read()) != null) {
+				while ((mol = mi.readNextMol()) != null) {
 					
 					saveSalt(mol);
 
 				}	
 
 				mi.close();
-				fis.close();
 
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (MolFormatException e) {
+			} catch (CmpdRegMolFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -77,7 +76,7 @@ public class LoadSaltsTest {
 	}
 
 	@Transactional
-	private void saveSalt(Molecule mol) throws IOException {
+	private void saveSalt(CmpdRegMolecule mol) throws IOException {
 		Salt salt = new Salt();
 		salt.setMolStructure(MoleculeUtil.exportMolAsText(mol, "mol"));
 		salt.setOriginalStructure(MoleculeUtil.exportMolAsText(mol, "mol"));

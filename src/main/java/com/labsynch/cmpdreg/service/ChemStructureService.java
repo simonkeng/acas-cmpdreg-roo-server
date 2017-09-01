@@ -92,5 +92,5 @@ public interface ChemStructureService {
 	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
 
 	public boolean standardizedMolCompare(String queryMol, String targetMol) throws CmpdRegMolFormatException;
-
+	
 }

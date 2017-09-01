@@ -39,6 +39,7 @@ import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
 import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
 import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
 import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.ErrorMessage;
 import com.labsynch.cmpdreg.service.SaltStructureService;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
@@ -58,6 +59,9 @@ public class SaltController {
 
     @Autowired
     private SaltStructureService saltStructureService;
+    
+    @Autowired
+    private ChemStructureService chemStructureService;
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Salt salt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -191,7 +195,7 @@ public class SaltController {
             return "salts/update";
         }
         uiModel.asMap().clear();
-        logger.debug("Salt weight: " + MoleculeUtil.getMolWeight(salt.getMolStructure()));
+        logger.debug("Salt weight: " + chemStructureService.getMolWeight(salt.getMolStructure()));
         Salt updatedSalt = saltStructureService.update(salt);
         ArrayList<ErrorMessage> errors = new ArrayList<ErrorMessage>();
         if (updatedSalt == null) {

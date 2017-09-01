@@ -93,7 +93,7 @@ public class ChemStructStandardizerServicesTest {
 	}
 
 	@Test
-	public void qcGenerateQCReport() throws IOException{
+	public void qcGenerateQCReport() throws IOException, CmpdRegMolFormatException{
 		String outputFilePathName = "/tmp/qcReport.csv";
 		String exportType = "csv";
 		qcCmpdServ.exportQCReport(outputFilePathName, exportType );

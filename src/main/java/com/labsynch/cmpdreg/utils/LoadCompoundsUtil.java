@@ -1,8 +1,6 @@
 package com.labsynch.cmpdreg.utils;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,11 +19,11 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.IsoSalt;
 import com.labsynch.cmpdreg.domain.Isotope;
@@ -37,6 +35,7 @@ import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ErrorMessage;
 import com.labsynch.cmpdreg.service.MetalotService;
 
@@ -48,22 +47,23 @@ public class LoadCompoundsUtil {
 
 	@Autowired
 	private MetalotService metalotServ;
+	
+	@Autowired
+	private CmpdRegSDFReaderFactory sdfReaderFactory;
+	
+	@Autowired
+	private CmpdRegSDFWriterFactory sdfWriterFactory;
 
     @Transactional
 	public void loadCompounds(String inputFileName, String outputFileName){
 		//simple utility to load compounds
 
-		FileInputStream fis;	
-		FileOutputStream fos;
-
 		try {
-			fis = new FileInputStream (inputFileName);
-			MolImporter mi = new MolImporter(fis);
-			fos = new FileOutputStream (outputFileName, true);
-			MolExporter me = new MolExporter(fos, "sdf");
-			Molecule mol = null;
+			CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(inputFileName);
+			CmpdRegSDFWriter me = sdfWriterFactory.getCmpdRegSDFWriter(outputFileName);
+			CmpdRegMolecule mol = null;
 
-			while ((mol = mi.read()) != null) {
+			while ((mol = mi.readNextMol()) != null) {
 
 				boolean goodMolToProcess = true;
 				long cmpdCorpId = 0;
@@ -78,7 +78,7 @@ public class LoadCompoundsUtil {
 
 
 				Metalot metaLot = new Metalot();
-				mol.clearExtraLabels();
+//				mol.clearExtraLabels();
 
 				Date lotSynthesisDate = null;
 				DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -169,7 +169,7 @@ public class LoadCompoundsUtil {
 					logger.error("unable to parse the saltCount field. " + MoleculeUtil.getMolProperty(mol, "Count"));
 					mol.setProperty("error", "unable to parse saltCount field. Not a number or missing. ");
 					//goodMolToProcess = false;
-					me.write(mol);
+					me.writeMol(mol);
 				}
 				
 				//search for isotope --- not laid out easily	
@@ -325,24 +325,22 @@ public class LoadCompoundsUtil {
 							errorMessage = errorMessage.concat(". ").concat(error.getMessage());
 						}
 						mol.setProperty("metalot-error", errorMessage);
-						me.write(mol);
+						me.writeMol(mol);
 					}
 				} else {
 					logger.error("Unable to process the bad mol. " );
-					me.write(mol);
+					me.writeMol(mol);
 				}
 
 
 			}
 			mi.close();
-			fis.close();
 			me.close();
-			fos.close();
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {

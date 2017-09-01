@@ -7,8 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import chemaxon.struc.Molecule;
-
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.utils.Configuration;

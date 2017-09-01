@@ -1,5 +1,7 @@
 package com.labsynch.cmpdreg.chemclasses;
 
+import java.io.IOException;
+
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 public interface CmpdRegMolecule {
@@ -27,5 +29,9 @@ public interface CmpdRegMolecule {
 	public CmpdRegMolecule replaceStructure(String newStructure) throws CmpdRegMolFormatException;
 
 	public String getMrvStructure();
+	
+	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException;
+
+	public void dearomatize();
 
 }

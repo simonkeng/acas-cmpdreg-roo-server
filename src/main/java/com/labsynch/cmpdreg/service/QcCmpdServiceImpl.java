@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
@@ -22,10 +26,6 @@ import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
-
-import chemaxon.formats.MolExporter;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
 
 @Service
 public class QcCmpdServiceImpl implements QcCmpdService {
@@ -45,6 +45,12 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 	@Autowired
 	public ParentAliasService parentAliasService;
+	
+	@Autowired
+	CmpdRegSDFWriterFactory cmpdRegSDFWriterFactory;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	public void saveQcCmpdStructure(QcCompound qcCmpd){
 		Integer cdId = chemStructureService.saveStructure(qcCmpd.getMolStructure(), "QC_Cmpd_Structure");
@@ -57,7 +63,7 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 
 	@Override
-	public void exportQCReport(String outputFilePathName, String exportType) throws IOException{
+	public void exportQCReport(String outputFilePathName, String exportType) throws IOException, CmpdRegMolFormatException{
 		List<Long> qcIds = QcCompound.findPotentialQcCmpds().getResultList();
 		if (exportType.equalsIgnoreCase("csv")){
 			exportQcCompoundsToCsv(qcIds, outputFilePathName);
@@ -67,14 +73,13 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 	}
 
 
-	private void exportQcCompoundsToSdf(List<Long> qcIds, String sdfFilePathName) throws IllegalArgumentException, IOException {
-		FileOutputStream sdfOutStream = new FileOutputStream (sdfFilePathName, false);
-		MolExporter qcReportMolExporter = new MolExporter(sdfOutStream, "sdf");
+	private void exportQcCompoundsToSdf(List<Long> qcIds, String sdfFilePathName) throws IllegalArgumentException, IOException, CmpdRegMolFormatException {
+		CmpdRegSDFWriter qcReportMolExporter = cmpdRegSDFWriterFactory.getCmpdRegSDFWriter(sdfFilePathName);
 		QcCompound qcCmpd;
-		Molecule mol;
+		CmpdRegMolecule mol;
 		for (Long qcId : qcIds){
 			qcCmpd = QcCompound.findQcCompound(qcId);
-			mol = new MolHandler(qcCmpd.getMolStructure()).getMolecule();
+			mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(qcCmpd.getMolStructure());
 			mol.setProperty("id", Long.toString(qcCmpd.getId()));
 			mol.setProperty("parent_id", Long.toString(qcCmpd.getParentId()));
 			mol.setProperty("corp_name", qcCmpd.getCorpName());
@@ -85,13 +90,13 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 			mol.setProperty("dupe_corp_name", qcCmpd.getDupeCorpName());
 			mol.setProperty("alias", qcCmpd.getAlias());
 			mol.setProperty("comment", qcCmpd.getComment());
-			qcReportMolExporter.write(mol);
+			qcReportMolExporter.writeMol(mol);
 		}
 		qcReportMolExporter.close();
 	}
 
 
-	private static void exportQcCompoundsToCsv(List<Long> qcIds, String fileName) throws IOException  {
+	private void exportQcCompoundsToCsv(List<Long> qcIds, String fileName) throws IOException, CmpdRegMolFormatException  {
 		PrintWriter csvWriter = new PrintWriter(new File(fileName)) ;
 		char DEFAULT_SEPARATOR = ',';
 
@@ -123,7 +128,8 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 			sbData.append(qcCmpd.getDupeCount()).append(DEFAULT_SEPARATOR);
 			sbData.append(qcCmpd.getDupeCorpName()).append(DEFAULT_SEPARATOR);
 			sbData.append(qcCmpd.getAlias()).append(DEFAULT_SEPARATOR);
-			sbData.append(MoleculeUtil.convertMolToFormat(qcCmpd.getMolStructure(), "smiles")).append(DEFAULT_SEPARATOR);
+			CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(qcCmpd.getMolStructure());
+			sbData.append(mol.getSmiles()).append(DEFAULT_SEPARATOR);
 			sbData.append(qcCmpd.getComment());
 			csvWriter.println(sbData.toString());
 		}

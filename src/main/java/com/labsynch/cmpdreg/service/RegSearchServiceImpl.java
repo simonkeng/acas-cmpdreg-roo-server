@@ -12,12 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.formats.MFileFormat;
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.IsoSalt;
 import com.labsynch.cmpdreg.domain.Lot;
@@ -29,6 +25,7 @@ import com.labsynch.cmpdreg.dto.ParentDTO;
 import com.labsynch.cmpdreg.dto.RegSearchDTO;
 import com.labsynch.cmpdreg.dto.RegSearchParamsDTO;
 import com.labsynch.cmpdreg.dto.SaltFormDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
@@ -39,10 +36,13 @@ public class RegSearchServiceImpl implements RegSearchService {
 	
 	@Autowired
 	private ChemStructureService chemStructureService;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	@Override
 	@Transactional
-	public RegSearchDTO getParentsbyParams(String searchParamsString) throws IOException {
+	public RegSearchDTO getParentsbyParams(String searchParamsString) throws IOException, CmpdRegMolFormatException {
 		RegSearchParamsDTO searchParams = RegSearchParamsDTO.fromJsonToRegSearchParamsDTO(searchParamsString);
 		String corpName = searchParams.getCorpName();
 		String molStructure = searchParams.getMolStructure();
@@ -55,54 +55,40 @@ public class RegSearchServiceImpl implements RegSearchService {
 		if (corpName.equalsIgnoreCase("null") || corpName.equalsIgnoreCase("")){
 			//corpName not supplied -- so search by structure   
 			System.out.println("search with structure: " + molStructure);
-
-			MolHandler mh = null;
-			boolean badStructure = false;
-			try {
-				mh = new MolHandler(molStructure);
-			} catch (MolFormatException e) {
-				badStructure = true;
-				System.out.println("bad structure error: " + molStructure);
-			}
-
-			if (badStructure){
-				//bail out due to format error
-
-			} else {
-				Molecule mol = mh.getMolecule();
-				if (logger.isDebugEnabled()) System.out.println("search with structure: " + MoleculeUtil.exportMolAsText(mol, "smiles"));
+			
+			CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
+			if (logger.isDebugEnabled()) System.out.println("search with structure: " + mol.getSmiles());
 
 
 //				String exportFormat = "base64:png";
-				String format = "png";
-				String wSize = "600";
-				String hSize = "300";
-				String imageFormat = format + ":" + "h" + hSize + ",w" + wSize + ",maxScale28";
+			String format = "png";
+			String wSize = "600";
+			String hSize = "300";
+			String imageFormat = format + ":" + "h" + hSize + ",w" + wSize + ",maxScale28";
 
-				regSearchDTO.setAsDrawnImage(convertToBase64(mol, imageFormat ));
-				regSearchDTO.setAsDrawnStructure(MolExporter.exportToFormat(mol, "mol" ));
-				regSearchDTO.setAsDrawnMolFormula(mol.getFormula());
-				regSearchDTO.setAsDrawnExactMass(mol.getExactMass());
-				if(Configuration.getConfigInfo().getMetaLot().isUseExactMass()){
-					regSearchDTO.setAsDrawnMolWeight(mol.getExactMass());
+			regSearchDTO.setAsDrawnImage(convertToBase64(mol, imageFormat ));
+			regSearchDTO.setAsDrawnStructure(mol.getMolStructure());
+			regSearchDTO.setAsDrawnMolFormula(mol.getFormula());
+			regSearchDTO.setAsDrawnExactMass(mol.getExactMass());
+			if(Configuration.getConfigInfo().getMetaLot().isUseExactMass()){
+				regSearchDTO.setAsDrawnMolWeight(mol.getExactMass());
 
-				}else{
-					regSearchDTO.setAsDrawnMolWeight(mol.getMass());
-
-				}
-				int[] parentHits = chemStructureService.searchMolStructures(MoleculeUtil.exportMolAsText(mol, "mol"), "Parent_Structure", "parent", "FULL_TAUTOMER");
-				logger.debug("number of parents found: " + parentHits.length);
-
-				if (parentHits.length > 0){
-					for (int hit : parentHits){
-						List<Parent> hitList = Parent.findParentsByCdId(hit).getResultList();
-						parents.addAll(hitList);
-					}
-				}
-
-				regSearchDTO = this.populateFromParents(regSearchDTO, parents);
+			}else{
+				regSearchDTO.setAsDrawnMolWeight(mol.getMass());
 
 			}
+			int[] parentHits = chemStructureService.searchMolStructures(MoleculeUtil.exportMolAsText(mol, "mol"), "Parent_Structure", "parent", "FULL_TAUTOMER");
+			logger.debug("number of parents found: " + parentHits.length);
+
+			if (parentHits.length > 0){
+				for (int hit : parentHits){
+					List<Parent> hitList = Parent.findParentsByCdId(hit).getResultList();
+					parents.addAll(hitList);
+				}
+			}
+
+			regSearchDTO = this.populateFromParents(regSearchDTO, parents);
+
 		} else {
 			System.out.println("search with corpName: " + corpName);
 			regSearchDTO.setAsDrawnStructure("");
@@ -161,8 +147,8 @@ public class RegSearchServiceImpl implements RegSearchService {
 	}
 
 
-	private String convertToBase64(Molecule mol, String format) throws IOException {
-		byte[] imageData = MolExporter.exportToBinFormat(mol, format);
+	private String convertToBase64(CmpdRegMolecule mol, String format) throws IOException {
+		byte[] imageData = mol.toBinary(mol, format);
 		byte[] encodedBytes = Base64.encodeBase64(imageData);
 		return new String(encodedBytes);
 	}

@@ -21,6 +21,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 
 import com.labsynch.cmpdreg.dto.RegSearchDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.RegSearchService;
 
 //@RooWebScaffold(path = "regsearches", formBackingObject = RegSearch.class)
@@ -60,7 +61,7 @@ public class RegSearchController {
 		RegSearchDTO regSearchDTO = null;
 		try {
 			regSearchDTO = regSearchService.getParentsbyParams(searchParams);
-		} catch (IOException e) {
+		} catch (IOException | CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new ResponseEntity<String>("ERROR", headers, HttpStatus.BAD_REQUEST);
@@ -83,7 +84,7 @@ public class RegSearchController {
 		RegSearchDTO regSearchDTO = null;
 		try {
 			regSearchDTO = regSearchService.getParentsbyParams(searchParams);
-		} catch (IOException e) {
+		} catch (IOException | CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return new ResponseEntity<String>("ERROR", headers, HttpStatus.BAD_REQUEST);

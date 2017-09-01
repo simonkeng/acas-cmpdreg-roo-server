@@ -109,7 +109,7 @@ public class ApiQcCompoundServicesController {
 				reportFile = "/tmp/qcDupeReport.sdf";
 			}
 			qcCmpdServ.exportQCReport(reportFile, exportType);
-		} catch (IOException e) {
+		} catch (IOException | CmpdRegMolFormatException e) {
 			return new ResponseEntity<String>("ERROR: unable to generate report", headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

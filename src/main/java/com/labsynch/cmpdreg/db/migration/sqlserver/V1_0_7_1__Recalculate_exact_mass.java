@@ -9,16 +9,19 @@ import javax.transaction.Transactional;
 import org.flywaydb.core.api.migration.spring.SpringJdbcMigration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
 
 public class V1_0_7_1__Recalculate_exact_mass implements SpringJdbcMigration {
  
 	Logger logger = LoggerFactory.getLogger(V1_0_7_1__Recalculate_exact_mass.class);
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	@Transactional
 	public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
@@ -74,37 +77,20 @@ public class V1_0_7_1__Recalculate_exact_mass implements SpringJdbcMigration {
 	}
 	
 	private double getMolWeight(String molStructure) {
-		MolHandler mh = null;
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.getMass();
-		} else {
+		try{
+			CmpdRegMolecule molecule = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
+			return molecule.getMass();
+		}catch (Exception e) {
 			return 0d;
 		}
+		
 	}
 
 	private double getExactMass(String molStructure) {
-		MolHandler mh = null;
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.getExactMass();
-		} else {
+		try{
+			CmpdRegMolecule molecule = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
+			return molecule.getExactMass();
+		}catch (Exception e) {
 			return 0d;
 		}
 	}

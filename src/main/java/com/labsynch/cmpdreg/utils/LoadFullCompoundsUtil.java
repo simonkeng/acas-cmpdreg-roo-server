@@ -1,8 +1,6 @@
 package com.labsynch.cmpdreg.utils;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +13,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.Project;
@@ -24,14 +27,10 @@ import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.domain.Vendor;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.ErrorMessage;
 import com.labsynch.cmpdreg.service.MetalotService;
-
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.struc.Molecule;
 
 @Service
 public class LoadFullCompoundsUtil {
@@ -43,6 +42,12 @@ public class LoadFullCompoundsUtil {
 
 	@Autowired
 	private ChemStructureService chemService;
+	
+	@Autowired
+	private CmpdRegSDFReaderFactory sdfReaderFactory;
+	
+	@Autowired
+	private CmpdRegSDFWriterFactory sdfWriterFactory;
 
 	public void loadCompounds(String inputFileName, String outputFileName, HashMap<String, String> propertiesMap){
 		//simple utility to load compounds
@@ -55,16 +60,13 @@ public class LoadFullCompoundsUtil {
 		// vendor --> lot.supplier (String 255)
 		// chemist --> lot.chemist (Scientist --> findByCode)
 
-		FileInputStream fis;	
-
 		try {
-			fis = new FileInputStream (inputFileName);
-			MolImporter mi = new MolImporter(fis);
-			Molecule mol = null;
+			CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(inputFileName);
+			CmpdRegMolecule mol = null;
 
 			int molCounter = 0;
 			//			 && molCounter < 5
-			while ((mol = mi.read()) != null) {
+			while ((mol = mi.readNextMol()) != null) {
 				mol.dearomatize();
 				logger.debug("current molCounter: " + molCounter);
 				molCounter++;
@@ -76,7 +78,7 @@ public class LoadFullCompoundsUtil {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -89,13 +91,12 @@ public class LoadFullCompoundsUtil {
 	}
 
 	@Transactional
-	private void loadCompoundsMol(Molecule mol, String outputFileName, HashMap<String, String> propertiesMap) throws IllegalArgumentException, IOException {
+	private void loadCompoundsMol(CmpdRegMolecule mol, String outputFileName, HashMap<String, String> propertiesMap) throws IllegalArgumentException, IOException, CmpdRegMolFormatException {
 		//simple utility to load compound mol
-		FileOutputStream fos = new FileOutputStream (outputFileName, true);
-		MolExporter me = new MolExporter(fos, "sdf");
+		CmpdRegSDFWriter me = sdfWriterFactory.getCmpdRegSDFWriter(outputFileName);
 
 		boolean goodMolToProcess = true;
-		mol.clearExtraLabels();
+//		mol.clearExtraLabels();
 
 		//look for cmpd scientist. Create a new one if absent.
 		String chemistCodeName = null;
@@ -135,10 +136,10 @@ public class LoadFullCompoundsUtil {
     	SaltForm saltForm = new SaltForm();
     	Parent parent = new Parent();		
     	
-    	lot.setAsDrawnStruct(mol.toFormat("mol"));
+    	lot.setAsDrawnStruct(mol.getMolStructure());
 
-    	mol.clearExtraLabels();
-    	parent.setMolStructure(mol.toFormat("mol"));
+//    	mol.clearExtraLabels();
+    	parent.setMolStructure(mol.getMolStructure());
     	parent.setChemist(cmpdChemist);
     	
 		if (MoleculeUtil.validateMolProperty(mol,  propertiesMap.get("compound_alias"))){
@@ -227,15 +228,14 @@ public class LoadFullCompoundsUtil {
 					}
 				}
 				mol.setProperty("metalot-error", errorMessage);
-				me.write(mol);
+				me.writeMol(mol);
 			}
 		} else {
 			logger.error("Unable to process the bad mol. " );
-			me.write(mol);
+			me.writeMol(mol);
 		}
 
 		me.close();
-		fos.close();
 	}
 
 }

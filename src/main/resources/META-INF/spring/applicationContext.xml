@@ -71,12 +71,6 @@
 	<bean class="org.springframework.jdbc.core.JdbcTemplate" id="basicJdbcTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-
-	<bean class="com.labsynch.cmpdreg.chemclasses.jchem.ChemStructureServiceJChemImpl"
-		id="ChemStructureService">
-		<property name="jdbcTemplate" ref="basicJdbcTemplate" />
-		<property name="shouldCloseConnection" value="${cmpdreg.database.shouldCloseConnection}" />
-	</bean>
 	
 	<bean class="com.labsynch.cmpdreg.utils.Configuration"
 		id="Configuration">

@@ -3,7 +3,6 @@ package com.labsynch.cmpdreg.service;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,27 +14,32 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import chemaxon.formats.MolConverter;
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.marvin.io.formats.MoleculeImporter;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.dto.ExportResultDTO;
 import com.labsynch.cmpdreg.dto.LotDTO;
 import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchLotDTO;
 import com.labsynch.cmpdreg.dto.SearchResultExportRequestDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 @Service
 public class ExportServiceImpl implements ExportService {
 
 	Logger logger = LoggerFactory.getLogger(ExportServiceImpl.class);
+	
+	@Autowired
+	CmpdRegSDFWriterFactory cmpdRegSDFWriterFactory;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	@Override
 	public ExportResultDTO exportSearchResults(
@@ -61,10 +65,10 @@ public class ExportServiceImpl implements ExportService {
 			lotDTOs.add(lotDTO);
 		}
 		logger.debug("Attempting to export "+lotDTOs.size()+" lots");
-		FileOutputStream exportSDFOutStream = new FileOutputStream(filePath, false);
+//		FileOutputStream exportSDFOutStream = new FileOutputStream(filePath, false);
 		int lotsLoaded;
 		try{
-			lotsLoaded = writeLotsToSDF(exportSDFOutStream, lotDTOs);
+			lotsLoaded = writeLotsToSDF(filePath, lotDTOs);
 			String summary = "Successfully exported "+ lotsLoaded+" lots.";
 			result.setSummary(summary);
 			return result;
@@ -93,10 +97,10 @@ public class ExportServiceImpl implements ExportService {
 		return results;
 	}
 	
-	private int writeLotsToSDF(FileOutputStream exportSDFOutStream, Collection<LotDTO> lotDTOs) throws IllegalArgumentException, IOException{
-		MolExporter exporter = new MolExporter(exportSDFOutStream, "sdf");
+	private int writeLotsToSDF(String exportSDFFileName, Collection<LotDTO> lotDTOs) throws IllegalArgumentException, IOException, CmpdRegMolFormatException{
+		CmpdRegSDFWriter exporter = cmpdRegSDFWriterFactory.getCmpdRegSDFWriter(exportSDFFileName);
 		for (LotDTO lotDTO : lotDTOs){
-			Molecule mol = MolImporter.importMol(lotDTO.getParentStructure(), "mol");
+			CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(lotDTO.getParentStructure());
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			if (lotDTO.getAbsorbance() != null) mol.setProperty("Absorbance", lotDTO.getAbsorbance().toString());
 			if (lotDTO.getAmount() != null) mol.setProperty("Amount", lotDTO.getAmount().toString());
@@ -165,7 +169,7 @@ public class ExportServiceImpl implements ExportService {
 			if (lotDTO.getParentCompoundTypeCode() != null) mol.setProperty("Parent Compound Type Code", lotDTO.getParentCompoundTypeCode());
 			if (lotDTO.getParentComment() != null) mol.setProperty("Parent Comment", lotDTO.getParentComment());
 			if (lotDTO.getParentIsMixture() != null) mol.setProperty("Parent Is Mixture", lotDTO.getParentIsMixture().toString());
-			exporter.write(mol);
+			exporter.writeMol(mol);
 		}
 		return lotDTOs.size();
 	}

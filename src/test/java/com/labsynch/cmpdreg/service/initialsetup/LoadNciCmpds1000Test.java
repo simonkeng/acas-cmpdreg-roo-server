@@ -1,6 +1,5 @@
 package com.labsynch.cmpdreg.service.initialsetup;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
@@ -16,6 +15,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.SaltForm;
@@ -23,11 +26,8 @@ import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.domain.StereoCategory;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.MetalotService;
-
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.struc.Molecule;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,6 +39,12 @@ public class LoadNciCmpds1000Test {
 
 	@Autowired
 	private MetalotService metalotServ;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
+
+	@Autowired
+	CmpdRegSDFReaderFactory sdfReaderFactory;
 		
 	@Transactional
     @Test
@@ -46,25 +52,23 @@ public class LoadNciCmpds1000Test {
     	//simple utility to load compounds without any properties
 
     	String fileName = "src/test/resources/nci1000.sdf";
-		FileInputStream fis;	
 		
 		    // Open an input stream
 		    try {
-				fis = new FileInputStream (fileName);
-			    MolImporter mi = new MolImporter(fis);
-			    Molecule mol = null;
+		    		CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(fileName);
+			    CmpdRegMolecule mol = null;
 
-			    while ((mol = mi.read()) != null) {
+			    while ((mol = mi.readNextMol()) != null) {
 			    	
 			    	Metalot metaLot = new Metalot();
 			    	Lot lot = new Lot();
 			    	SaltForm saltForm = new SaltForm();
 			    	Parent parent = new Parent();		
 			    	
-			    	lot.setAsDrawnStruct(mol.toFormat("mol"));
+			    	lot.setAsDrawnStruct(mol.getMolStructure());
 
-			    	mol.clearExtraLabels();
-			    	parent.setMolStructure(mol.toFormat("mol"));
+//			    	mol.clearExtraLabels();
+			    	parent.setMolStructure(mol.getMolStructure());
 			    	Scientist chemist = Scientist.findScientistsByCodeEquals("cchemist").getSingleResult();
 			    	String noteBookInfo = "JM-001-006";
 			    	StereoCategory stereoCategory = StereoCategory.findStereoCategorysByCodeEquals("achiral").getSingleResult();
@@ -92,12 +96,11 @@ public class LoadNciCmpds1000Test {
 			    }	
 			    
 			    mi.close();
-			    fis.close();
 				
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (MolFormatException e) {
+			} catch (CmpdRegMolFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {

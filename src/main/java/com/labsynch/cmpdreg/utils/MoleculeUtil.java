@@ -4,17 +4,19 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
 
 public class MoleculeUtil {
 
 	static Logger logger = LoggerFactory.getLogger(MoleculeUtil.class);
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
-	public static boolean validateMolProperty(Molecule mol, String propName){
+	public static boolean validateMolProperty(CmpdRegMolecule mol, String propName){
 		
 		String jchemVersion = Configuration.getConfigInfo().getServerSettings().getJchemVersion();
 		
@@ -33,7 +35,7 @@ public class MoleculeUtil {
 		return validProperty;
 	}
 	
-	public static String getMolProperty(Molecule mol, String propName){
+	public static String getMolProperty(CmpdRegMolecule mol, String propName){
 		// note: new method introduced in 5.7 - deprecates the method below
 		// (MPropHandler.convertToString(mol.properties(), "date_submitted")
 //		MPropHandler.convertToString(mol.properties(), propName.trim());			
@@ -47,44 +49,25 @@ public class MoleculeUtil {
 		
 		return molProperty;
 	}
-	
-	public static double getMolWeight(String molStructure) {
-		MolHandler mh = null;
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
 
-		if (!badStructureFlag){
-			return mol.getMass();
-		} else {
-			return 0d;
-		}
-	}
-
-	public static Molecule setMolProperty(Molecule mol, String key, String value){
+	public static CmpdRegMolecule setMolProperty(CmpdRegMolecule mol, String key, String value){
 		mol.setProperty(key, value);
 		return mol;
 	}
 	
 
-	public static byte[] exportMolAsBin(Molecule mol, String exportFormat) throws IOException{
-		return MolExporter.exportToBinFormat(mol, exportFormat);
+	public static byte[] exportMolAsBin(CmpdRegMolecule mol, String exportFormat) throws IOException{
+		return mol.toBinary(mol, exportFormat);
 	}
 
-	public static String exportMolAsText(Molecule mol, String exportFormat) throws IOException{
-		return MolExporter.exportToFormat(mol, exportFormat);
-
-	}
-	
-	public static String convertMolToFormat(String molFile, String exportFormat) throws IOException{
-		MolHandler mh = new MolHandler(molFile);
-		Molecule mol = mh.getMolecule();
-		return MolExporter.exportToFormat(mol, exportFormat);
+	public static String exportMolAsText(CmpdRegMolecule mol, String exportFormat) throws IOException{
+		if (exportFormat.equalsIgnoreCase("smiles")){
+			return mol.getSmiles();
+		}else if (exportFormat.equalsIgnoreCase("mrv")) {
+			return mol.getMrvStructure();
+		}else {
+			return mol.getMolStructure();
+		}
 
 	}
 	

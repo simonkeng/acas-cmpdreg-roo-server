@@ -1,4 +1,4 @@
-package com.labsynch.cmpdreg.db.migration.sqlserver;
+package com.labsynch.cmpdreg.db.migration.sqlserver.jchem;
 
 import java.sql.Connection;
 import java.sql.SQLException;

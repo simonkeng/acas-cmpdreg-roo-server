@@ -1,13 +1,10 @@
 package com.labsynch.cmpdreg.chemclasses.indigo;
 
-import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.epam.indigo.Indigo;
@@ -37,7 +35,7 @@ import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-
+@Component
 public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	Logger logger = LoggerFactory.getLogger(ChemStructureServiceIndigoImpl.class);

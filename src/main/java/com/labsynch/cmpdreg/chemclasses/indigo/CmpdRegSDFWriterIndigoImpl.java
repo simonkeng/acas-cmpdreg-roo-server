@@ -17,6 +17,10 @@ public class CmpdRegSDFWriterIndigoImpl implements CmpdRegSDFWriter {
 	public CmpdRegSDFWriterIndigoImpl(String fileName) {
 		this.writer = indigo.writeFile(fileName);
 	}
+	
+	public CmpdRegSDFWriterIndigoImpl() {
+		this.writer = indigo.writeBuffer();
+	}
 
 	@Override
 	public boolean writeMol(CmpdRegMolecule molecule) throws CmpdRegMolFormatException, IOException {
@@ -32,6 +36,11 @@ public class CmpdRegSDFWriterIndigoImpl implements CmpdRegSDFWriter {
 	@Override
 	public void close() throws IOException {
 		writer.close();
+	}
+	
+	@Override
+	public String getBufferString() {
+		return this.writer.toString();
 	}
 
 }

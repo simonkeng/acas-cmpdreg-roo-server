@@ -229,7 +229,7 @@ public class ParentController {
             return "parents/update";
         }
         uiModel.asMap().clear();
-        logger.debug("Parent weight: " + MoleculeUtil.getMolWeight(parent.getMolStructure()));
+        logger.debug("Parent weight: " + service.getMolWeight(parent.getMolStructure()));
         parentService.update(parent);
         //        parent.merge();
         return "redirect:/parents/" + encodeUrlPathSegment(parent.getId().toString(), httpServletRequest);
