@@ -30,7 +30,7 @@ public interface CmpdRegMolecule {
 
 	public String getMrvStructure();
 	
-	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException;
+	public byte[] toBinary(CmpdRegMolecule molecule, String imageFormat, String hSize, String wSize) throws IOException;
 
 	public void dearomatize();
 

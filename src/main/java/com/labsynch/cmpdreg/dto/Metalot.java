@@ -36,7 +36,7 @@ public class Metalot {
 	
 
 	public String toJson() {
-        String json = new JSONSerializer().include("isosalts", "fileLists", "lot", "lot.lotAliases", "lot.saltForm.parent.parentAliases").exclude("*.class", "isosalts.saltForm", "fileList.lot")
+        String json = new JSONSerializer().include("isosalts", "fileList", "lot", "lot.lotAliases", "lot.saltForm.parent.parentAliases").exclude("*.class", "isosalts.saltForm", "fileList.lot")
         		.transform( new DateTransformer( "MM/dd/yyyy"), Date.class)
         		.serialize(this);
         System.out.println("fromMetaLotToJson");

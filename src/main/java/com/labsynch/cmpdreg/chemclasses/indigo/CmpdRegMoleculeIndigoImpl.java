@@ -101,14 +101,13 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	}
 
 	@Override
-	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException {
+	public byte[] toBinary(CmpdRegMolecule molecule, String imageFormat, String hSize, String wSize) throws IOException {
 		IndigoObject mol = ((CmpdRegMoleculeIndigoImpl) molecule).molecule;
 		try {
-			logger.debug("about to start renderer");
-			logger.debug(indigo.getUserSpecifiedPath());
 			IndigoRenderer renderer = new IndigoRenderer(indigo);
-			//sort out different formats later
-			indigo.setOption("render-output-format", "png");
+			indigo.setOption("render-output-format", imageFormat);
+			indigo.setOption("render-image-height", hSize);
+			indigo.setOption("render-image-width", wSize);
 			return renderer.renderToBuffer(mol);
 		}
 		catch (Exception e) {

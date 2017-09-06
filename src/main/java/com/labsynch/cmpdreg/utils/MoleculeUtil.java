@@ -57,8 +57,8 @@ public class MoleculeUtil {
 	}
 	
 
-	public static byte[] exportMolAsBin(CmpdRegMolecule mol, String exportFormat) throws IOException{
-		return mol.toBinary(mol, exportFormat);
+	public static byte[] exportMolAsBin(CmpdRegMolecule mol, String imageFormat, String hSize, String wSize) throws IOException{
+		return mol.toBinary(mol, imageFormat, hSize, wSize);
 	}
 
 	public static String exportMolAsText(CmpdRegMolecule mol, String exportFormat) throws IOException, CmpdRegMolFormatException{

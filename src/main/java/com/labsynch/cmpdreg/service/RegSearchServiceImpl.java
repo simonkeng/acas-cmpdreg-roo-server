@@ -60,13 +60,11 @@ public class RegSearchServiceImpl implements RegSearchService {
 			if (logger.isDebugEnabled()) System.out.println("search with structure: " + mol.getSmiles());
 
 
-//				String exportFormat = "base64:png";
 			String format = "png";
 			String wSize = "600";
 			String hSize = "300";
-			String imageFormat = format + ":" + "h" + hSize + ",w" + wSize + ",maxScale28";
 
-			regSearchDTO.setAsDrawnImage(convertToBase64(mol, imageFormat ));
+			regSearchDTO.setAsDrawnImage(convertToBase64(mol, format, hSize, wSize ));
 			regSearchDTO.setAsDrawnStructure(mol.getMolStructure());
 			regSearchDTO.setAsDrawnMolFormula(mol.getFormula());
 			regSearchDTO.setAsDrawnExactMass(mol.getExactMass());
@@ -147,8 +145,8 @@ public class RegSearchServiceImpl implements RegSearchService {
 	}
 
 
-	private String convertToBase64(CmpdRegMolecule mol, String format) throws IOException {
-		byte[] imageData = mol.toBinary(mol, format);
+	private String convertToBase64(CmpdRegMolecule mol, String imageFormat, String hSize, String wSize) throws IOException {
+		byte[] imageData = mol.toBinary(mol, imageFormat, hSize, wSize);
 		byte[] encodedBytes = Base64.encodeBase64(imageData);
 		return new String(encodedBytes);
 	}

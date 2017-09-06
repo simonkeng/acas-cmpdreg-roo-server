@@ -386,7 +386,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
 			IndigoObject mol = molWrapper.molecule;
 			
-			String baseQuery = "SELECT new Map( cd_id, mol_structure) FROM " + plainTable + " WHERE mol_structure @ ";
+			String baseQuery = "SELECT cd_id, mol_structure FROM " + plainTable + " WHERE mol_structure @ ";
 			String bingoFunction = null;
 			String orderBy = " ORDER BY cd_id";
 			String filterIdsClause = "";
@@ -418,7 +418,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			query.setParameter("queryMol", mol.molfile());
 			query.setMaxResults(maxResults);
 			
-			if (inputCdIdHitList.length > 0) query.setParameter("filterCdIds", Arrays.asList(inputCdIdHitList));
+			if (inputCdIdHitList != null && inputCdIdHitList.length > 0) query.setParameter("filterCdIds", Arrays.asList(inputCdIdHitList));
 			
 			//May need additional research / decisions around which options to use
 			//Basic Indigo search types corresponding to JChem search types
@@ -465,10 +465,10 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			//TODO: should do an audit of the search types being used by CReg.
 			
 			//list of maps of {"cdId": ###, "molStructure": "molfile string"}
-			List<Map<String, Object>> hitListList = query.getResultList();
-			for (Map<String, Object> hit : hitListList) {
-				Integer cdId = (Integer) hit.get("cd_id");
-				String molStructure = (String) hit.get("mol_structure");
+			List<Object[]> hitListList = query.getResultList();
+			for (Object[] hit : hitListList) {
+				Integer cdId = (Integer) hit[0];
+				String molStructure = (String)  hit[1];
 				CmpdRegMoleculeIndigoImpl molecule = new  CmpdRegMoleculeIndigoImpl(molStructure);
 				molecule.setProperty("cd_id", String.valueOf(cdId));
 				moleculeList.add(molecule);

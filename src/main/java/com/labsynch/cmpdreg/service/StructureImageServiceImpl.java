@@ -56,7 +56,7 @@ public class StructureImageServiceImpl implements StructureImageService {
 
 		byte[] d4 = null;
 		try {
-			d4 = MoleculeUtil.exportMolAsBin(mol, imageFormat);
+			d4 = MoleculeUtil.exportMolAsBin(mol, format, hSize.toString(), wSize.toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -80,7 +80,7 @@ public class StructureImageServiceImpl implements StructureImageService {
 
 		byte[] d4 = null;
 		try {
-			d4 = MoleculeUtil.exportMolAsBin(mol, "png");
+			d4 = MoleculeUtil.exportMolAsBin(mol, "png", "200", "200");
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
