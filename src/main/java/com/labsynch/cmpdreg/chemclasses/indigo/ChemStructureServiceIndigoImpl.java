@@ -17,6 +17,7 @@ import javax.persistence.Query;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -52,16 +53,17 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		return shouldCloseConnection;
 	}
 
-	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private JdbcTemplate basicJdbcTemplate;
 
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
-		this.jdbcTemplate = jdbcTemplate;
+		this.basicJdbcTemplate = jdbcTemplate;
 	}
 
 	public JdbcTemplate getJdbcTemplate()
 	{
-		return jdbcTemplate;
+		return basicJdbcTemplate;
 	}
 
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
@@ -77,7 +79,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	public int getCount(String structureTable) {
 		String sql = "select count(*) from " + structureTable;
 		int count;
-		Integer countInt = jdbcTemplate.queryForObject(sql, Integer.class);
+		Integer countInt = basicJdbcTemplate.queryForObject(sql, Integer.class);
 		if (countInt == null){
 			count = 0;
 		} else {
@@ -186,7 +188,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType, 
 			Float simlarityPercent, int maxResults) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e1) {
@@ -211,7 +213,6 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			IndigoObject mol = molWrapper.molecule;
 			
 			String baseQuery = "SELECT cd_id FROM " + plainTable + " WHERE mol_structure @ ";
-			String argFormat = null;
 			String bingoFunction = null;
 			String orderBy = " ORDER BY cd_id";
 			
@@ -226,19 +227,16 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			logger.debug("selected search type: " + searchType);
 			
 			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
-				bingoFunction = "::bingo.sub";
-				argFormat = "( :queryMol , :parameters )";
+				bingoFunction = "cast( ( :queryMol , :parameters ) as bingo.sub)";
 			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
-				bingoFunction = "::bingo.sim";
-				argFormat = "( :minSimilarity , :maxSimilarity , :queryMol , :metric )";
-				orderBy = " ORDER BY "+argFormat+bingoFunction;
+				bingoFunction = "cast( ( :minSimilarity , :maxSimilarity , :queryMol , :metric ) as bingo.sim)";
+				orderBy = " ORDER BY "+bingoFunction;
 			}else { 
-				bingoFunction = "::bingo.exact";
-				argFormat = "( :queryMol , :parameters )";
+				bingoFunction = "cast(( :queryMol , :parameters ) as bingo.exact)";
 			}
 			
 			EntityManager em = Parent.entityManager();
-			Query query = em.createQuery(baseQuery + argFormat + bingoFunction + orderBy);
+			Query query = em.createNativeQuery(baseQuery + bingoFunction + orderBy);
 			
 			query.setParameter("queryMol", mol.molfile());
 			query.setMaxResults(maxResults);
@@ -363,7 +361,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, 
 			String plainTable, String searchType, Float simlarityPercent, int maxResults) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e1) {
@@ -389,7 +387,6 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			IndigoObject mol = molWrapper.molecule;
 			
 			String baseQuery = "SELECT new Map( cd_id, mol_structure) FROM " + plainTable + " WHERE mol_structure @ ";
-			String argFormat = null;
 			String bingoFunction = null;
 			String orderBy = " ORDER BY cd_id";
 			String filterIdsClause = "";
@@ -405,21 +402,18 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			logger.debug("selected search type: " + searchType);
 			
 			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
-				bingoFunction = "::bingo.sub";
-				argFormat = "( :queryMol , :parameters )";
+				bingoFunction = "cast(( :queryMol , :parameters ) as bingo.sub) ";
 			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
-				bingoFunction = "::bingo.sim";
-				argFormat = "( :minSimilarity , :maxSimilarity , :queryMol , :metric )";
-				orderBy = " ORDER BY "+argFormat+bingoFunction;
+				bingoFunction = "cast( ( :minSimilarity , :maxSimilarity , :queryMol , :metric ) as bingo.sim)";
+				orderBy = " ORDER BY "+bingoFunction;
 			}else { 
-				bingoFunction = "::bingo.exact";
-				argFormat = "( :queryMol , :parameters )";
+				bingoFunction = "cast( ( :queryMol , :parameters ) as bingo.exact)";
 			}
 			
-			if (inputCdIdHitList.length > 0) filterIdsClause = " AND cd_id IN :filterCdIds ";
+			if (inputCdIdHitList != null && inputCdIdHitList.length > 0) filterIdsClause = " AND cd_id IN :filterCdIds ";
 			
 			EntityManager em = Parent.entityManager();
-			Query query = em.createQuery(baseQuery + argFormat + bingoFunction + filterIdsClause + orderBy);
+			Query query = em.createNativeQuery(baseQuery + bingoFunction + filterIdsClause + orderBy);
 			
 			query.setParameter("queryMol", mol.molfile());
 			query.setMaxResults(maxResults);
