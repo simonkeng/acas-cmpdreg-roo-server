@@ -135,6 +135,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 					<artifactId>indigo</artifactId>
 					<version>${indigo.version}</version>
 				</dependency>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo-renderer</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo-inchi</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
 			</dependencies>	
 			<properties>
 				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/jchem/**</exclude.chemistry.package>
