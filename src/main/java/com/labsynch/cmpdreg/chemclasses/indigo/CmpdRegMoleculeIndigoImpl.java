@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.epam.indigo.Indigo;
+import com.epam.indigo.IndigoException;
 import com.epam.indigo.IndigoObject;
 import com.epam.indigo.IndigoRenderer;
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
@@ -54,8 +55,12 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	}
 
 	@Override
-	public String getMolStructure() {
-		return this.molecule.molfile();
+	public String getMolStructure() throws CmpdRegMolFormatException {
+		try{
+			return this.molecule.molfile();
+		}catch (IndigoException e) {
+			throw new CmpdRegMolFormatException(e);
+		}
 	}
 	
 	@Override
@@ -99,6 +104,8 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	public byte[] toBinary(CmpdRegMolecule molecule, String format) throws IOException {
 		IndigoObject mol = ((CmpdRegMoleculeIndigoImpl) molecule).molecule;
 		try {
+			logger.debug("about to start renderer");
+			logger.debug(indigo.getUserSpecifiedPath());
 			IndigoRenderer renderer = new IndigoRenderer(indigo);
 			//sort out different formats later
 			indigo.setOption("render-output-format", "png");

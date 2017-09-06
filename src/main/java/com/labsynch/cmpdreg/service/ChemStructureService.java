@@ -85,7 +85,7 @@ public interface ChemStructureService {
 
 	String getCipStereo(String structure) throws IOException;
 
-	StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure);
+	StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure) throws CmpdRegMolFormatException;
 
 	public String standardizeStructure(String molfile) throws CmpdRegMolFormatException, IOException;
 

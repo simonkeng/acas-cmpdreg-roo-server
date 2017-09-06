@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 @Service
@@ -22,7 +23,7 @@ public class SaltStructureServiceImpl implements SaltStructureService {
 
 
 	@Override
-	public Salt saveStructure(Salt salt) {		
+	public Salt saveStructure(Salt salt) throws CmpdRegMolFormatException {		
 
 		CmpdRegMolecule mol = chemStructureService.toMolecule(salt.getMolStructure());
 		salt.setOriginalStructure(salt.getMolStructure());
@@ -60,7 +61,7 @@ public class SaltStructureServiceImpl implements SaltStructureService {
 
 
 	@Override
-	public Salt update(Salt salt) {
+	public Salt update(Salt salt) throws CmpdRegMolFormatException {
 		CmpdRegMolecule mol = chemStructureService.toMolecule(salt.getMolStructure());
 		salt.setOriginalStructure(salt.getMolStructure());
 		salt.setMolStructure(mol.getMolStructure());

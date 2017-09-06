@@ -317,7 +317,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure){
+	public StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure) throws CmpdRegMolFormatException{
 		CmpdRegMoleculeIndigoImpl molWrapper = (CmpdRegMoleculeIndigoImpl) inputStructure;
 		IndigoObject rawMolecule = molWrapper.molecule;
 		IndigoObject clone = rawMolecule.clone();

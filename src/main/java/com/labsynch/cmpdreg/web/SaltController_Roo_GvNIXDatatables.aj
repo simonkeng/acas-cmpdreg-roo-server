@@ -346,7 +346,13 @@ privileged aspect SaltController_Roo_GvNIXDatatables {
     @RequestMapping(produces = "text/html", method = RequestMethod.POST, params = "datatablesRedirect")
     public String SaltController.createDatatablesDetail(@RequestParam(value = "datatablesRedirect", required = true) String redirect, @Valid Salt salt, BindingResult bindingResult, Model uiModel, RedirectAttributes redirectModel, HttpServletRequest httpServletRequest) {
         // Do common create operations (check errors, populate, persist, ...)
-        String view = create(salt, bindingResult, uiModel, httpServletRequest);
+        String view = null;
+		try {
+			view = create(salt, bindingResult, uiModel, httpServletRequest);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         // If binding errors or no redirect, return common create error view (remain in create form)
         if (bindingResult.hasErrors() || redirect == null || redirect.trim().isEmpty()) {
             return view;

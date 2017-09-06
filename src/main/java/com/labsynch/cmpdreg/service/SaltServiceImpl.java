@@ -70,7 +70,7 @@ public class SaltServiceImpl implements SaltService {
 	}
 
 	@Transactional
-	private void saveSalt(CmpdRegMolecule mol) throws IOException {
+	private void saveSalt(CmpdRegMolecule mol) throws IOException, CmpdRegMolFormatException {
 		Salt salt = new Salt();
 		salt.setMolStructure(MoleculeUtil.exportMolAsText(mol, "mol"));
 		salt.setOriginalStructure(MoleculeUtil.exportMolAsText(mol, "mol"));

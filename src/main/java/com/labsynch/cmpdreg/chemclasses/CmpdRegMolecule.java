@@ -14,7 +14,7 @@ public interface CmpdRegMolecule {
 	
 	public String getPropertyType(String key);
 	
-	public String getMolStructure();
+	public String getMolStructure() throws CmpdRegMolFormatException;
 
 	public String getFormula();
 

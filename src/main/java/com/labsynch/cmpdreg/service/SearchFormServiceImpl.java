@@ -31,6 +31,7 @@ import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.SearchFormReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchLotDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 @Service
@@ -138,7 +139,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 
 	@Override
 	@Transactional
-	public SearchFormReturnDTO  findQuerySaltForms(SearchFormDTO searchParams) {
+	public SearchFormReturnDTO  findQuerySaltForms(SearchFormDTO searchParams) throws CmpdRegMolFormatException {
 
 		logger.debug("incoming search params: " + searchParams);
 

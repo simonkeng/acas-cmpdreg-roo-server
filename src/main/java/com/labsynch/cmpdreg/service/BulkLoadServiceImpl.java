@@ -307,7 +307,12 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				SaltForm saltForm;
 				Lot lot;
 				//attempt to strip salts
-				mol = processForSaltStripping(mol, mappings);
+				try {
+					mol = processForSaltStripping(mol, mappings);
+				}catch (CmpdRegMolFormatException e) {
+					logError(e, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
+					continue;
+				}
 				try{
 					parent = createParent(mol, mappings, chemist);
 				}catch (Exception e){

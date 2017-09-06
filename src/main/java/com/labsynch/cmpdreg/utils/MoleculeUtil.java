@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 public class MoleculeUtil {
 
@@ -60,7 +61,7 @@ public class MoleculeUtil {
 		return mol.toBinary(mol, exportFormat);
 	}
 
-	public static String exportMolAsText(CmpdRegMolecule mol, String exportFormat) throws IOException{
+	public static String exportMolAsText(CmpdRegMolecule mol, String exportFormat) throws IOException, CmpdRegMolFormatException{
 		if (exportFormat.equalsIgnoreCase("smiles")){
 			return mol.getSmiles();
 		}else if (exportFormat.equalsIgnoreCase("mrv")) {

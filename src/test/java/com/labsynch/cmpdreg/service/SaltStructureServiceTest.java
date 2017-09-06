@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -70,7 +71,7 @@ public class SaltStructureServiceTest {
 	//@Test
 	@Transactional
 	@Rollback(false)
-	public void updateTest() {
+	public void updateTest() throws CmpdRegMolFormatException {
 		List<Salt> salts = Salt.findAllSalts();
 		Salt updatedSalt;
 		for (Salt salt : salts){
@@ -89,7 +90,7 @@ public class SaltStructureServiceTest {
     @Test
 	@Transactional
 	@Rollback(false)
-    public void updateSingleSalt() {
+    public void updateSingleSalt() throws CmpdRegMolFormatException {
     
     Salt salt = Salt.findSalt(20702L);
 	CmpdRegMolecule mol = chemService.toMolecule("C(=O)(C(F)(F)F)O");
