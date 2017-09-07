@@ -5,17 +5,23 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
+@Component
 public class MoleculeUtil {
 
 	static Logger logger = LoggerFactory.getLogger(MoleculeUtil.class);
 	
+	private static CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
+	
 	@Autowired
-	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
+	public MoleculeUtil(CmpdRegMoleculeFactory cmpdRegMoleculeFactory) {
+		MoleculeUtil.cmpdRegMoleculeFactory = cmpdRegMoleculeFactory;
+	}
 
 	public static boolean validateMolProperty(CmpdRegMolecule mol, String propName){
 		
@@ -70,6 +76,11 @@ public class MoleculeUtil {
 			return mol.getMolStructure();
 		}
 
+	}
+	
+	public static String getMolFormula(String molStructure) throws CmpdRegMolFormatException {
+		CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
+		return mol.getFormula();
 	}
 	
 }

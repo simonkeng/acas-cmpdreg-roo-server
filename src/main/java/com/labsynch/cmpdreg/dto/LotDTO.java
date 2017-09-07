@@ -9,6 +9,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.json.RooJson;
@@ -21,6 +22,9 @@ import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.PhysicalState;
 import com.labsynch.cmpdreg.domain.SaltForm;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.service.ChemStructureService;
+import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
 @RooJavaBean
 @RooToString
@@ -97,7 +101,6 @@ public class LotDTO {
 	private String parentComment;
 	private Boolean parentIsMixture;
 //	private Set<LotAliasDTO> lotAliasSet = new HashSet<LotAliasDTO>();
-
 	
 	public LotDTO(Lot lot){
 		if (lot.getId() != null) this.id = lot.getId();
@@ -181,7 +184,11 @@ public class LotDTO {
 		this.parentStructure = parent.getMolStructure();
 		this.parentMolWeight = parent.getMolWeight();
 		this.parentExactMass = parent.getExactMass();
-		this.parentMolFormula = parent.getMolFormula();
+		try{
+			this.parentMolFormula = MoleculeUtil.getMolFormula(parent.getMolStructure());
+		}catch (CmpdRegMolFormatException e) {
+			//leave mol formula blank
+		}
 		this.parentRegistrationDate = parent.getRegistrationDate();
 		if (parent.getRegisteredBy() != null) this.parentRegisteredBy = parent.getRegisteredBy().getCode();
 		this.parentModifiedDate = parent.getModifiedDate();

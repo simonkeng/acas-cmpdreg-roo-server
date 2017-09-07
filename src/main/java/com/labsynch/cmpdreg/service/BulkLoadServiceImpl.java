@@ -401,9 +401,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			logger.debug(summaryHtml);
 
 			//close the input and output streams, importers and exporters
-			molReader.close();
-			errorMolExporter.close();
-			registeredMolExporter.close();
+//			molReader.close();
+//			errorMolExporter.close();
+//			registeredMolExporter.close();
 //			fis.close();	
 //			errorSDFOutStream.close();
 			errorCSVOutStream.close();
@@ -588,8 +588,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				throw new SaltedCompoundException("Multiple fragments detected. Please fix or mark \"Parent Is Mixture\" as true");
 			}
 		}
-		//See if the corpName is provided and exists
-		if (parent.getCorpName() != null && parent.getCorpName().length() > 0){
+		//If parent has not already been identified, see if the corpName is provided and exists
+		if (parent.getId() == null && parent.getCorpName() != null && parent.getCorpName().length() > 0){
 			Parent foundParent = null;
 			try{
 				foundParent = Parent.findParentsByCorpNameEquals(parent.getCorpName()).getSingleResult();

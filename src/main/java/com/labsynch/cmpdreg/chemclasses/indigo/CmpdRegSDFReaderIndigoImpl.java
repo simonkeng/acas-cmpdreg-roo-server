@@ -24,8 +24,12 @@ public class CmpdRegSDFReaderIndigoImpl implements CmpdRegSDFReader {
 
 	@Override
 	public CmpdRegMolecule readNextMol() throws IOException {
-		CmpdRegMoleculeIndigoImpl molecule = new CmpdRegMoleculeIndigoImpl(reader.next());
-		return molecule;
+		if (reader.hasNext()) {
+			CmpdRegMoleculeIndigoImpl molecule = new CmpdRegMoleculeIndigoImpl(reader.next());
+			return molecule;
+		}else {
+			return null;
+		}
 	}
 
 }

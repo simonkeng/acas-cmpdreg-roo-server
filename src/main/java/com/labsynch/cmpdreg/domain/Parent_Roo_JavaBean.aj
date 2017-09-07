@@ -11,7 +11,6 @@ import com.labsynch.cmpdreg.domain.ParentAnnotation;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.domain.StereoCategory;
-import com.labsynch.cmpdreg.service.ChemStructureService;
 import java.util.Date;
 import java.util.Set;
 
@@ -87,6 +86,10 @@ privileged aspect Parent_Roo_JavaBean {
     
     public void Parent.setExactMass(Double exactMass) {
         this.exactMass = exactMass;
+    }
+    
+    public String Parent.getMolFormula() {
+        return this.molFormula;
     }
     
     public void Parent.setMolFormula(String molFormula) {
@@ -195,14 +198,6 @@ privileged aspect Parent_Roo_JavaBean {
     
     public void Parent.setIsMixture(Boolean isMixture) {
         this.isMixture = isMixture;
-    }
-    
-    public ChemStructureService Parent.getChemStructureService() {
-        return this.chemStructureService;
-    }
-    
-    public void Parent.setChemStructureService(ChemStructureService chemStructureService) {
-        this.chemStructureService = chemStructureService;
     }
     
 }

@@ -126,20 +126,6 @@ public class Parent {
     private String comment;
     
     private Boolean isMixture;
-    
-    @Autowired
-    @Transient
-	private ChemStructureService chemStructureService;
-
-	public String getMolFormula() {
-		if (this.molFormula == null && this.getMolStructure() != null){
-			return chemStructureService.getMolFormula(this.getMolStructure());
-		} else {
-			return this.molFormula;
-		}
-	}
-
-	
 
 	@Transactional
 	public static void deleteAllParents(){        

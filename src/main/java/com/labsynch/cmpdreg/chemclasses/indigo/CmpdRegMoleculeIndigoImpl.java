@@ -31,7 +31,11 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	}
 	
 	public String getProperty(String key){
-		return molecule.getProperty(key);
+		if (molecule.hasProperty(key)){
+			return molecule.getProperty(key);
+		}else {
+			return null;
+		}
 	}
 	
 	public void setProperty(String key, String value){
@@ -91,13 +95,20 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 
 	@Override
 	public int getTotalCharge() {
-		return this.molecule.charge();
+		int totalCharge = 0;
+		for (IndigoObject atom : this.molecule.iterateAtoms()) {
+			totalCharge += atom.charge();
+		}
+		return totalCharge;
 	}
 
 	@Override
 	public CmpdRegMolecule replaceStructure(String newStructure) throws CmpdRegMolFormatException {
-		// TODO Auto-generated method stub
-		return null;
+		CmpdRegMoleculeIndigoImpl newMol = new CmpdRegMoleculeIndigoImpl(newStructure);
+		for (IndigoObject prop : this.molecule.iterateProperties()) {
+			newMol.setProperty(prop.name(), prop.rawData());
+		}
+		return newMol;
 	}
 
 	@Override

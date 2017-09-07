@@ -515,7 +515,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		}	
 
 		if (!badStructureFlag){
-			return (CmpdRegMolecule) mol;
+			return new CmpdRegMoleculeIndigoImpl(mol);
 		} else {
 			return null;
 		}
@@ -532,27 +532,40 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public String getCipStereo(String structure) throws IOException{	
-		//specific MarvinJS method
-		return null;
+		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
+		IndigoObject molecule = molWrapper.molecule;
+		indigo.setOption("molfile-saving-add-stereo-desc", "1");
+		return molecule.molfile();
 	}
 
 	@Override
 	public String hydrogenizeMol(String structure, String inputFormat, String method) throws IOException{	
-		//specific MarvinJS method
-		return null;
+		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
+		IndigoObject molecule = molWrapper.molecule;
+		molecule.unfoldHydrogens();
+		return molecule.molfile();
 	}
 
 	@Override
 	public MolConvertOutputDTO cleanStructure(String structure, int dim, String opts) throws IOException {				
-		//specific MarvinJS method
-		return null;
+		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
+		IndigoObject molecule = molWrapper.molecule;
+		molecule.layout();
+		MolConvertOutputDTO output = new MolConvertOutputDTO();
+		output.setFormat("mol");
+		output.setStructure(molecule.molfile());
+		return output;
 	}
 
 	@Override
-	public MolConvertOutputDTO toFormat(String structure, String inputFormat, String outputFormat) throws IOException {				
-		//specific MarvinJS method
-		//TODO: see if this might serve both Ketcher and MarvinJS
-		return null;
+	public MolConvertOutputDTO toFormat(String structure, String inputFormat, String outputFormat) throws IOException {			
+		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
+		IndigoObject molecule = molWrapper.molecule;
+		if (inputFormat.equalsIgnoreCase("smiles")) molecule.layout();
+		MolConvertOutputDTO output = new MolConvertOutputDTO();
+		output.setFormat("mol");
+		output.setStructure(molecule.molfile());
+		return output;
 	}
 
 	@Override
@@ -667,8 +680,11 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	public boolean standardizedMolCompare(String queryMol, String targetMol) {
-		// TODO Auto-generated method stub
-		return false;
+		IndigoObject queryMolecule = (new CmpdRegMoleculeIndigoImpl(queryMol)).molecule;
+		queryMolecule.standardize();
+		IndigoObject targetMolecule = (new CmpdRegMoleculeIndigoImpl(targetMol)).molecule;
+		targetMolecule.standardize();
+		return (indigo.exactMatch(queryMolecule, targetMolecule) != null);
 	}
 }
 
