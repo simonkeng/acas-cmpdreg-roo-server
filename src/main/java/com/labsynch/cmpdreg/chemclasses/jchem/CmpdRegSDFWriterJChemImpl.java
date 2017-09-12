@@ -28,9 +28,9 @@ public class CmpdRegSDFWriterJChemImpl implements CmpdRegSDFWriter {
 		this.molExporter = new MolExporter(outStream, "sdf");
 	}
 	
-	public public CmpdRegSDFWriterJChemImpl() {
-		this.outputStream = new ByteArrayOutputStream();
-		this.molExporter = new MolExporter(outputStream, "sdf");
+	public CmpdRegSDFWriterJChemImpl() throws IllegalArgumentException, IOException {
+		this.outstream = new ByteArrayOutputStream();
+		this.molExporter = new MolExporter(outstream, "sdf");
 	}
 	
 	@Override

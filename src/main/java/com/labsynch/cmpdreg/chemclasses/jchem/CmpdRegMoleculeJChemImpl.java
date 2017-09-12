@@ -128,8 +128,13 @@ public class CmpdRegMoleculeJChemImpl implements CmpdRegMolecule {
 	@Override
 	public byte[] toBinary(CmpdRegMolecule molecule, String imageFormat, String hSize, String wSize) throws IOException {
 		Molecule mol = ((CmpdRegMoleculeJChemImpl) molecule).molecule;
-		String format = format + ":" + "h" + hSize + ",w" + wSize + ",maxScale28";
+		String format = imageFormat + ":" + "h" + hSize + ",w" + wSize + ",maxScale28";
 		return MolExporter.exportToBinFormat(mol, format);
+	}
+
+	@Override
+	public void dearomatize() {
+		this.molecule.dearomatize();	
 	}
 
 }

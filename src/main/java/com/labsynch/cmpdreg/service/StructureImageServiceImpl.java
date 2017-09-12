@@ -100,6 +100,9 @@ public class StructureImageServiceImpl implements StructureImageService {
 		}catch (IllegalArgumentException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 

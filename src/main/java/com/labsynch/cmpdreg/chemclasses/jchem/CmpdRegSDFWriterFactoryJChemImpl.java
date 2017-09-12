@@ -16,4 +16,9 @@ public class CmpdRegSDFWriterFactoryJChemImpl implements CmpdRegSDFWriterFactory
 		return new CmpdRegSDFWriterJChemImpl(fileName);
 	}
 
+	@Override
+	public CmpdRegSDFWriter getCmpdRegSDFBufferWriter() throws IllegalArgumentException, IOException {
+		return new CmpdRegSDFWriterJChemImpl();
+	}
+
 }
