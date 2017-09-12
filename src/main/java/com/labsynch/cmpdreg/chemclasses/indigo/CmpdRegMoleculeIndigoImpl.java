@@ -22,8 +22,12 @@ public class CmpdRegMoleculeIndigoImpl implements CmpdRegMolecule {
 	
 	IndigoObject molecule;
 	
-	public CmpdRegMoleculeIndigoImpl(String molStructure){
-		this.molecule = indigo.loadMolecule(molStructure);
+	public CmpdRegMoleculeIndigoImpl(String molStructure) throws CmpdRegMolFormatException{
+		try{
+			this.molecule = indigo.loadMolecule(molStructure);
+		}catch (IndigoException e) {
+			throw new CmpdRegMolFormatException(e);
+		}
 	}
 	
 	public CmpdRegMoleculeIndigoImpl(IndigoObject molecule){

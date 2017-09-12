@@ -16,7 +16,7 @@ public interface SearchFormService {
 
 	public String findParentIds(String molStructure,
 			int maxResults, Float similarity, String searchType,
-			String outputFormat) throws IOException;
+			String outputFormat) throws IOException, CmpdRegMolFormatException;
 
 
 }

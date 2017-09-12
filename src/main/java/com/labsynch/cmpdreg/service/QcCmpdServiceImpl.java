@@ -218,7 +218,7 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 
 	@Override
-	public int dupeCheckQCStructures(){
+	public int dupeCheckQCStructures() throws CmpdRegMolFormatException{
 		List<Long> qcIds = QcCompound.findAllIds().getResultList();
 		logger.info("number of qcCompounds found: " + qcIds.size());
 		int totalDupeCount = 0;

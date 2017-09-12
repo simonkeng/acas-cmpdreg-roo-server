@@ -24,7 +24,7 @@ public interface ParentService {
 
 	void qcCheckParentStructures() throws CmpdRegMolFormatException, IOException;
 
-	void dupeCheckQCStructures();
+	void dupeCheckQCStructures() throws CmpdRegMolFormatException;
 
 	int findPotentialDupeParentStructures(String dupeCheckFile);
 

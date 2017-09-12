@@ -24,23 +24,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.labsynch.cmpdreg.dto.PreferredNameDTO;
 import com.labsynch.cmpdreg.dto.SearchCdIdReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.RegSearchService;
 import com.labsynch.cmpdreg.service.SearchFormService;
 
 @RequestMapping(value = {"/api/v1/structuresearch"})
 @Controller
 public class ApiCmpdSearchController {
-	
+
 	Logger logger = LoggerFactory.getLogger(ApiCmpdSearchController.class);
 
 	@Autowired
 	private RegSearchService regSearchService;
-	
+
 	@Autowired
 	private SearchFormService searchFormService;
-	
-	
-	
+
+
+
 	@Transactional
 	@RequestMapping(value = "/getPreferredName/parent", method = RequestMethod.POST, headers = "Accept=application/json")
 	@ResponseBody
@@ -52,71 +53,72 @@ public class ApiCmpdSearchController {
 		preferredNameDTOs = PreferredNameDTO.getParentPreferredNames(preferredNameDTOs);
 		return new ResponseEntity<String>(PreferredNameDTO.toJsonArray(preferredNameDTOs), headers, HttpStatus.OK);
 	}
-	
+
 
 
 	@RequestMapping(value = "/parents", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> searchStructures (	
+	@ResponseBody
+	public ResponseEntity<String> searchStructures (	
 			@RequestBody String molStructure,
 
-//    		@RequestParam(value = "molStructure", required=true) String molStructure,
+			//    		@RequestParam(value = "molStructure", required=true) String molStructure,
 			@RequestParam(value = "maxResults", required=false) Integer maxResults,
 			@RequestParam(value = "similarity", required=false) Float similarity,
 			@RequestParam(value = "searchType", required=false) String searchType,
 			@RequestParam(value = "outputFormat", required=false) String outputFormat) throws IOException {
 
-    	//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
-    	//    ./jcsearch --maxResults:$4 -q $9 -f sdf:Tcd_id DB:compound.parent_structure
-			
+		//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
+		//    ./jcsearch --maxResults:$4 -q $9 -f sdf:Tcd_id DB:compound.parent_structure
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("Access-Control-Allow-Headers", "Content-Type");
+		headers.add("Access-Control-Allow-Origin", "*");
+		headers.add("Cache-Control","no-store, no-cache, must-revalidate"); //HTTP 1.1
+		headers.add("Pragma","no-cache"); //HTTP 1.0
+		headers.setExpires(0); // Expire the cache
 		
-		String searchResults = searchFormService.findParentIds(molStructure, maxResults, similarity, searchType, outputFormat);
-    	
-		String results = null;
-		        
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Access-Control-Allow-Headers", "Content-Type");
-        headers.add("Access-Control-Allow-Origin", "*");
+		try {
+			String searchResults = searchFormService.findParentIds(molStructure, maxResults, similarity, searchType, outputFormat);
+			return new ResponseEntity<String>(searchResults, headers, HttpStatus.OK);
+		} catch (CmpdRegMolFormatException e) {
+			return new ResponseEntity<String>("Encountered error with input structure: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@RequestMapping(value = "/parents/form", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseEntity<String> searchStructuresForm (	
+			@RequestParam(value = "molStructure", required=true) String molStructure,
+			@RequestParam(value = "maxResults", required=false) Integer maxResults,
+			@RequestParam(value = "similarity", required=false) Float similarity,
+			@RequestParam(value = "searchType", required=false) String searchType,
+			@RequestParam(value = "outputFormat", required=false) String outputFormat) throws IOException {
+
+		//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
+		//    ./jcsearch --maxResults:$4 -q $9 -f sdf:Tcd_id DB:compound.parent_structure
+
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("Access-Control-Allow-Headers", "Content-Type");
+		headers.add("Access-Control-Allow-Origin", "*");
 		headers.add("Cache-Control","no-store, no-cache, must-revalidate"); //HTTP 1.1
 		headers.add("Pragma","no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
 
-       return new ResponseEntity<String>(searchResults, headers, HttpStatus.OK);
-
-    }
-	
-	@RequestMapping(value = "/parents/form", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<String> searchStructuresForm (	
-    		@RequestParam(value = "molStructure", required=true) String molStructure,
-			@RequestParam(value = "maxResults", required=false) Integer maxResults,
-			@RequestParam(value = "similarity", required=false) Float similarity,
-			@RequestParam(value = "searchType", required=false) String searchType,
-			@RequestParam(value = "outputFormat", required=false) String outputFormat) throws IOException {
-
-    	//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
-    	//    ./jcsearch --maxResults:$4 -q $9 -f sdf:Tcd_id DB:compound.parent_structure
-			
 		if (outputFormat == null || outputFormat.equalsIgnoreCase("")) outputFormat = "cdid";
 		if (searchType == null || searchType.equalsIgnoreCase("")) searchType = "SUBSTRUCTURE";
 
-		String searchResults = searchFormService.findParentIds(molStructure, maxResults, similarity, searchType, outputFormat);
-    	
-		String results = null;
-		        
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Access-Control-Allow-Headers", "Content-Type");
-        headers.add("Access-Control-Allow-Origin", "*");
-		headers.add("Cache-Control","no-store, no-cache, must-revalidate"); //HTTP 1.1
-		headers.add("Pragma","no-cache"); //HTTP 1.0
-		headers.setExpires(0); // Expire the cache
+		String searchResults;
+		try {
+			searchResults = searchFormService.findParentIds(molStructure, maxResults, similarity, searchType, outputFormat);
+			return new ResponseEntity<String>(searchResults, headers, HttpStatus.OK);
+		} catch (CmpdRegMolFormatException e) {
+			return new ResponseEntity<String>("Encountered error with input structure: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
+		}
+	}
 
-       return new ResponseEntity<String>(searchResults, headers, HttpStatus.OK);
-
-    }
-	
 	@RequestMapping(method = RequestMethod.OPTIONS)
 	public ResponseEntity<String> getOptions() {
 		HttpHeaders headers= new HttpHeaders();

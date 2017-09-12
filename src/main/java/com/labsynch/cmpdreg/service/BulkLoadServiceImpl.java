@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
@@ -127,7 +128,6 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					}
 				}
 			}
-			molReader.close();
 		} catch (Exception e){
 			logger.error(e.toString());
 			errors.add(new ErrorMessage("error",e.getMessage()));
@@ -221,10 +221,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		
 		Collection<BulkLoadPropertyMappingDTO> mappings = registerRequestDTO.getMappings();
 		//instantiate input and output streams
-		FileInputStream fis;	
-		FileOutputStream errorSDFOutStream;
 		FileOutputStream errorCSVOutStream;
-		FileOutputStream registeredSDFOutStream;
 		FileOutputStream registeredCSVOutStream;
 		FileOutputStream reportOutStream;
 		// main try/catch block
@@ -310,7 +307,14 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				try {
 					mol = processForSaltStripping(mol, mappings);
 				}catch (CmpdRegMolFormatException e) {
-					logError(e, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
+					String emptyMolfile = "\n" + 
+							"  Ketcher 09111712282D 1   1.00000     0.00000     0\n" + 
+							"\n" + 
+							"  0  0  0     0  0            999 V2000\n" + 
+							"M  END\n" + 
+							"";
+					CmpdRegMolecule emptyMol = mol.replaceStructure(emptyMolfile);
+					logError(e, numRecordsRead, emptyMol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
 					continue;
 				}
 				try{
@@ -321,6 +325,11 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				}
 				try{
 					parent = validateParent(parent, mappings);
+				}catch (TransactionSystemException rollbackException) {
+					logger.error("Rollback exception", rollbackException.getCause());
+					Exception causeException = new Exception(rollbackException.getCause().getMessage(), rollbackException.getCause());
+					logError(causeException, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
+					continue;
 				}catch (Exception e){
 					logError(e, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
 					continue;
@@ -616,7 +625,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		return parent;
 	}
 
-	public SaltForm validateSaltForm(SaltForm saltForm, Collection<BulkLoadPropertyMappingDTO> mappings) {
+	public SaltForm validateSaltForm(SaltForm saltForm, Collection<BulkLoadPropertyMappingDTO> mappings) throws CmpdRegMolFormatException {
 		//only try to check for existing saltForm if server is in saltBeforeLot mode
 		if (mainConfig.getMetaLot().isSaltBeforeLot()){
 			//structure search

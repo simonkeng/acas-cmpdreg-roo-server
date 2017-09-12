@@ -88,7 +88,7 @@ public class ChemStructStandardizerServicesTest {
 	}
 
 	//@Test
-	public void qcDupeCheckParents(){
+	public void qcDupeCheckParents() throws CmpdRegMolFormatException{
 		qcCmpdServ.dupeCheckQCStructures();
 	}
 

@@ -10,7 +10,7 @@ public interface QcCmpdService {
 
 	int qcCheckParentStructures() throws CmpdRegMolFormatException, IOException;
 
-	int dupeCheckQCStructures();
+	int dupeCheckQCStructures() throws CmpdRegMolFormatException;
 
 	void exportQCReport(String csvFilePathName, String exportType) throws IOException, CmpdRegMolFormatException;
 

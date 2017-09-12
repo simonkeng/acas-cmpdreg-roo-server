@@ -3,6 +3,7 @@ package com.labsynch.cmpdreg.exceptions;
 public class CmpdRegMolFormatException extends Exception {
 
 	public CmpdRegMolFormatException(Exception e) {
+		super(e.getMessage());
 		this.setStackTrace(e.getStackTrace());
 	}
 
@@ -11,7 +12,7 @@ public class CmpdRegMolFormatException extends Exception {
 	}
 	
 	public CmpdRegMolFormatException(String message) {
-		// TODO Auto-generated constructor stub
+		super(message);
 	}
 
 }

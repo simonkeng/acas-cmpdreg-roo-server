@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -24,7 +25,7 @@ public class ChemStructServicesTest {
 	private ChemStructureService chemStructServ;
 	
 	//@Test
-    public void molconvertSmilesTest() throws IOException {
+    public void molconvertSmilesTest() throws IOException, CmpdRegMolFormatException {
 		String structure = "CCC";
 		String inputFormat = "smiles";
 		String outputFormat = "mol";
@@ -33,7 +34,7 @@ public class ChemStructServicesTest {
     }
 	
 	@Test
-    public void molconvertInchiTest() throws IOException {
+    public void molconvertInchiTest() throws IOException, CmpdRegMolFormatException {
 		String structure = "CCC";
 		String inputFormat = "smiles";
 		String outputFormat = "inchi";

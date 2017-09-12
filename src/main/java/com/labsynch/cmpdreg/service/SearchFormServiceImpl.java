@@ -55,7 +55,7 @@ public class SearchFormServiceImpl implements SearchFormService {
 	@Transactional
 	public String findParentIds(String molStructure,
 			int maxResults, Float similarity, String searchType,
-			String outputFormat) throws IOException {
+			String outputFormat) throws IOException, CmpdRegMolFormatException {
 
 		//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
 

@@ -35,6 +35,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFResponseDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.PurgeFileResponseDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 
@@ -62,7 +63,7 @@ public class SearchFormParentsTest {
 	//options for outputFormat -- corpname, cdid, corpname-cdid, sdf ; default is cdid
 
 	@Test
-	public void findParents1() throws IOException{
+	public void findParents1() throws IOException, CmpdRegMolFormatException{
 				
 		Parent parent = Parent.findParent(50780L);
 

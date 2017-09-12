@@ -88,7 +88,11 @@ public class ApiQcCompoundServicesController {
 			// searches for dupes in the qc compound tables if the correct code is sent (basic guard)
 			logger.info("checking parent structs and saving to QC table");
 			int numberOfDisplayChanges = 0;
-			numberOfDisplayChanges = qcCmpdServ.dupeCheckQCStructures();
+			try {
+				numberOfDisplayChanges = qcCmpdServ.dupeCheckQCStructures();
+			} catch (CmpdRegMolFormatException e) {
+				return new ResponseEntity<String>("Encountered error in searching: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
+			}
 			logger.info("number of compounds with display change: " + numberOfDisplayChanges);
 			return new ResponseEntity<String>("Qc Compound check done. Number of display changes: " + numberOfDisplayChanges, headers, HttpStatus.OK);
 		} else {

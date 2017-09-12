@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
 @Configurable
@@ -20,7 +22,7 @@ public class ChemStructServiceSearchTest {
 	private ChemStructureService chemStructServ;
 	
 	@Test
-    public void queryTautomer1Test() {
+    public void queryTautomer1Test() throws CmpdRegMolFormatException {
     	
     	String plainTable = "parent";
     	String structureTable = "Parent_Structure";
@@ -40,7 +42,7 @@ public class ChemStructServiceSearchTest {
 	
      
    // @Test
-    public void queryParentTableTest() {
+    public void queryParentTableTest() throws CmpdRegMolFormatException {
     	
     	String plainTable = "parent";
     	String structureTable = "Parent_Structure";
@@ -54,7 +56,7 @@ public class ChemStructServiceSearchTest {
     }
 
 //    @Test
-    public void querySaltTableTest() {
+    public void querySaltTableTest() throws CmpdRegMolFormatException {
     	
     	String plainTable = "salt";
     	String structureTable = "Salt_Structure";

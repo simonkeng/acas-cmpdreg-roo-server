@@ -196,7 +196,12 @@ public class SaltController {
 			return "salts/update";
 		}
 		uiModel.asMap().clear();
-		logger.debug("Salt weight: " + chemStructureService.getMolWeight(salt.getMolStructure()));
+		try {
+			logger.debug("Salt weight: " + chemStructureService.getMolWeight(salt.getMolStructure()));
+		} catch (CmpdRegMolFormatException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Salt updatedSalt = null;
 		try{
 			updatedSalt = saltStructureService.update(salt);

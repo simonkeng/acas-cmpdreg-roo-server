@@ -15,11 +15,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,7 +119,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 
 	@Override
-	public String standardizeStructure(String molfile){
+	public String standardizeStructure(String molfile) throws CmpdRegMolFormatException{
 		//Call method below after parsing molfile
 		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(molfile);
 		return standardizeMolecule(molWrapper.molecule).molfile();
@@ -151,7 +154,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 
 	@Override
-	public int[] searchMolStructures(String molfile, String structureTable, String searchType) {
+	public int[] searchMolStructures(String molfile, String structureTable, String searchType) throws CmpdRegMolFormatException {
 		String plainTable = null;
 		if (structureTable.equalsIgnoreCase("Parent_Structure")){
 			plainTable = "parent";
@@ -167,17 +170,17 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public int[] searchMolStructures(String molfile, String structureTable, String searchType, Float simlarityPercent) {
+	public int[] searchMolStructures(String molfile, String structureTable, String searchType, Float simlarityPercent) throws CmpdRegMolFormatException {
 		return searchMolStructures(molfile, structureTable, null,searchType, simlarityPercent);	
 	}
 
 	@Override
-	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType) {
+	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType) throws CmpdRegMolFormatException {
 		return searchMolStructures(molfile, structureTable, plainTable, searchType, 0f);	
 	}
 
 	@Override
-	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType, Float simlarityPercent) {
+	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType, Float simlarityPercent) throws CmpdRegMolFormatException {
 		int maxResultCount = maxSearchResults;
 		return searchMolStructures(molfile, structureTable, plainTable, searchType, simlarityPercent, maxResultCount);	
 
@@ -186,7 +189,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	@Override
 	@Transactional
 	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType, 
-			Float simlarityPercent, int maxResults) {
+			Float simlarityPercent, int maxResults) throws CmpdRegMolFormatException {
 
 		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		try {
@@ -295,7 +298,11 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 			return hitList;
 			
-		} catch (Exception e) {
+		}catch (JpaSystemException sqlException) {
+			logger.error("Caught search error", sqlException);
+			Exception rootCause = new Exception(ExceptionUtils.getRootCause(sqlException).getMessage(), ExceptionUtils.getRootCause(sqlException));
+			throw new CmpdRegMolFormatException(rootCause);
+		}  catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
@@ -351,7 +358,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 
 	@Override
 	@Transactional
-	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) {
+	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) throws CmpdRegMolFormatException {
 		int maxResults = maxSearchResults;
 		return searchMols(molfile, structureTable, inputCdIdHitList, plainTable, searchType, simlarityPercent, maxResults);
 	}
@@ -359,7 +366,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	@Override
 	@Transactional
 	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, 
-			String plainTable, String searchType, Float simlarityPercent, int maxResults) {
+			String plainTable, String searchType, Float simlarityPercent, int maxResults) throws CmpdRegMolFormatException {
 
 		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		try {
@@ -486,6 +493,10 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}catch (JpaSystemException sqlException) {
+			logger.error("Caught search error", sqlException);
+			Exception rootCause = new Exception(ExceptionUtils.getRootCause(sqlException).getMessage(), ExceptionUtils.getRootCause(sqlException));
+			throw new CmpdRegMolFormatException(rootCause);
 		}
 
 		CmpdRegMoleculeIndigoImpl[] moleculeHits = moleculeList.toArray(new CmpdRegMoleculeIndigoImpl[0]);
@@ -522,7 +533,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public String toMolfile(String molStructure) {
+	public String toMolfile(String molStructure) throws CmpdRegMolFormatException {
 		CmpdRegMoleculeIndigoImpl molecule = new CmpdRegMoleculeIndigoImpl(molStructure);
 		IndigoObject rawMolecule = molecule.molecule;
 		rawMolecule.dearomatize();
@@ -531,7 +542,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public String getCipStereo(String structure) throws IOException{	
+	public String getCipStereo(String structure) throws IOException, CmpdRegMolFormatException{	
 		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
 		IndigoObject molecule = molWrapper.molecule;
 		indigo.setOption("molfile-saving-add-stereo-desc", "1");
@@ -539,7 +550,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public String hydrogenizeMol(String structure, String inputFormat, String method) throws IOException{	
+	public String hydrogenizeMol(String structure, String inputFormat, String method) throws IOException, CmpdRegMolFormatException{	
 		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
 		IndigoObject molecule = molWrapper.molecule;
 		molecule.unfoldHydrogens();
@@ -547,7 +558,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public MolConvertOutputDTO cleanStructure(String structure, int dim, String opts) throws IOException {				
+	public MolConvertOutputDTO cleanStructure(String structure, int dim, String opts) throws IOException, CmpdRegMolFormatException {				
 		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
 		IndigoObject molecule = molWrapper.molecule;
 		molecule.layout();
@@ -558,7 +569,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public MolConvertOutputDTO toFormat(String structure, String inputFormat, String outputFormat) throws IOException {			
+	public MolConvertOutputDTO toFormat(String structure, String inputFormat, String outputFormat) throws IOException, CmpdRegMolFormatException {			
 		CmpdRegMoleculeIndigoImpl molWrapper = new CmpdRegMoleculeIndigoImpl(structure);
 		IndigoObject molecule = molWrapper.molecule;
 		if (inputFormat.equalsIgnoreCase("smiles")) molecule.layout();
@@ -605,19 +616,19 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public double getMolWeight(String molStructure) {
+	public double getMolWeight(String molStructure) throws CmpdRegMolFormatException {
 		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
 		return mol.getMass();
 	}
 
 	@Override
-	public double getExactMass(String molStructure) {
+	public double getExactMass(String molStructure) throws CmpdRegMolFormatException {
 		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
 		return mol.getExactMass();
 	}
 
 	@Override
-	public  String getMolFormula(String molStructure) {
+	public  String getMolFormula(String molStructure) throws CmpdRegMolFormatException {
 		CmpdRegMoleculeIndigoImpl mol = new CmpdRegMoleculeIndigoImpl(molStructure);
 		return mol.getFormula();
 	}
@@ -655,7 +666,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public int[] checkDupeMol(String molStructure, String structureTable, String plainTable) {
+	public int[] checkDupeMol(String molStructure, String structureTable, String plainTable) throws CmpdRegMolFormatException {
 
 		return searchMolStructures(molStructure, structureTable, plainTable, "DUPLICATE_TAUTOMER"); 
 	}
@@ -679,7 +690,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	}
 
 	@Override
-	public boolean standardizedMolCompare(String queryMol, String targetMol) {
+	public boolean standardizedMolCompare(String queryMol, String targetMol) throws CmpdRegMolFormatException {
 		IndigoObject queryMolecule = (new CmpdRegMoleculeIndigoImpl(queryMol)).molecule;
 		queryMolecule.standardize();
 		IndigoObject targetMolecule = (new CmpdRegMoleculeIndigoImpl(targetMol)).molecule;

@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.utils.Configuration;
 
@@ -77,7 +78,7 @@ public class ChemStructServiceTest {
 	}
 
 	// @Test
-	public void queryParentTableTest() {
+	public void queryParentTableTest() throws CmpdRegMolFormatException {
 
 		String plainTable = "parent";
 		String structureTable = "Parent_Structure";
@@ -91,7 +92,7 @@ public class ChemStructServiceTest {
 	}
 
 	//    @Test
-	public void querySaltTableTest() {
+	public void querySaltTableTest() throws CmpdRegMolFormatException {
 
 		String plainTable = "salt";
 		String structureTable = "Salt_Structure";

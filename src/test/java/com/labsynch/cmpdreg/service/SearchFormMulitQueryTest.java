@@ -169,7 +169,7 @@ public class SearchFormMulitQueryTest {
 
 	
 	//@Test
-	public void fullSaltFormSearch() throws ParseException {
+	public void fullSaltFormSearch() throws ParseException, CmpdRegMolFormatException {
 		
 		SearchFormDTO searchParams = new SearchFormDTO();
 		

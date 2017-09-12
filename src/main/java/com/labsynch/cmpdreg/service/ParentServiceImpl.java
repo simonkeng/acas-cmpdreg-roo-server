@@ -389,7 +389,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 
 	@Override
-	public void dupeCheckQCStructures(){
+	public void dupeCheckQCStructures() throws CmpdRegMolFormatException{
 
 		List<Long> qcIds = QcCompound.findAllIds().getResultList();
 		logger.info("number of qcCompounds found: " + qcIds.size());
