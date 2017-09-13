@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_BulkLoadTemplate" items="${bulkloadtemplates}" z="q71SvlH5HKwdKIPc1szIabcQ6Nw=">
+        <table:table data="${bulkloadtemplates}" id="l_com_labsynch_cmpdreg_domain_BulkLoadTemplate" path="/bulkloadtemplates" z="rGz/TjCtIKcMczHRNkblNmkleFI=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_BulkLoadTemplate_templateName" property="templateName" z="JfG3XyLoGzbUuku5SLWtRyxDaKE="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_BulkLoadTemplate_jsonTemplate" property="jsonTemplate" z="Zra98Za5KEBTb/PbNo2IF3uiXDc="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_BulkLoadTemplate_recordedBy" property="recordedBy" z="o7unX+h71s2AjaQixLYZhRgIkNQ="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_BulkLoadTemplate_ignored" property="ignored" z="kOKFQl4MWixAUfbSCf8v1EGRSis="/>
+        </table:table>
+    </page:list>
+</div>

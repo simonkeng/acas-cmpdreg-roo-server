@@ -1,24 +1,11 @@
 package com.labsynch.cmpdreg.web;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import com.labsynch.cmpdreg.service.SaltLoader;
+import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 
-@RequestMapping("/saltloader")
+@RequestMapping("/saltloaders")
 @Controller
+@RooWebScaffold(path = "saltloaders", formBackingObject = SaltLoader.class)
 public class SaltLoaderController {
-
-	
-//    @RequestMapping
-//    public void get(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
-//    }
-//
-//    @RequestMapping(method = RequestMethod.POST, value = "{id}")
-//    public void post(@PathVariable Long id, ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
-//    }
-//
-//    @RequestMapping
-//    public String index() {
-//        return "saltloader/index";
-//    }
-	
 }

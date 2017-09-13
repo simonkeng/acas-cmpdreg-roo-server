@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_SaltFormAlias" modelAttribute="saltFormAlias" path="/saltformaliases" versionField="Version" z="VTuCvJ3xk5ZCgwz7M9YZDwETBTY=">
+        <field:select field="saltForm" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_saltForm" itemValue="id" items="${saltforms}" path="/saltforms" z="JsadgwYlTUtN9YmW+jVHO+IU/V8="/>
+        <field:input field="lsType" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_lsType" z="AkZdd9DNKNno6BZ0BJFkZeovBCw="/>
+        <field:input field="lsKind" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_lsKind" z="e3/zw83mwOQErE0EiGplc2TxrFM="/>
+        <field:input field="aliasName" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_aliasName" z="Vpe6O0/pRBUqY0Aow+8+VzmMmxQ="/>
+        <field:checkbox field="preferred" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_preferred" z="7KN4gHptmsRHXZrnQoT74rVWNGk="/>
+        <field:checkbox field="ignored" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_ignored" z="jMscTo3iuI/CM3BwVGv5sNR/lVE="/>
+        <field:checkbox field="deleted" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_deleted" z="iUC0pyI6xQIRiMv5T5hH3+L/9pQ="/>
+    </form:update>
+</div>

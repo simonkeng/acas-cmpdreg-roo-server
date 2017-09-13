@@ -19,7 +19,8 @@
 		<menu-item hidden="true" id="i_cmpdregappsetting_new" labelCode="menu_item_cmpdregappsetting_new_label" messageCode="global_menu_new" roles="" url="/cmpdregappsettings?form"/>
 		<menu-item hidden="false" id="i_cmpdregappsetting_list" labelCode="menu_item_cmpdregappsetting_list_label" messageCode="global_menu_list" roles="" url="/cmpdregappsettings?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 
-	</menu-item>
+		<menu-item hidden="true" id="fi_filetype_codeequals" labelCode="menu_item_filetype_codeequals_label" messageCode="global_menu_find" roles="" url="/filetypes?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_salt" labelCode="menu_category_salt_label" name="Salt">
 		<menu-item hidden="false" id="i_salt_new" labelCode="menu_item_salt_new_label" messageCode="global_menu_new" roles="" url="/salts?form"/>
 		<menu-item hidden="false" id="i_salt_list" labelCode="menu_item_salt_list_label" messageCode="global_menu_list" roles="" url="/salts?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
@@ -44,7 +45,8 @@
 		<menu-item hidden="false" id="fi_lot_synthesisdatebetween" labelCode="menu_item_lot_synthesisdatebetween_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateBetween&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_lot_synthesisdategreaterthan" labelCode="menu_item_lot_synthesisdategreaterthan_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateGreaterThan&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_lot_synthesisdatelessthan" labelCode="menu_item_lot_synthesisdatelessthan_label" messageCode="global_menu_find" roles="" url="/lots?find=BySynthesisDateLessThan&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_lot_bulkloadfileequals" labelCode="menu_item_lot_bulkloadfileequals_label" messageCode="global_menu_find" roles="" url="/lots?find=ByBulkLoadFileEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_parent" labelCode="menu_category_parent_label" name="Parent">
 		<menu-item hidden="false" id="i_parent_new" labelCode="menu_item_parent_new_label" messageCode="global_menu_new" roles="" url="/parents?form"/>
 		<menu-item hidden="false" id="i_parent_list" labelCode="menu_item_parent_list_label" messageCode="global_menu_list" roles="" url="/parents?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
@@ -60,18 +62,21 @@
 		<menu-item hidden="false" id="i_solutionunit_list" labelCode="menu_item_solutionunit_list_label" messageCode="global_menu_list" roles="" url="/solutionunits?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_solutionunit_codeequals" labelCode="menu_item_solutionunit_codeequals_label" messageCode="global_menu_find" roles="" url="/solutionunits?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_solutionunit_codelike" labelCode="menu_item_solutionunit_codelike_label" messageCode="global_menu_find" roles="" url="/solutionunits?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_solutionunit_nameequals" labelCode="menu_item_solutionunit_nameequals_label" messageCode="global_menu_find" roles="" url="/solutionunits?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_stereocategory" labelCode="menu_category_stereocategory_label" name="StereoCategory">
 		<menu-item hidden="false" id="i_stereocategory_new" labelCode="menu_item_stereocategory_new_label" messageCode="global_menu_new" roles="" url="/stereocategorys?form"/>
 		<menu-item hidden="false" id="i_stereocategory_list" labelCode="menu_item_stereocategory_list_label" messageCode="global_menu_list" roles="" url="/stereocategorys?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_stereocategory_codeequals" labelCode="menu_item_stereocategory_codeequals_label" messageCode="global_menu_find" roles="" url="/stereocategorys?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_stereocategory_codelike" labelCode="menu_item_stereocategory_codelike_label" messageCode="global_menu_find" roles="" url="/stereocategorys?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_unit" labelCode="menu_category_unit_label" name="Unit">
 		<menu-item hidden="false" id="i_unit_new" labelCode="menu_item_unit_new_label" messageCode="global_menu_new" roles="" url="/units?form"/>
 		<menu-item hidden="false" id="i_unit_list" labelCode="menu_item_unit_list_label" messageCode="global_menu_list" roles="" url="/units?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_unit_codeequals" labelCode="menu_item_unit_codeequals_label" messageCode="global_menu_find" roles="" url="/units?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
 		<menu-item hidden="false" id="fi_unit_codelike" labelCode="menu_item_unit_codelike_label" messageCode="global_menu_find" roles="" url="/units?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-	</menu-item>
+	<menu-item hidden="false" id="fi_unit_nameequals" labelCode="menu_item_unit_nameequals_label" messageCode="global_menu_find" roles="" url="/units?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 	<menu-item id="c_vendor" labelCode="menu_category_vendor_label" name="Vendor">
 		<menu-item hidden="false" id="i_vendor_new" labelCode="menu_item_vendor_new_label" messageCode="global_menu_new" roles="" url="/vendors?form"/>
 		<menu-item hidden="false" id="i_vendor_list" labelCode="menu_item_vendor_list_label" messageCode="global_menu_list" roles="" url="/vendors?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
@@ -174,8 +179,15 @@
         <menu-item hidden="false" id="i_lotaliastype_new" labelCode="menu_item_lotaliastype_new_label" messageCode="global_menu_new" roles="" url="/lotaliastypes?form"/>
     <menu-item hidden="false" id="i_lotaliastype_list" labelCode="menu_item_lotaliastype_list_label" messageCode="global_menu_list" roles="" url="/lotaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
     </menu-item>
-<menu-item id="c_puritymeasuredby" labelCode="menu_category_puritymeasuredby_label" name="PurityMeasuredBy"/>
-<menu-item id="c_operator" labelCode="menu_category_operator_label" name="Operator"/>
+<menu-item id="c_puritymeasuredby" labelCode="menu_category_puritymeasuredby_label" name="PurityMeasuredBy">
+		<menu-item hidden="false" id="i_puritymeasuredby_list" labelCode="menu_item_puritymeasuredby_list_label" messageCode="global_menu_list" roles="" url="/puritymeasuredbys?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+        <menu-item hidden="false" id="fi_puritymeasuredby_codeequals" labelCode="menu_item_puritymeasuredby_codeequals_label" messageCode="global_menu_find" roles="" url="/puritymeasuredbys?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_puritymeasuredby_nameequals" labelCode="menu_item_puritymeasuredby_nameequals_label" messageCode="global_menu_find" roles="" url="/puritymeasuredbys?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_puritymeasuredby_namelike" labelCode="menu_item_puritymeasuredby_namelike_label" messageCode="global_menu_find" roles="" url="/puritymeasuredbys?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_operator" labelCode="menu_category_operator_label" name="Operator">
+        <menu-item hidden="false" id="fi_operator_nameequals" labelCode="menu_item_operator_nameequals_label" messageCode="global_menu_find" roles="" url="/operators?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
 <menu-item id="c_cmpdregappsetting" labelCode="menu_category_cmpdregappsetting_label" name="CmpdRegAppSetting"/>
 <menu-item id="c_lotaliaskind" labelCode="menu_category_lotaliaskind_label" name="LotAliasKind">
         <menu-item hidden="false" id="i_lotaliaskind_new" labelCode="menu_item_lotaliaskind_new_label" messageCode="global_menu_new" roles="" url="/lotaliaskinds?form"/>
@@ -189,8 +201,47 @@
     <menu-item hidden="false" id="fi_lotalias_lot" labelCode="menu_item_lotalias_lot_label" messageCode="global_menu_find" roles="" url="/lotaliases?find=ByLot&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
     </menu-item>
 
-<menu-item id="c_filelist" labelCode="menu_category_filelist_label" name="FileList"/>
-<menu-item id="c_cmpdregappsetting" labelCode="menu_category_cmpdregappsetting_label" name="CmpdRegAppSetting"/>
-<menu-item id="c_puritymeasuredby" labelCode="menu_category_puritymeasuredby_label" name="PurityMeasuredBy"/>
-<menu-item id="c_operator" labelCode="menu_category_operator_label" name="Operator"/>
+<menu-item id="c_saltloader" labelCode="menu_category_saltloader_label" name="SaltLoader">
+        <menu-item hidden="false" id="i_saltloader_new" labelCode="menu_item_saltloader_new_label" messageCode="global_menu_new" roles="" url="/saltloaders?form"/>
+    <menu-item hidden="false" id="i_saltloader_list" labelCode="menu_item_saltloader_list_label" messageCode="global_menu_list" roles="" url="/saltloaders?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_compound" labelCode="menu_category_compound_label" name="Compound">
+        <menu-item hidden="false" id="i_compound_new" labelCode="menu_item_compound_new_label" messageCode="global_menu_new" roles="" url="/compounds?form"/>
+    <menu-item hidden="false" id="i_compound_list" labelCode="menu_item_compound_list_label" messageCode="global_menu_list" roles="" url="/compounds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_compound_cdid" labelCode="menu_item_compound_cdid_label" messageCode="global_menu_find" roles="" url="/compounds?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_compound_external_idequals" labelCode="menu_item_compound_external_idequals_label" messageCode="global_menu_find" roles="" url="/compounds?find=ByExternal_idEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_saltformaliastype" labelCode="menu_category_saltformaliastype_label" name="SaltFormAliasType">
+        <menu-item hidden="false" id="i_saltformaliastype_new" labelCode="menu_item_saltformaliastype_new_label" messageCode="global_menu_new" roles="" url="/saltformaliastypes?form"/>
+    <menu-item hidden="false" id="i_saltformaliastype_list" labelCode="menu_item_saltformaliastype_list_label" messageCode="global_menu_list" roles="" url="/saltformaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_qccompound" labelCode="menu_category_qccompound_label" name="QcCompound">
+        <menu-item hidden="false" id="i_qccompound_new" labelCode="menu_item_qccompound_new_label" messageCode="global_menu_new" roles="" url="/qccompounds?form"/>
+    <menu-item hidden="false" id="i_qccompound_list" labelCode="menu_item_qccompound_list_label" messageCode="global_menu_list" roles="" url="/qccompounds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_qccompound_cdid" labelCode="menu_item_qccompound_cdid_label" messageCode="global_menu_find" roles="" url="/qccompounds?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_bulkloadfile" labelCode="menu_category_bulkloadfile_label" name="BulkLoadFile">
+        <menu-item hidden="false" id="i_bulkloadfile_new" labelCode="menu_item_bulkloadfile_new_label" messageCode="global_menu_new" roles="" url="/bulkloadfiles?form"/>
+    <menu-item hidden="false" id="i_bulkloadfile_list" labelCode="menu_item_bulkloadfile_list_label" messageCode="global_menu_list" roles="" url="/bulkloadfiles?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_bulkloadfile_filenameequals" labelCode="menu_item_bulkloadfile_filenameequals_label" messageCode="global_menu_find" roles="" url="/bulkloadfiles?find=ByFileNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_bulkloadfile_recordedbyequals" labelCode="menu_item_bulkloadfile_recordedbyequals_label" messageCode="global_menu_find" roles="" url="/bulkloadfiles?find=ByRecordedByEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_saltformaliaskind" labelCode="menu_category_saltformaliaskind_label" name="SaltFormAliasKind">
+        <menu-item hidden="false" id="i_saltformaliaskind_new" labelCode="menu_item_saltformaliaskind_new_label" messageCode="global_menu_new" roles="" url="/saltformaliaskinds?form"/>
+    <menu-item hidden="false" id="i_saltformaliaskind_list" labelCode="menu_item_saltformaliaskind_list_label" messageCode="global_menu_list" roles="" url="/saltformaliaskinds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+<menu-item id="c_bulkloadtemplate" labelCode="menu_category_bulkloadtemplate_label" name="BulkLoadTemplate">
+        <menu-item hidden="false" id="i_bulkloadtemplate_new" labelCode="menu_item_bulkloadtemplate_new_label" messageCode="global_menu_new" roles="" url="/bulkloadtemplates?form"/>
+    <menu-item hidden="false" id="i_bulkloadtemplate_list" labelCode="menu_item_bulkloadtemplate_list_label" messageCode="global_menu_list" roles="" url="/bulkloadtemplates?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_bulkloadtemplate_recordedbyequals" labelCode="menu_item_bulkloadtemplate_recordedbyequals_label" messageCode="global_menu_find" roles="" url="/bulkloadtemplates?find=ByRecordedByEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_bulkloadtemplate_templatenameequals" labelCode="menu_item_bulkloadtemplate_templatenameequals_label" messageCode="global_menu_find" roles="" url="/bulkloadtemplates?find=ByTemplateNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_bulkloadtemplate_templatenameequalsandrecordedbyequals" labelCode="menu_item_bulkloadtemplate_templatenameequalsandrecordedbyequals_label" messageCode="global_menu_find" roles="" url="/bulkloadtemplates?find=ByTemplateNameEqualsAndRecordedByEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+	<menu-item id="c_saltformalias" labelCode="menu_category_saltformalias_label" name="SaltFormAlias">
+    <menu-item hidden="false" id="i_saltformalias_new" labelCode="menu_item_saltformalias_new_label" messageCode="global_menu_new" roles="" url="/saltformaliases?form"/>
+    <menu-item hidden="false" id="i_saltformalias_list" labelCode="menu_item_saltformalias_list_label" messageCode="global_menu_list" roles="" url="/saltformaliases?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_saltformalias_aliasnameequalsandlstypeequalsandlskindequals" labelCode="menu_item_saltformalias_aliasnameequalsandlstypeequalsandlskindequals_label" messageCode="global_menu_find" roles="" url="/saltformaliases?find=ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    <menu-item hidden="false" id="fi_saltformalias_saltform" labelCode="menu_item_saltformalias_saltform_label" messageCode="global_menu_find" roles="" url="/saltformaliases?find=BySaltForm&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
+    </menu-item>
+	<menu-item hidden="true" id="c_filelist" labelCode="menu_category_filelist_label" name="FileList"/>
 </gvnix-menu>

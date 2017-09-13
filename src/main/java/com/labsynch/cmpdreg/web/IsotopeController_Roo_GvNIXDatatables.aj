@@ -3,7 +3,13 @@
 
 package com.labsynch.cmpdreg.web;
 
-import java.io.IOException;
+import com.labsynch.cmpdreg.domain.Isotope;
+import com.labsynch.cmpdreg.web.IsotopeController;
+import com.labsynch.cmpdreg.web.IsotopeController_Roo_Controller;
+import com.labsynch.cmpdreg.web.IsotopeController_Roo_GvNIXDatatables;
+import com.mysema.query.BooleanBuilder;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.path.PathBuilder;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,15 +19,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.gvnix.web.datatables.query.SearchResults;
 import org.gvnix.web.datatables.util.DatatablesUtils;
 import org.gvnix.web.datatables.util.QuerydslUtils;
 import org.springframework.beans.BeanWrapper;
@@ -29,8 +29,6 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -39,27 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.github.dandelion.datatables.core.ajax.DataSet;
-import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
-import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
-import com.github.dandelion.datatables.core.exception.ExportException;
-import com.github.dandelion.datatables.core.export.CsvExport;
-import com.github.dandelion.datatables.core.export.DatatablesExport;
-import com.github.dandelion.datatables.core.export.ExportConf;
-import com.github.dandelion.datatables.core.export.ExportType;
-import com.github.dandelion.datatables.core.export.ExportUtils;
-import com.github.dandelion.datatables.core.export.XmlExport;
-import com.github.dandelion.datatables.core.html.HtmlTable;
-import com.github.dandelion.datatables.extras.export.itext.PdfExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsExport;
-import com.github.dandelion.datatables.extras.export.poi.XlsxExport;
-import com.github.dandelion.datatables.extras.spring3.ajax.DatatablesParams;
-import com.labsynch.cmpdreg.domain.Isotope;
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.path.PathBuilder;
 
 privileged aspect IsotopeController_Roo_GvNIXDatatables {
     
@@ -74,43 +52,32 @@ privileged aspect IsotopeController_Roo_GvNIXDatatables {
     public BeanWrapper IsotopeController.beanWrapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-    public String IsotopeController.listDatatables(Model uiModel, HttpServletRequest request) {
-        Map<String, String> params = populateParametersMap(request);
-        // Get parentId information for details render
-        String parentId = params.remove("_dt_parentId");
-        if (StringUtils.isNotBlank(parentId)) {
-            uiModel.addAttribute("parentId", parentId);
+    public String IsotopeController.listDatatables(Model uiModel, HttpServletRequest request, @ModelAttribute Isotope Isotope) {
+        // Get parentId parameter for details
+        if (request.getParameterMap().containsKey("_dt_parentId")){
+            uiModel.addAttribute("parentId",request.getParameter("_dt_parentId"));
         }
-        String rowOnTopIds = params.remove("dtt_row_on_top_ids");
-        if (StringUtils.isNotBlank(rowOnTopIds)) {
-            uiModel.addAttribute("dtt_row_on_top_ids", rowOnTopIds);
-        }
-        String tableHashId = params.remove("dtt_parent_table_id_hash");
-        if (StringUtils.isNotBlank(tableHashId)) {
-            uiModel.addAttribute("dtt_parent_table_id_hash", tableHashId);
-        }
-        if (!params.isEmpty()) {
-            uiModel.addAttribute("baseFilter", params);
-        }
+        // Get data (filtered by received parameters) and put it on pageContext
+        @SuppressWarnings("unchecked") List<Isotope> isotopes = findIsotopesByParameters(Isotope, request != null ? request.getParameterNames() : null);
+        uiModel.addAttribute("isotopes",isotopes);
         return "isotopes/list";
     }
     
     @ModelAttribute
     public void IsotopeController.populateDatatablesConfig(Model uiModel) {
         uiModel.addAttribute("datatablesHasBatchSupport", false);
-        uiModel.addAttribute("datatablesUseAjax",true);
+        uiModel.addAttribute("datatablesUseAjax",false);
         uiModel.addAttribute("datatablesInlineEditing",false);
         uiModel.addAttribute("datatablesInlineCreating",false);
         uiModel.addAttribute("datatablesSecurityApplied",true);
         uiModel.addAttribute("datatablesStandardMode",true);
-        uiModel.addAttribute("finderNameParam","ajax_find");
     }
     
     @RequestMapping(produces = "text/html")
     public String IsotopeController.list(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
         // overrides the standard Roo list method and
         // delegates on datatables list method
-        return listDatatables(uiModel, null);
+        return listDatatables(uiModel, null, null);
     }
     
     public Map<String, String> IsotopeController.populateParametersMap(HttpServletRequest request) {
@@ -338,7 +305,7 @@ privileged aspect IsotopeController_Roo_GvNIXDatatables {
     @RequestMapping(produces = "text/html", value = "/list")
     public String IsotopeController.listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute Isotope isotope) {
         // Do common datatables operations: get entity list filtered by request parameters
-        listDatatables(uiModel, request);
+        listDatatables(uiModel, request, isotope);
         // Show only the list fragment (without footer, header, menu, etc.) 
         return "forward:/WEB-INF/views/isotopes/list.jspx";
     }
@@ -393,140 +360,34 @@ privileged aspect IsotopeController_Roo_GvNIXDatatables {
         return "redirect:".concat(redirect);
     }
     
-    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", produces = "application/json")
-    @ResponseBody
-    public DatatablesResponse<Map<String, String>> IsotopeController.findAllIsotopes(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request) {
-        // URL parameters are used as base search filters
-        Map<String, Object> baseSearchValuesMap = getPropertyMap(isotope, request);
-        setDatatablesBaseFilter(baseSearchValuesMap);
-        SearchResults<Isotope> searchResult = DatatablesUtils.findByCriteria(Isotope.class, Isotope.entityManager(), criterias, baseSearchValuesMap, conversionService_dtt, messageSource_dtt);
+    public List<Isotope> IsotopeController.findIsotopesByParameters(Isotope Isotope, Enumeration<Map<String, String>> propertyNames) {
+        // Gets propertyMap
+        Map<String, Object> propertyMap = getPropertyMap(Isotope, propertyNames);
         
-        // Get datatables required counts
-        long totalRecords = searchResult.getTotalCount();
-        long recordsFound = searchResult.getResultsCount();
-        
-        // Entity pk field name
-        String pkFieldName = "id";
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
-    }
-    
-    @RequestMapping(headers = "Accept=application/json", params = "checkFilters")
-    @ResponseBody
-    public ResponseEntity<String> IsotopeController.checkFilterExpressions(WebRequest request, @RequestParam(value = "property", required = false) String property, @RequestParam(value = "expression", required = false) String expression) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json; charset=utf-8");
-        if(beanWrapper == null){
-            beanWrapper = new BeanWrapperImpl(Isotope.class);
-        }
-        Class type = beanWrapper.getPropertyType(property);
-        boolean response = DatatablesUtils.checkFilterExpressions(type,expression, messageSource_dtt);
-        return new ResponseEntity<String>(String.format("{ \"response\": %s, \"property\": \"%s\"}",response, property), headers, org.springframework.http.HttpStatus.OK);
-    }
-    
-    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByNameEquals", produces = "application/json")
-    @ResponseBody
-    public DatatablesResponse<Map<String, String>> IsotopeController.findIsotopesByNameEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("name") String name) {
-        BooleanBuilder baseSearch = new BooleanBuilder();
-        
-        // Base Search. Using BooleanBuilder, a cascading builder for
-        // Predicate expressions
-        PathBuilder<Isotope> entity = new PathBuilder<Isotope>(Isotope.class, "entity");
-        
-        if(name != null){
-            baseSearch.and(entity.getString("name").eq(name));
-        }else{
-            baseSearch.and(entity.getString("name").isNull());
+        // if there is a filter
+        if (!propertyMap.isEmpty()) {
+            // Prepare a predicate
+            BooleanBuilder baseFilterPredicate = new BooleanBuilder();
+            
+            // Base filter. Using BooleanBuilder, a cascading builder for
+            // Predicate expressions
+            PathBuilder<Isotope> entity = new PathBuilder<Isotope>(Isotope.class, "entity");
+            
+            // Build base filter
+            for (String key : propertyMap.keySet()) {
+                baseFilterPredicate.and(entity.get(key).eq(propertyMap.get(key)));
+            }
+            
+            // Create a query with filter
+            JPAQuery query = new JPAQuery(Isotope.entityManager());
+            query = query.from(entity);
+            
+            // execute query
+            return query.where(baseFilterPredicate).list(entity);
         }
         
-        SearchResults<Isotope> searchResult = DatatablesUtils.findByCriteria(entity, Isotope.entityManager(), criterias, baseSearch);
-        
-        // Get datatables required counts
-        long totalRecords = searchResult.getTotalCount();
-        long recordsFound = searchResult.getResultsCount();
-        
-        // Entity pk field name
-        String pkFieldName = "id";
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
-    }
-    
-    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByAbbrevEquals", produces = "application/json")
-    @ResponseBody
-    public DatatablesResponse<Map<String, String>> IsotopeController.findIsotopesByAbbrevEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("abbrev") String abbrev) {
-        BooleanBuilder baseSearch = new BooleanBuilder();
-        
-        // Base Search. Using BooleanBuilder, a cascading builder for
-        // Predicate expressions
-        PathBuilder<Isotope> entity = new PathBuilder<Isotope>(Isotope.class, "entity");
-        
-        if(abbrev != null){
-            baseSearch.and(entity.getString("abbrev").eq(abbrev));
-        }else{
-            baseSearch.and(entity.getString("abbrev").isNull());
-        }
-        
-        SearchResults<Isotope> searchResult = DatatablesUtils.findByCriteria(entity, Isotope.entityManager(), criterias, baseSearch);
-        
-        // Get datatables required counts
-        long totalRecords = searchResult.getTotalCount();
-        long recordsFound = searchResult.getResultsCount();
-        
-        // Entity pk field name
-        String pkFieldName = "id";
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
-    }
-    
-    @RequestMapping(value = "/exportcsv", produces = "text/csv")
-    public void IsotopeController.exportCsv(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
-        export(criterias, isotope, ExportType.CSV, new CsvExport(), request, response);
-    }
-    
-    @RequestMapping(value = "/exportpdf", produces = "text/pdf")
-    public void IsotopeController.exportPdf(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
-        export(criterias, isotope, ExportType.PDF, new PdfExport(), request, response);
-    }
-    
-    @RequestMapping(value = "/exportxls", produces = "text/xls")
-    public void IsotopeController.exportXls(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
-        export(criterias, isotope, ExportType.XLS, new XlsExport(), request, response);
-    }
-    
-    @RequestMapping(value = "/exportxlsx", produces = "text/xlsx")
-    public void IsotopeController.exportXlsx(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
-        export(criterias, isotope, ExportType.XLSX, new XlsxExport(), request, response);
-    }
-    
-    @RequestMapping(value = "/exportxml", produces = "text/xml")
-    public void IsotopeController.exportXml(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Isotope isotope, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ExportException {
-        export(criterias, isotope, ExportType.XML, new XmlExport(), request, response);
-    }
-    
-    public void IsotopeController.export(DatatablesCriterias criterias, Isotope isotope, ExportType exportType, DatatablesExport datatablesExport, HttpServletRequest request, HttpServletResponse response) throws ExportException {
-        // Does the export process as is explained in http://dandelion.github.io/datatables/tutorials/export/controller-based-exports.html
-        // 1. Retrieve the data
-        List<Map<String, String>> data = retrieveData(criterias, isotope, request);
-        // 2. Build an instance of "ExportConf"
-        ExportConf exportConf = new ExportConf.Builder(exportType).header(true).exportClass(datatablesExport).autoSize(true).fileName(isotope.getClass().getSimpleName()).build();
-        // 3. Build an instance of "HtmlTable"
-        HtmlTable table = DatatablesUtils.makeHtmlTable(data, criterias, exportConf, request);
-        // 4. Render the generated export file
-        ExportUtils.renderExport(table, exportConf, response);
-    }
-    
-    private List<Map<String, String>> IsotopeController.retrieveData(DatatablesCriterias criterias, Isotope Isotope, HttpServletRequest request) {
-        // Cloned criteria in order to not paginate the results
-        DatatablesCriterias noPaginationCriteria = new DatatablesCriterias(criterias.getSearch(), 0, null, criterias.getColumnDefs(), criterias.getSortingColumnDefs(), criterias.getInternalCounter());
-        // Do the search to obtain the data
-        Map<String, Object> baseSearchValuesMap = getPropertyMap(Isotope, request);
-        setDatatablesBaseFilter(baseSearchValuesMap);
-        org.gvnix.web.datatables.query.SearchResults<com.labsynch.cmpdreg.domain.Isotope> searchResult = DatatablesUtils.findByCriteria(Isotope.class, Isotope.entityManager(), noPaginationCriteria, baseSearchValuesMap);
-        // Use ConversionService with the obtained data
-        return DatatablesUtils.populateDataSet(searchResult.getResults(), "id", searchResult.getTotalCount(), searchResult.getResultsCount(), criterias.getColumnDefs(), null, conversionService_dtt).getRows();
+        // no filter: return all elements
+        return Isotope.findAllIsotopes();
     }
     
 }

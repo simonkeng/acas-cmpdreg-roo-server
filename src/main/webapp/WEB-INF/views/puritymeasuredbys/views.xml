@@ -13,4 +13,13 @@
 <definition extends="default" name="puritymeasuredbys/update">
         <put-attribute name="body" value="/WEB-INF/views/puritymeasuredbys/update.jspx"/>
     </definition>
+<definition extends="default" name="puritymeasuredbys/findPurityMeasuredBysByCodeEquals">
+        <put-attribute name="body" value="/WEB-INF/views/puritymeasuredbys/findPurityMeasuredBysByCodeEquals.jspx"/>
+    </definition>
+<definition extends="default" name="puritymeasuredbys/findPurityMeasuredBysByNameEquals">
+        <put-attribute name="body" value="/WEB-INF/views/puritymeasuredbys/findPurityMeasuredBysByNameEquals.jspx"/>
+    </definition>
+<definition extends="default" name="puritymeasuredbys/findPurityMeasuredBysByNameLike">
+        <put-attribute name="body" value="/WEB-INF/views/puritymeasuredbys/findPurityMeasuredBysByNameLike.jspx"/>
+    </definition>
 </tiles-definitions>

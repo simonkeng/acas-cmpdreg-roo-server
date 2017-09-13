@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_BulkLoadFile" object="${bulkloadfile}" path="/bulkloadfiles" z="B/O9HnJ2hKKFIETZx/TTdJFw0Wo=">
+        <field:display field="fileName" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_fileName" object="${bulkloadfile}" z="9qn45RhJe/AHXOGvB8BZQXCxe4A="/>
+        <field:display field="numberOfMols" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_numberOfMols" object="${bulkloadfile}" z="9GIlvwxfo98iU+IoqTsaUhfI32A="/>
+        <field:display field="fileSize" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_fileSize" object="${bulkloadfile}" z="dDM5yFeJB05lGFS8IjjPA/o01xQ="/>
+        <field:display field="jsonTemplate" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_jsonTemplate" object="${bulkloadfile}" z="KIzV0RjqSP9hQ8R/la74CCSR+0E="/>
+        <field:display field="recordedBy" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_recordedBy" object="${bulkloadfile}" z="AW/HpEmEw6oy2l48ZsCAKY8+Cxc="/>
+        <field:display date="true" dateTimePattern="${bulkLoadFile_filedate_date_format}" field="fileDate" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_fileDate" object="${bulkloadfile}" z="CODXBUSpQhkRePGOwvMWIrX7F04="/>
+        <field:display date="true" dateTimePattern="${bulkLoadFile_recordeddate_date_format}" field="recordedDate" id="s_com_labsynch_cmpdreg_domain_BulkLoadFile_recordedDate" object="${bulkloadfile}" z="eCdCjRYibpWxEaWAXadyWKu6kqg="/>
+    </page:show>
+</div>

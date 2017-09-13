@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_domain_SaltFormAlias" object="${saltformalias}" path="/saltformaliases" z="Z9L56jXbAaATspzzADNQd4xs2NY=">
+        <field:display field="saltForm" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_saltForm" object="${saltformalias}" z="fnWakO9IqX+AZrCCFEJxhA/MPaI="/>
+        <field:display field="lsType" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_lsType" object="${saltformalias}" z="tzGNzX8e4B50a0/V2dJbI/6HzS8="/>
+        <field:display field="lsKind" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_lsKind" object="${saltformalias}" z="Xk/PNSqly9x5RtsV7fN9GpEbPvQ="/>
+        <field:display field="aliasName" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_aliasName" object="${saltformalias}" z="kDsWh8eIrIEH1BwnQc4U6V3wYJA="/>
+        <field:display field="preferred" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_preferred" object="${saltformalias}" z="do1XkIkca2m3D5DzadhM0rV3XE4="/>
+        <field:display field="ignored" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_ignored" object="${saltformalias}" z="SADRZT4FAEcP2Kb+buLZYMInUbs="/>
+        <field:display field="deleted" id="s_com_labsynch_cmpdreg_domain_SaltFormAlias_deleted" object="${saltformalias}" z="6y9IrLdIM63ffyBYPBg6s2jnEns="/>
+    </page:show>
+</div>

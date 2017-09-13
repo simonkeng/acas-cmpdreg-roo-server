@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_Compound" modelAttribute="compound" path="/compounds" versionField="Version" z="BZI7xfD74L5gvc43ZdSNpLjGpfs=">
+        <field:textarea field="corpName" id="c_com_labsynch_cmpdreg_domain_Compound_corpName" z="oCHtIX8bKFnE2Gr8qaJaqjip32s="/>
+        <field:textarea field="external_id" id="c_com_labsynch_cmpdreg_domain_Compound_external_id" z="qKmDZbVn9bRDrAreqPpI3USTrBs="/>
+        <field:input field="CdId" id="c_com_labsynch_cmpdreg_domain_Compound_CdId" z="BCh9T0zweOn24HDVEwGK5SbPf58="/>
+        <field:datetime dateTimePattern="${compound_createddate_date_format}" field="createdDate" id="c_com_labsynch_cmpdreg_domain_Compound_createdDate" z="4l05L9Hr5YX6zZEbQfA/HwsMDi0="/>
+        <field:datetime dateTimePattern="${compound_modifieddate_date_format}" field="modifiedDate" id="c_com_labsynch_cmpdreg_domain_Compound_modifiedDate" z="3vGOhsAZrbP5B0Ar7rQOOgLf86I="/>
+        <field:checkbox field="ignored" id="c_com_labsynch_cmpdreg_domain_Compound_ignored" z="+2aAzY6Z+M9ANeSSMIHsD0yH9oQ="/>
+        <field:checkbox field="deleted" id="c_com_labsynch_cmpdreg_domain_Compound_deleted" z="N/1KcM/XYplne5Lbo5ff7YCRltE="/>
+    </form:update>
+</div>

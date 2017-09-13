@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_service_SaltLoader" modelAttribute="saltLoader" path="/saltloaders" versionField="Version" z="I6+EdsCRS+8L7zNaU2Jumt3CZUw=">
+        <field:input field="name" id="c_com_labsynch_cmpdreg_service_SaltLoader_name" z="NuWHNDiaPz9Yvk5p9Q29DQ3a+3I="/>
+        <field:input field="description" id="c_com_labsynch_cmpdreg_service_SaltLoader_description" z="K+JrqYCsHBKQMh7uf/IAI0smHys="/>
+        <field:input field="numberOfSalts" id="c_com_labsynch_cmpdreg_service_SaltLoader_numberOfSalts" z="eF7aSnQB4Zprh+dtM49i6vqxKQ8="/>
+        <field:input field="size" id="c_com_labsynch_cmpdreg_service_SaltLoader_size" z="VHNwfZvKTb+2UQSNye0bZIQewq4="/>
+        <field:checkbox field="uploaded" id="c_com_labsynch_cmpdreg_service_SaltLoader_uploaded" z="3pnWaz/jc9H8KV1gita+VgWUyvc="/>
+        <field:input field="file" id="c_com_labsynch_cmpdreg_service_SaltLoader_file" z="ubCNRk9+yk+eVxhpGIlKiIq9+7s="/>
+        <field:input field="fileName" id="c_com_labsynch_cmpdreg_service_SaltLoader_fileName" z="AX9eRbF43ubaZwQ+GntSAqe+ll8="/>
+        <field:datetime dateTimePattern="${saltLoader_loadeddate_date_format}" field="loadedDate" id="c_com_labsynch_cmpdreg_service_SaltLoader_loadedDate" z="D8fpd/J7NqVgry7Kgob5rrM3HW0="/>
+    </form:update>
+</div>

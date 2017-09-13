@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_com_labsynch_cmpdreg_domain_QcCompound" modelAttribute="qcCompound" path="/qccompounds" versionField="Version" z="jbuifEDDKez529bS+DmJHI2TH5U=">
+        <field:input field="runNumber" id="c_com_labsynch_cmpdreg_domain_QcCompound_runNumber" z="Dstl8yBGKl1bRKRJInjwfQ3hvQM="/>
+        <field:datetime dateTimePattern="${qcCompound_qcdate_date_format}" field="qcDate" id="c_com_labsynch_cmpdreg_domain_QcCompound_qcDate" z="I05nTgp5Tjmyxb+y1pDQfvbB2sE="/>
+        <field:input field="parentId" id="c_com_labsynch_cmpdreg_domain_QcCompound_parentId" validationMessageCode="field_invalid_integer" z="7qP2WayOqOz8PCuBuvW+QG0DCHc="/>
+        <field:input field="corpName" id="c_com_labsynch_cmpdreg_domain_QcCompound_corpName" z="5iQtABmNeMWi3sDsdJ22oraQwhQ="/>
+        <field:checkbox field="displayChange" id="c_com_labsynch_cmpdreg_domain_QcCompound_displayChange" z="mLqT0iZIG+1o38X7vvMIoOBdAyo="/>
+        <field:input field="dupeCount" id="c_com_labsynch_cmpdreg_domain_QcCompound_dupeCount" z="XC6zpq5weNex7uGYfap+vhkpVC8="/>
+        <field:input field="dupeCorpName" id="c_com_labsynch_cmpdreg_domain_QcCompound_dupeCorpName" z="0XB/06w2PpyXtclNvQoDpqNf2cw="/>
+        <field:input field="alias" id="c_com_labsynch_cmpdreg_domain_QcCompound_alias" z="UoTR+j26aL+vO2gZnuEuZuDiXoU="/>
+        <field:input field="stereoCategory" id="c_com_labsynch_cmpdreg_domain_QcCompound_stereoCategory" z="5BPDUV4HgQCL1y3F3Q+5yTQTpCs="/>
+        <field:input field="stereoComment" id="c_com_labsynch_cmpdreg_domain_QcCompound_stereoComment" z="GIgDtMa65YicmwbCF1ce6VMIdIQ="/>
+        <field:input field="CdId" id="c_com_labsynch_cmpdreg_domain_QcCompound_CdId" z="/T72RkgJR/TVzPydqDyBbyGkbZc="/>
+        <field:input field="molStructure" id="c_com_labsynch_cmpdreg_domain_QcCompound_molStructure" z="fuZmrKAIPDt7fXiFwbhQIhK0zBs="/>
+        <field:input field="comment" id="c_com_labsynch_cmpdreg_domain_QcCompound_comment" z="SrLJzBPh254B2PNw+1GV8Df3dUk="/>
+        <field:checkbox field="ignore" id="c_com_labsynch_cmpdreg_domain_QcCompound_ignore" z="JrIp4vz6Q84a8KZEVHrH1Eg6lx8="/>
+    </form:update>
+</div>
