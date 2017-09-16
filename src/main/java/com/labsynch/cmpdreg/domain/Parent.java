@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -34,6 +35,7 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 
 import chemaxon.formats.MolFormatException;
@@ -126,6 +128,9 @@ public class Parent {
     private String comment;
     
     private Boolean isMixture;
+    
+    @Transient
+    private transient LabelPrefixDTO labelPrefix;
     
 
 	public String getMolFormula() {
@@ -316,6 +321,14 @@ public class Parent {
 		query.setParameter("ignore", ignore);
 		List<Long> parentIds = query.getResultList();		
 		return parentIds;
+	}
+	
+	public LabelPrefixDTO getLabelPrefix() {
+		return this.labelPrefix;
+	}
+	
+	public void setLabelPrefix(LabelPrefixDTO labelPrefix) {
+		this.labelPrefix = labelPrefix;
 	}
 	
 

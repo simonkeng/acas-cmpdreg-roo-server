@@ -80,6 +80,7 @@ import com.labsynch.cmpdreg.exceptions.DupeParentException;
 import com.labsynch.cmpdreg.exceptions.MissingPropertyException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 @Service
 public class BulkLoadServiceImpl implements BulkLoadService {
@@ -1440,26 +1441,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			Map<String, HashSet<String>> acasDependencies) throws MalformedURLException, IOException {
 		//here we make an external request to the ACAS Roo server to check for dependent experimental data
 		String url = mainConfig.getServerConnection().getAcasURL()+"compounds/checkBatchDependencies";
-		String charset = "UTF-8";
-		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(true);
-		connection.setRequestProperty("Accept-Charset", charset);
-		connection.setRequestProperty("Content-Type", "application/json");
-
 		BatchCodeDependencyDTO request = new BatchCodeDependencyDTO(acasDependencies.keySet());
 		String json = request.toJson();
-		logger.info("Sending request to: "+url);
-		logger.info("with data: "+json);
-		try{
-			OutputStream output = connection.getOutputStream();
-			output.write(json.getBytes());
-		}catch (Exception e){
-			logger.error("Error occurred in making HTTP Request to ACAS",e);
-		}
-		InputStream input = connection.getInputStream();
-		byte[] bytes = IOUtils.toByteArray(input);
-		String responseJson = new String(bytes);
+		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
 		BatchCodeDependencyDTO responseDTO = BatchCodeDependencyDTO.fromJsonToBatchCodeDependencyDTO(responseJson);
 		if (logger.isDebugEnabled()) logger.debug(responseDTO.toJson());
 		if (responseDTO.getLinkedDataExists()){
