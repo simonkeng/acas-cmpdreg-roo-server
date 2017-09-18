@@ -22,6 +22,8 @@ public class BulkLoadRegisterSDFRequestDTO {
     
     private Date fileDate;
     
+    private LabelPrefixDTO labelPrefix;
+    
     private Collection<BulkLoadPropertyMappingDTO> mappings;
     
     public BulkLoadRegisterSDFRequestDTO(){

@@ -68,6 +68,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFRequestDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFResponseDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
 import com.labsynch.cmpdreg.dto.PurgeFileDependencyCheckResponseDTO;
@@ -308,7 +309,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				//attempt to strip salts
 				mol = processForSaltStripping(mol, mappings);
 				try{
-					parent = createParent(mol, mappings, chemist);
+					parent = createParent(mol, mappings, chemist, registerRequestDTO.getLabelPrefix());
 				}catch (Exception e){
 					logError(e, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
 					continue;
@@ -542,7 +543,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 							|| (parent.getStereoComment() != null && foundParent.getStereoComment() != null && parent.getStereoComment().equalsIgnoreCase(foundParent.getStereoComment())));
 					boolean sameCorpName = (parent.getCorpName() != null && parent.getCorpName().equals(foundParent.getCorpName()));
 					boolean noCorpName = (parent.getCorpName() == null);
-					if (sameStereoCategory & sameStereoComment & (sameCorpName | noCorpName)){
+					boolean sameCorpPrefixOrNoPrefix = (parent.getLabelPrefix() == null || foundParent.getCorpName().contains(parent.getLabelPrefix().getLabelPrefix()));
+					if (sameStereoCategory & sameStereoComment & (sameCorpName | noCorpName) & sameCorpPrefixOrNoPrefix){
 						//parents match
 						parent = foundParent;
 						break searchResultLoop;
@@ -550,6 +552,10 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 						//corp name conflict
 						logger.error("Mismatched corp names for same parent structure, stereo category and stereo comment! sdf corp name: "+parent.getCorpName()+" db corp name: "+foundParent.getCorpName());
 						throw new DupeParentException("Mismatched corp names for same parent structure, stereo category and stereo comment!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
+					}else if (sameStereoCategory & sameStereoComment & noCorpName & !sameCorpPrefixOrNoPrefix) {
+						//corp prefix conflict
+						logger.error("Mismatched corp prefix for same parent structure, stereo category, and stereo comment! sdf corp prefix: "+parent.getLabelPrefix().getLabelPrefix()+" db corp name: "+foundParent.getCorpName());
+						throw new DupeParentException("Mismatched corp prefix for same parent structure, stereo category, and stereo comment!", foundParent.getCorpName(), parent.getLabelPrefix().getLabelPrefix(), new ArrayList<String>());
 					}else if (sameStereoCategory & !sameStereoComment & sameCorpName & !noCorpName){
 						//stereo comment conflict for same corpName
 						logger.error("Mismatched stereo comments for same parent structure, stereo category and corp name! Corp name: "+parent.getCorpName()+" sdf stereo category: "+parent.getStereoCategory().getCode()+" sdf stereo comment: "+parent.getStereoComment()+" db stereo category: "+foundParent.getStereoCategory().getCode()+" db stereo comment: "+foundParent.getStereoComment());
@@ -988,7 +994,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 
 	@Transactional
-	public Parent createParent(Molecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, Scientist chemist) throws Exception{
+	public Parent createParent(Molecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, Scientist chemist, LabelPrefixDTO labelPrefix) throws Exception{
 		//Here we try to fetch all of the possible Lot database properties from the sdf, according to the mappings
 		Parent parent = new Parent();
 		parent.setMolStructure(mol.toFormat("mol"));
@@ -1068,7 +1074,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			logger.error("Caught error looking up parent property "+lookUpProperty+" with code "+lookUpString,e);
 			throw new Exception("An error has occurred looking up parent property "+lookUpProperty+" with code "+lookUpString);
 		}
-
+		
+		//Set labelPrefix DTO if it is passed in
+		if (labelPrefix != null) parent.setLabelPrefix(labelPrefix);
 
 		return parent;
 	}
