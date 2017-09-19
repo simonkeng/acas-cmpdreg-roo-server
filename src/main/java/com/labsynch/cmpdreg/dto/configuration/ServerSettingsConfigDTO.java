@@ -48,6 +48,8 @@ public class ServerSettingsConfigDTO {
     private boolean initalDBLoad;
     
     private boolean projectRestrictions;
+    
+    private boolean compoundInventory;
 
     private String jchemVersion;
     

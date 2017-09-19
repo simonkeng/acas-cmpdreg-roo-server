@@ -1,7 +1,15 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -24,10 +32,14 @@ import com.labsynch.cmpdreg.domain.LotAlias;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.domain.SaltForm;
+import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.CreatePlateRequestDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.dto.WellContentDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/spring/applicationContext.xml"})
@@ -157,6 +169,48 @@ public class MetaLotSaveTest {
     	
     	MetalotReturn mr = metalotService.save(metaLot);
     	logger.info(mr.toJson());
+	}
+	
+	@Test
+	@Transactional
+	public void createTubeInACAS() throws MalformedURLException, IOException {
+		String baseurl = mainConfig.getServerConnection().getAcasURL();
+		String url = baseurl + "containers?";
+		Map<String, String> queryParams = new HashMap<String, String>();
+		queryParams.put("lsType","definition container");
+		queryParams.put("lsKind","tube");
+		queryParams.put("format","codetable");
+		String definitionContainerCodeTable = SimpleUtil.getFromExternalServer(url, queryParams, logger);
+		logger.info(definitionContainerCodeTable);
+		CodeTableDTO definitionContainer = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable).iterator().next();
+		logger.info("Tube definition container is: "+definitionContainer.getCode());
+		String barcode = "TEST-BARCODE-006";
+		String recordedBy = "acas";
+		String wellName = "A001";
+		String batchCode = "CMPD-EXAMPLE-00001-01";
+		BigDecimal amount = new BigDecimal(5.5);
+		String amountUnits = "mg";
+		Date recordedDate = new Date();
+		CreatePlateRequestDTO tubeRequest = new CreatePlateRequestDTO();
+		tubeRequest.setBarcode(barcode);
+		tubeRequest.setCreatedDate(recordedDate);
+		tubeRequest.setCreatedUser(recordedBy);
+		tubeRequest.setDefinition(definitionContainer.getCode());
+		tubeRequest.setRecordedBy(recordedBy);
+		Collection<WellContentDTO> wells = new ArrayList<WellContentDTO>();
+		WellContentDTO well = new WellContentDTO();
+		well.setWellName(wellName);
+		well.setAmount(amount);
+		well.setAmountUnits(amountUnits);
+		well.setBatchCode(batchCode);
+		well.setRecordedBy(recordedBy);
+		well.setRecordedDate(recordedDate);
+		wells.add(well);
+		tubeRequest.setWells(wells);
+		
+		url = baseurl + "containers/createTube";
+		String createTubeResponse = SimpleUtil.postRequestToExternalServer(url, tubeRequest.toJson(), logger);
+		logger.info(createTubeResponse);
 	}
 
 	

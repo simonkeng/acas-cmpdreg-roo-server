@@ -1,8 +1,15 @@
 package com.labsynch.cmpdreg.utils;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,13 +26,17 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class SimpleUtil {
-	
+		
 	private static int PARAMETER_LIMIT = 999;
 	
 	public static boolean isNumeric(String str) {
@@ -188,5 +199,55 @@ public class SimpleUtil {
 			});
 		}
 		return idList;
+	}
+	
+	public static String postRequestToExternalServer(String url, String jsonContent, Logger logger) throws MalformedURLException, IOException {
+		String charset = "UTF-8";
+		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		connection.setRequestMethod("POST");
+		connection.setDoOutput(true);
+		connection.setRequestProperty("Accept", "application/json");
+		connection.setRequestProperty("Accept-Charset", charset);
+		connection.setRequestProperty("Content-Type", "application/json");		
+		logger.info("Sending request to: "+url);
+		logger.info("with data: "+jsonContent);
+		try{
+			OutputStream output = connection.getOutputStream();
+			output.write(jsonContent.getBytes());
+		}catch (Exception e){
+			logger.error("Error occurred in making HTTP Request to external server",e);
+		}
+		InputStream input = connection.getInputStream();
+		byte[] bytes = IOUtils.toByteArray(input);
+		String responseJson = new String(bytes);
+		return responseJson;
+	}
+	
+	public static String getFromExternalServer(String url, Map<String, String> queryParams, Logger logger) throws MalformedURLException, IOException {
+		String charset = "UTF-8";
+		UriComponentsBuilder ub = UriComponentsBuilder.fromHttpUrl(url);
+		if (queryParams != null){
+			for (String param : queryParams.keySet()) {
+				ub.queryParam(param, URLEncoder.encode(queryParams.get(param), charset));
+			}
+		}
+		String fullUrl = ub.build().toUriString();
+		HttpURLConnection connection = (HttpURLConnection) new URL(fullUrl).openConnection();
+		connection.setRequestMethod("GET");
+		connection.setDoOutput(true);
+		connection.setRequestProperty("Accept", "application/json");
+		connection.setRequestProperty("Accept-Charset", charset);
+		logger.info("Sending request to: "+fullUrl);
+		int responseCode = connection.getResponseCode();
+		logger.info("Response Code: "+responseCode);
+		BufferedReader inStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+		
+		while ((inputLine = inStream.readLine()) != null) {
+			response.append(inputLine);
+		}
+		inStream.close();
+		return response.toString();
 	}
 }
