@@ -1,6 +1,7 @@
 package com.labsynch.cmpdreg.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,7 +29,9 @@ import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.PreDef_CorpName;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.dto.AutoLabelDTO;
 import com.labsynch.cmpdreg.dto.CorpNameDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
@@ -40,6 +43,7 @@ import com.labsynch.cmpdreg.exceptions.SaltFormMolFormatException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.exceptions.UniqueNotebookException;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 
 @Service
@@ -283,22 +287,7 @@ public class MetalotServiceImpl implements MetalotService {
 				} else {
 					parent.setCdId(cdId);
 					if (parent.getCorpName() == null || parent.getCorpName().isEmpty() || parent.getCorpName().trim().equalsIgnoreCase("")){
-
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							//TODO: set parent number if required
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-						}
-
+						generateAndSetCorpName(parent);
 					} 
 					if (parent.getRegistrationDate() == null){
 						parent.setRegistrationDate(new Date());				
@@ -316,22 +305,8 @@ public class MetalotServiceImpl implements MetalotService {
 					} catch (Exception e){
 						logger.error("Caught an exception saving the parent: " + e);
 						//get a new corp name and try saving again
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							parent.persist();
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-							parent.persist();
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-							parent.persist();
-						}
+						generateAndSetCorpName(parent);
+						parent.persist();
 					}
 				} 
 			}
@@ -705,6 +680,32 @@ public class MetalotServiceImpl implements MetalotService {
 		}
 		return metalot;
 
+	}
+	
+	private void generateAndSetCorpName(Parent parent) throws MalformedURLException, IOException {
+		if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
+			parent.setCorpName(CorpName.generateCorpLicensePlate());
+			//TODO: set parent number if required
+		} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
+			PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
+			parent.setCorpName(preDef_CorpName.getCorpName());
+			preDef_CorpName.setUsed(true);
+			preDef_CorpName.persist();
+			parent.setParentNumber(preDef_CorpName.getCorpNumber());							
+		} else if (corpParentFormat.equalsIgnoreCase("ACASLabelSequence")) {
+			LabelPrefixDTO labelPrefixDTO = parent.getLabelPrefix();
+			labelPrefixDTO.setNumberOfLabels(1L);
+			labelPrefixDTO.setLabelPrefix(labelPrefixDTO.getName());
+			String url = mainConfig.getServerConnection().getAcasURL()+"labelsequences/getLabels";
+			String jsonContent = labelPrefixDTO.toSafeJson();
+			String responseJson = SimpleUtil.postRequestToExternalServer(url, jsonContent, logger);
+			AutoLabelDTO autoLabel = AutoLabelDTO.fromJsonArrayToAutoes(responseJson).iterator().next();
+			parent.setCorpName(autoLabel.getAutoLabel());
+		} else {
+			CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
+			parent.setCorpName(corpName.getCorpName());
+			parent.setParentNumber(corpName.getCorpNumber());
+		}
 	}
 
 
