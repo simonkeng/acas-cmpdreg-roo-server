@@ -68,6 +68,7 @@
     	"unitTestDB": false,
     	"initalDBLoad": false,
     	"projectRestrictions": false,
+    	"compoundInventory": true,
     	"jchemVersion": "16.4.25.0",
     	"databaseType": "postgres",
     	"standardizeStructure": false,

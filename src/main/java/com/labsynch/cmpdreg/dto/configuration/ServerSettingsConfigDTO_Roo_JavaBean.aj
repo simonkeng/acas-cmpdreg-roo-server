@@ -167,6 +167,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.projectRestrictions = projectRestrictions;
     }
     
+    public boolean ServerSettingsConfigDTO.isCompoundInventory() {
+        return this.compoundInventory;
+    }
+    
+    public void ServerSettingsConfigDTO.setCompoundInventory(boolean compoundInventory) {
+        this.compoundInventory = compoundInventory;
+    }
+    
     public String ServerSettingsConfigDTO.getJchemVersion() {
         return this.jchemVersion;
     }
