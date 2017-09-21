@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_SaltFormAliasType" items="${saltformaliastypes}" z="uW/t7W0BcmdYqsauSVq2MQhd3wA=">
+        <table:table data="${saltformaliastypes}" id="l_com_labsynch_cmpdreg_domain_SaltFormAliasType" path="/saltformaliastypes" z="J5C6Dn9AYhYsX2XWBTUCtqv5kAc=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_SaltFormAliasType_typeName" property="typeName" z="v6u1YEn1pLOUSKkWK65xO+31Cqk="/>
+        </table:table>
+    </page:list>
+</div>

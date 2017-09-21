@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/jquery/form" version="2.0">
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/datatables" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:show id="ps_com_labsynch_cmpdreg_domain_Lot" object="${lot}" path="/lots" z="Vo+fQi+gIRD5WOZ3CurUNzH8EoU=">
@@ -40,5 +40,18 @@
         <field:display field="boilingPoint" id="s_com_labsynch_cmpdreg_domain_Lot_boilingPoint" object="${lot}" z="tmSZCEalaM8FEzb9/TcExheAs18="/>
         <field:display field="supplierLot" id="s_com_labsynch_cmpdreg_domain_Lot_supplierLot" object="${lot}" z="jSCBS2Z8hiJrgzi0PuzKHuOq1nw="/>
         <field:display field="project" id="s_com_labsynch_cmpdreg_domain_Lot_project" object="${lot}" z="x6S1SOvzFHoE7Z3Nv9et75UM95k="/>
+        <field:display field="registeredBy" id="s_com_labsynch_cmpdreg_domain_Lot_registeredBy" object="${lot}" z="V0W22lOvE5SY+H0lHN6PiSdM1ZQ="/>
+        <field:display field="retainLocation" id="s_com_labsynch_cmpdreg_domain_Lot_retainLocation" object="${lot}" z="sqv+bnKicL++cyDfT3Fggkt3uZ4="/>
+        <field:display field="bulkLoadFile" id="s_com_labsynch_cmpdreg_domain_Lot_bulkLoadFile" object="${lot}" z="08noPcEu/9P3TGSMuWgftG4I7ag="/>
+        <field:display field="lambda" id="s_com_labsynch_cmpdreg_domain_Lot_lambda" object="${lot}" z="fOsqjFjCN+Ia+wvpk1eKx39mT5E="/>
+        <field:display field="absorbance" id="s_com_labsynch_cmpdreg_domain_Lot_absorbance" object="${lot}" z="w9zwGvdYjh//caHStGEVWmGtcKg="/>
+        <field:display field="stockSolvent" id="s_com_labsynch_cmpdreg_domain_Lot_stockSolvent" object="${lot}" z="oADAlKj8BavUjHDMjGla2KXio3I="/>
+        <field:display field="stockLocation" id="s_com_labsynch_cmpdreg_domain_Lot_stockLocation" object="${lot}" z="gjMvQaWyeNMsw19fgVBp9c+2zsU="/>
+        <field:display field="observedMassOne" id="s_com_labsynch_cmpdreg_domain_Lot_observedMassOne" object="${lot}" z="6FZcMcXbvgnOxs9SGA3ouAOzhvo="/>
+        <field:display field="observedMassTwo" id="s_com_labsynch_cmpdreg_domain_Lot_observedMassTwo" object="${lot}" z="8Og1UJSY9I+zkjpPHJeSfAXA++4="/>
+        <field:display field="tareWeight" id="s_com_labsynch_cmpdreg_domain_Lot_tareWeight" object="${lot}" z="Onuo+vszcej5W6Nn5h/u15ocm6o="/>
+        <field:display field="tareWeightUnits" id="s_com_labsynch_cmpdreg_domain_Lot_tareWeightUnits" object="${lot}" z="NC5gqqGqJKp+cHgsRN4ccxtUx5o="/>
+        <field:display field="totalAmountStored" id="s_com_labsynch_cmpdreg_domain_Lot_totalAmountStored" object="${lot}" z="jgaX3ck5jSD7b6Kmzyx0H6ab7TI="/>
+        <field:display field="totalAmountStoredUnits" id="s_com_labsynch_cmpdreg_domain_Lot_totalAmountStoredUnits" object="${lot}" z="X/o+2LDQ9nFBC49ws3ZK/RFFSpc="/>
     </page:show>
 </div>

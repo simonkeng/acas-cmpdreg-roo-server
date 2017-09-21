@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.labsynch.cmpdreg.domain.Scientist;
-import com.labsynch.cmpdreg.domain.Vendor;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
@@ -24,12 +22,11 @@ import com.labsynch.cmpdreg.utils.Configuration;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class ScientistController {
-	
-	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
+    private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
@@ -58,12 +55,11 @@ public class ScientistController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-		if (mainConfig.getServerSettings().isOrderSelectLists()){
-	        return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists("name", "ASC")), headers, HttpStatus.OK);
-		} else {
-	        return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists()), headers, HttpStatus.OK);
-		}
-        
+        if (mainConfig.getServerSettings().isOrderSelectLists()) {
+            return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists("name", "ASC")), headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists()), headers, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

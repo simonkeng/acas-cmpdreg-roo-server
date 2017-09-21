@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_com_labsynch_cmpdreg_domain_SaltFormAlias" modelAttribute="saltFormAlias" path="/saltformaliases" render="${empty dependencies}" z="ugubmxKPo89OQWgGI0kfvD+Pa6I=">
+        <field:select field="saltForm" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_saltForm" itemValue="id" items="${saltforms}" path="/saltforms" z="JsadgwYlTUtN9YmW+jVHO+IU/V8="/>
+        <field:input field="lsType" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_lsType" z="AkZdd9DNKNno6BZ0BJFkZeovBCw="/>
+        <field:input field="lsKind" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_lsKind" z="e3/zw83mwOQErE0EiGplc2TxrFM="/>
+        <field:input field="aliasName" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_aliasName" z="Vpe6O0/pRBUqY0Aow+8+VzmMmxQ="/>
+        <field:checkbox field="preferred" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_preferred" z="7KN4gHptmsRHXZrnQoT74rVWNGk="/>
+        <field:checkbox field="ignored" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_ignored" z="jMscTo3iuI/CM3BwVGv5sNR/lVE="/>
+        <field:checkbox field="deleted" id="c_com_labsynch_cmpdreg_domain_SaltFormAlias_deleted" z="iUC0pyI6xQIRiMv5T5hH3+L/9pQ="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_com_labsynch_cmpdreg_domain_SaltFormAlias" render="${not empty dependencies}" z="uSLOkS/pA1LDmM566aoOkiemex0="/>
+</div>

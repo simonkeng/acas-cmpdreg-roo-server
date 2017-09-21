@@ -35,7 +35,7 @@ import com.labsynch.cmpdreg.utils.Configuration;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class PhysicalStateController {
 	
@@ -230,4 +230,12 @@ public class PhysicalStateController {
         headers.setExpires(0); // Expire the cache
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute PhysicalState physicalState) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, physicalState);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/physicalstates/list.jspx";
+    }
+    
 }

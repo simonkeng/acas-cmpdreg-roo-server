@@ -90,18 +90,6 @@ public class ApiSetupController {
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
 	
-	@RequestMapping(value = "/stereoCategories/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createStereoCategoriesFromJsonArray(@RequestBody String json) {
-        for (StereoCategory stereoCategory: StereoCategory.fromJsonArrayToStereoCategorys(json)) {
-            stereoCategory.persist();
-        }
-        HttpHeaders headers= new HttpHeaders();
-        headers.add("Content-Type", "application/text");
-        headers.add("Access-Control-Allow-Headers", "Content-Type");
-        headers.add("Access-Control-Allow-Origin", "*");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-	
 	@RequestMapping(value = "/isotopes/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createIsotopesFromJsonArray(@RequestBody String json) {
         for (Isotope isotope: Isotope.fromJsonArrayToIsotopes(json)) {
@@ -150,19 +138,7 @@ public class ApiSetupController {
         headers.add("Access-Control-Allow-Origin", "*");
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
     }
-	
-	@RequestMapping(value = "/scientists/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
-    public ResponseEntity<String> createScientistsFromJsonArray(@RequestBody String json) {
-        for (Scientist scientist: Scientist.fromJsonArrayToScientists(json)) {
-            scientist.persist();
-        }
-        HttpHeaders headers= new HttpHeaders();
-        headers.add("Content-Type", "application/text");
-        headers.add("Access-Control-Allow-Headers", "Content-Type");
-        headers.add("Access-Control-Allow-Origin", "*");
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
-    }
-	
+		
 	@RequestMapping(value = "/fileTypes/jsonArray", method = RequestMethod.POST, headers = "Accept=application/json")
     public ResponseEntity<String> createFileTypesFromJsonArray(@RequestBody String json) {
         for (FileType fileType: FileType.fromJsonArrayToFileTypes(json)) {

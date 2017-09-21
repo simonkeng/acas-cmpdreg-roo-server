@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_com_labsynch_cmpdreg_domain_Compound" items="${compounds}" z="EocxH92LtAfQJqjMlwFIf1/quGI=">
+        <table:table data="${compounds}" id="l_com_labsynch_cmpdreg_domain_Compound" path="/compounds" z="iemasyAWfZJ/FqLW4wfmpAWxd44=">
+            <table:column id="c_com_labsynch_cmpdreg_domain_Compound_corpName" property="corpName" z="ANz2hkqIcI71QkV/6Os7bftw4Wo="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Compound_external_id" property="external_id" z="ZT+pWON5gOTPaXAExE2Iryfb5K4="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Compound_CdId" property="cdId" z="jBJglipvuF+IHT7rczKsmiVJrd8="/>
+            <table:column date="true" dateTimePattern="${compound_createddate_date_format}" id="c_com_labsynch_cmpdreg_domain_Compound_createdDate" property="createdDate" z="XjoxRtofZzugGDMl/X3NM7ykVaw="/>
+            <table:column date="true" dateTimePattern="${compound_modifieddate_date_format}" id="c_com_labsynch_cmpdreg_domain_Compound_modifiedDate" property="modifiedDate" z="JDK5202wbZzv1Ity6910s+Gred4="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Compound_ignored" property="ignored" z="XkO09O7/NnUajf5oZJidQPU5Bvc="/>
+        </table:table>
+    </page:list>
+</div>

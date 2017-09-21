@@ -317,6 +317,14 @@ public class Parent {
 		List<Long> parentIds = query.getResultList();		
 		return parentIds;
 	}
-	
+
+    public static Long countParentsByStereoCategory(StereoCategory stereoCategory) {
+        if (stereoCategory == null) throw new IllegalArgumentException("The stereoCategory argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(p) FROM Parent p WHERE p.stereoCategory = :stereoCategory ", Long.class);
+        q.setParameter("stereoCategory", stereoCategory);
+        return q.getSingleResult();
+    }
+    
 
 }

@@ -1,12 +1,17 @@
 package com.labsynch.cmpdreg.web;
+import javax.servlet.http.HttpServletRequest;
 
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
+import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,12 +22,16 @@ import com.labsynch.cmpdreg.domain.PurityMeasuredBy;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-@RooWebScaffold(path = "puritymeasuredbys", formBackingObject = PurityMeasuredBy.class)
-@RequestMapping(value = {"/puritymeasuredbys" , "/purityMeasuredBys"})
+
+@RequestMapping("/puritymeasuredbys")
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
+@RooWebJson(jsonObject = PurityMeasuredBy.class)
+@RooWebScaffold(path = "puritymeasuredbys", formBackingObject = PurityMeasuredBy.class)
+@RooWebFinder
 public class PurityMeasuredByController {
+
 
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
@@ -95,7 +104,8 @@ public class PurityMeasuredByController {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<String>(headers, HttpStatus.OK);
-    }
+	}
+
 
 	@RequestMapping(value = "/jsonArray", method = RequestMethod.PUT, headers = "Accept=application/json")
     public ResponseEntity<String> updateFromJsonArray(@RequestBody String json) {
@@ -117,7 +127,8 @@ public class PurityMeasuredByController {
         HttpHeaders headers= new HttpHeaders();
         headers.add("Content-Type", "application/text");
         headers.add("Access-Control-Allow-Headers", "Content-Type");
-        headers.add("Access-Control-Allow-Origin", "*");        if (puritymeasuredby == null) {
+        headers.add("Access-Control-Allow-Origin", "*");       
+        if (puritymeasuredby == null) {
             return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
         }
         puritymeasuredby.remove();
@@ -135,4 +146,17 @@ public class PurityMeasuredByController {
         
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
+
+	
+	
+	
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute PurityMeasuredBy purityMeasuredBy) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, purityMeasuredBy);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/puritymeasuredbys/list.jspx";
+    }
+
+    
 }

@@ -3,10 +3,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.gvnix.web.datatables.query.SearchResults;
@@ -20,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-
 import com.github.dandelion.datatables.core.ajax.DataSet;
 import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
 import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
@@ -45,7 +43,7 @@ import com.mysema.query.types.path.PathBuilder;
 @Controller
 @Transactional
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class SaltFormController {
 
@@ -193,36 +191,36 @@ public class SaltFormController {
         return pathSegment;
     }
 
-    
     @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCdId", produces = "application/json")
     @ResponseBody
     public DatatablesResponse<Map<String, String>> findSaltFormsByCdId(@DatatablesParams DatatablesCriterias criterias, @RequestParam("CdId") int CdId) {
         BooleanBuilder baseSearch = new BooleanBuilder();
-        
         // Base Search. Using BooleanBuilder, a cascading builder for
         // Predicate expressions
         PathBuilder<SaltForm> entity = new PathBuilder<SaltForm>(SaltForm.class, "entity");
-        
-        if(CdId > 0){
+        if (CdId > 0) {
             baseSearch.and(entity.getNumber("CdId", int.class).eq(CdId));
-        }else{
+        } else {
             baseSearch.and(entity.getNumber("CdId", int.class).isNull());
         }
-        
         SearchResults<SaltForm> searchResult = DatatablesUtils.findByCriteria(entity, SaltForm.entityManager(), criterias, baseSearch);
-        
         // Get datatables required counts
         long totalRecords = searchResult.getTotalCount();
         long recordsFound = searchResult.getResultsCount();
-        
         // Entity pk field name
         String pkFieldName = "id";
         org.springframework.ui.Model uiModel = new org.springframework.ui.ExtendedModelMap();
         addDateTimeFormatPatterns(uiModel);
         Map<String, Object> datePattern = uiModel.asMap();
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt);
+        return DatatablesResponse.build(dataSet, criterias);
     }
-
+    
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute SaltForm saltForm) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, saltForm);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/saltforms/list.jspx";
+    }
 }

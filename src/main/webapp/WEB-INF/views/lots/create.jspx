@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/jquery/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/jquery/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/datatables" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_com_labsynch_cmpdreg_domain_Lot" modelAttribute="lot" path="/lots" render="${empty dependencies}" z="0ZPEPYizQQGSEi6eLzQeLyYalUM=">
         <field:input field="buid" id="c_com_labsynch_cmpdreg_domain_Lot_buid" z="P/0OlR216AYvu9rUpzvD7iwN0OI="/>
         <field:input field="parent" id="c_com_labsynch_cmpdreg_domain_Lot_parent" z="k0doY3pnFYV1MRLplVCRDGciJs0="/>
         <field:select field="saltForm" id="c_com_labsynch_cmpdreg_domain_Lot_saltForm" itemValue="id" items="${saltforms}" path="/saltforms" z="XGlB0j0GKN+bbSajDFvclT+udEg="/>
-        <field:textarea field="asDrawnStruct" id="c_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" z="f7iUrTaE/t2dtrtpJdYp1pAgTJQ="/>
+        <field:input field="asDrawnStruct" id="c_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" z="mEYfgk0ogZMZZicb8OytaQbquFA="/>
         <field:input field="lotAsDrawnCdId" id="c_com_labsynch_cmpdreg_domain_Lot_lotAsDrawnCdId" z="LJZ8hExGRwOsAvYXIze/HHkHNpA="/>
         <field:textarea field="corpName" id="c_com_labsynch_cmpdreg_domain_Lot_corpName" required="true" z="fNejnMXGkVbyEt/DqjffwWOYX7c="/>
         <field:input field="lotNumber" id="c_com_labsynch_cmpdreg_domain_Lot_lotNumber" z="AY+oIhgsZDMY43zPTTrcHgJC/5g="/>
@@ -29,7 +29,7 @@
         <field:select field="purityMeasuredBy" id="c_com_labsynch_cmpdreg_domain_Lot_purityMeasuredBy" itemValue="id" items="${puritymeasuredbys}" path="/puritymeasuredbys" z="QpRQhdypI+q8/oLIo75f51QSs/M="/>
         <field:select field="chemist" id="c_com_labsynch_cmpdreg_domain_Lot_chemist" itemValue="id" items="${scientists}" path="/scientists" z="tBa49oOWMk3Smw+11WWmwUn3ADo="/>
         <field:input field="percentEE" id="c_com_labsynch_cmpdreg_domain_Lot_percentEE" validationMessageCode="field_invalid_number" z="qM+H68XXe43CWlaBQC9sEokg2Z4="/>
-        <field:textarea field="comments" id="c_com_labsynch_cmpdreg_domain_Lot_comments" z="1Yf/enNtUVxCTFYVx67ePvCBoG8="/>
+        <field:input field="comments" id="c_com_labsynch_cmpdreg_domain_Lot_comments" z="54BHOAKuHiGyD1Y61sSnXBcJ/4o="/>
         <field:checkbox field="isVirtual" id="c_com_labsynch_cmpdreg_domain_Lot_isVirtual" z="5VHxzQJIne1OG4p8qd0GbV2NNb0="/>
         <field:checkbox field="ignore" id="c_com_labsynch_cmpdreg_domain_Lot_ignore" z="JOSUR6lFNX8Hodr7M620/IVO1Zs="/>
         <field:select field="physicalState" id="c_com_labsynch_cmpdreg_domain_Lot_physicalState" itemValue="id" items="${physicalstates}" path="/physicalstates" z="ApX0XrWrTKWXZwzec4UrbKUCSek="/>
@@ -41,6 +41,20 @@
         <field:input field="boilingPoint" id="c_com_labsynch_cmpdreg_domain_Lot_boilingPoint" validationMessageCode="field_invalid_number" z="J60PwkLRXCt39xy4MmzWmhHRMCk="/>
         <field:textarea field="supplierLot" id="c_com_labsynch_cmpdreg_domain_Lot_supplierLot" z="MzFtCWbvkKSm0ylZaUh0TJeFSYI="/>
         <field:select field="project" id="c_com_labsynch_cmpdreg_domain_Lot_project" itemValue="id" items="${projects}" path="/projects" z="76hEiD//7UF/h8wEWINuiQhceeg="/>
+        <field:select field="registeredBy" id="c_com_labsynch_cmpdreg_domain_Lot_registeredBy" itemValue="id" items="${scientists}" path="/scientists" z="8NMzgNYVI2S9roylKQg7JQAUDbA="/>
+        <field:input field="retainLocation" id="c_com_labsynch_cmpdreg_domain_Lot_retainLocation" z="t7FB8HDfoFFburGAvZAAcqFARKQ="/>
+        <field:select field="bulkLoadFile" id="c_com_labsynch_cmpdreg_domain_Lot_bulkLoadFile" itemValue="id" items="${bulkloadfiles}" path="/bulkloadfiles" z="kndrYWfye8aMvXgdI+VdoCb8Xg0="/>
+        <field:input field="lambda" id="c_com_labsynch_cmpdreg_domain_Lot_lambda" validationMessageCode="field_invalid_number" z="2YDMlgi1tgnoGbKGyUhO0zFGMmg="/>
+        <field:input field="absorbance" id="c_com_labsynch_cmpdreg_domain_Lot_absorbance" validationMessageCode="field_invalid_number" z="3aR3b0LoY/UE5Cky1Uw/uFUJ03o="/>
+        <field:input field="stockSolvent" id="c_com_labsynch_cmpdreg_domain_Lot_stockSolvent" z="iIPaOockqN/A8TuqC+JHx/0XF1Q="/>
+        <field:input field="stockLocation" id="c_com_labsynch_cmpdreg_domain_Lot_stockLocation" z="R0fZE7J5zPauko0coGmelkeVFhw="/>
+        <field:input field="observedMassOne" id="c_com_labsynch_cmpdreg_domain_Lot_observedMassOne" validationMessageCode="field_invalid_number" z="F4NZooEun7JB2ODI/RPjrY+awho="/>
+        <field:input field="observedMassTwo" id="c_com_labsynch_cmpdreg_domain_Lot_observedMassTwo" validationMessageCode="field_invalid_number" z="xD9i73S6YHF63xp6n9OrVV+Mpa8="/>
+        <field:input field="tareWeight" id="c_com_labsynch_cmpdreg_domain_Lot_tareWeight" validationMessageCode="field_invalid_number" z="79N7HYk0HGG31+/hb1+IAAPdqoE="/>
+        <field:select field="tareWeightUnits" id="c_com_labsynch_cmpdreg_domain_Lot_tareWeightUnits" itemValue="id" items="${units}" path="/units" z="fKJln4s2Oolv8THxIqivAOEzFT0="/>
+        <field:input field="totalAmountStored" id="c_com_labsynch_cmpdreg_domain_Lot_totalAmountStored" validationMessageCode="field_invalid_number" z="yZaM8ZG8zMdqFhcuNnblEEiWj9Q="/>
+        <field:select field="totalAmountStoredUnits" id="c_com_labsynch_cmpdreg_domain_Lot_totalAmountStoredUnits" itemValue="id" items="${units}" path="/units" z="EG2YIeNeKLagpo9AwrGyb1QJzzY="/>
+        <field:simple field="lotAliases" id="c_com_labsynch_cmpdreg_domain_Lot_lotAliases" messageCode="entity_reference_not_managed" messageCodeAttribute="Lot Alias" z="W6JopqVnz7B3WrTkH+YHb939klg="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_com_labsynch_cmpdreg_domain_Lot" render="${not empty dependencies}" z="dgupQQ8OcbSNiFPSTrRdlHcM74I="/>
 </div>

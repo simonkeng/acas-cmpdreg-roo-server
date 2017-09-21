@@ -11,6 +11,8 @@ import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
+import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -30,14 +32,16 @@ import com.labsynch.cmpdreg.domain.Isotope;
 import com.labsynch.cmpdreg.domain.Salt;
 import com.labsynch.cmpdreg.domain.SaltForm;
 
-//@RooWebScaffold(path = "isosalts", formBackingObject = IsoSalt.class)
+@RooWebScaffold(path = "isosalts", formBackingObject = IsoSalt.class)
 @RequestMapping("/isosalts")
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
+@RooWebFinder
 public class IsoSaltController {
 
+	
 	@RequestMapping(method = RequestMethod.POST)
     public String create(@Valid IsoSalt isoSalt, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
         if (bindingResult.hasErrors()) {
@@ -206,21 +210,7 @@ public class IsoSaltController {
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
 
-	@RequestMapping(params = "find=BySaltForm", method = RequestMethod.GET, headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> jsonFindIsoSaltsBySaltForm(@RequestParam("saltForm") SaltForm saltForm) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/text; charset=utf-8");
-        return new ResponseEntity<String>(IsoSalt.toJsonArray(IsoSalt.findIsoSaltsBySaltForm(saltForm).getResultList()), headers, HttpStatus.OK);
-    }
 
-	@RequestMapping(params = "find=BySaltFormAndType", method = RequestMethod.GET, headers = "Accept=application/json")
-    @ResponseBody
-    public ResponseEntity<String> jsonFindIsoSaltsBySaltFormAndType(@RequestParam("saltForm") SaltForm saltForm, @RequestParam("type") String type) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/text; charset=utf-8");
-        return new ResponseEntity<String>(IsoSalt.toJsonArray(IsoSalt.findIsoSaltsBySaltFormAndType(saltForm, type).getResultList()), headers, HttpStatus.OK);
-    }
 
 	@RequestMapping(params = { "find=BySaltForm", "form" }, method = RequestMethod.GET)
     public String findIsoSaltsBySaltFormForm(Model uiModel) {
@@ -228,21 +218,19 @@ public class IsoSaltController {
         return "isosalts/findIsoSaltsBySaltForm";
     }
 
-	@RequestMapping(params = "find=BySaltForm", method = RequestMethod.GET)
-    public String findIsoSaltsBySaltForm(@RequestParam("saltForm") SaltForm saltForm, Model uiModel) {
-        uiModel.addAttribute("isosalts", IsoSalt.findIsoSaltsBySaltForm(saltForm).getResultList());
-        return "isosalts/list";
-    }
 
 	@RequestMapping(params = { "find=BySaltFormAndType", "form" }, method = RequestMethod.GET)
     public String findIsoSaltsBySaltFormAndTypeForm(Model uiModel) {
         uiModel.addAttribute("saltforms", SaltForm.findAllSaltForms());
         return "isosalts/findIsoSaltsBySaltFormAndType";
     }
-
-	@RequestMapping(params = "find=BySaltFormAndType", method = RequestMethod.GET)
-    public String findIsoSaltsBySaltFormAndType(@RequestParam("saltForm") SaltForm saltForm, @RequestParam("type") String type, Model uiModel) {
-        uiModel.addAttribute("isosalts", IsoSalt.findIsoSaltsBySaltFormAndType(saltForm, type).getResultList());
-        return "isosalts/list";
+	
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute IsoSalt isoSalt) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, isoSalt);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/isosalts/list.jspx";
     }
+
 }
