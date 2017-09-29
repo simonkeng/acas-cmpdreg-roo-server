@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:create id="fc_com_labsynch_cmpdreg_domain_BulkLoadFile" modelAttribute="bulkLoadFile" path="/bulkloadfiles" render="${empty dependencies}" z="MTSjmeNnR6iAgwPxKzO9YwyT6aE=">
+        <field:textarea field="fileName" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_fileName" z="h6xd29AkE81UcfwGepaFhwijmO4="/>
+        <field:input field="numberOfMols" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_numberOfMols" z="19xakaUct3aNxLWEVFgpQuYalDY="/>
+        <field:input field="fileSize" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_fileSize" z="5ddAI7Y+ZKy7oO/Que2z+4llRno="/>
+        <field:input field="jsonTemplate" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_jsonTemplate" z="In4yCg/OdwFxaA8BP49UkAaFVpA="/>
+        <field:input field="recordedBy" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_recordedBy" required="true" z="EreUlB0J55fep2/W+5HoE6fhoRs="/>
+        <field:datetime dateTimePattern="${bulkLoadFile_filedate_date_format}" field="fileDate" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_fileDate" z="0QibCSumDHCxHkP35i/sVra9oWg="/>
+        <field:datetime dateTimePattern="${bulkLoadFile_recordeddate_date_format}" field="recordedDate" id="c_com_labsynch_cmpdreg_domain_BulkLoadFile_recordedDate" required="true" z="+Hn49CsGTf85X8kwWj+LVsVd374="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_com_labsynch_cmpdreg_domain_BulkLoadFile" render="${not empty dependencies}" z="Jnq5UNyJAqOjrS02H2rth00YSUU="/>
+</div>

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.labsynch.cmpdreg.domain.Project;
 
 @RooWebScaffold(path = "projects", formBackingObject = Project.class)
@@ -21,7 +20,7 @@ import com.labsynch.cmpdreg.domain.Project;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class ProjectController {
 
@@ -52,7 +51,7 @@ public class ProjectController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(Project.toJsonArray(Project.findAllProjects()), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(Project.toJsonArray(Project.findAllProjects("name", "ASC")), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")

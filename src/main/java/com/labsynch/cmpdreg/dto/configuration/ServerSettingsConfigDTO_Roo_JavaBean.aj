@@ -167,6 +167,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.projectRestrictions = projectRestrictions;
     }
     
+    public boolean ServerSettingsConfigDTO.isCompoundInventory() {
+        return this.compoundInventory;
+    }
+    
+    public void ServerSettingsConfigDTO.setCompoundInventory(boolean compoundInventory) {
+        this.compoundInventory = compoundInventory;
+    }
+    
     public String ServerSettingsConfigDTO.getJchemVersion() {
         return this.jchemVersion;
     }
@@ -221,6 +229,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
     
     public void ServerSettingsConfigDTO.setNewUserIsChemist(boolean newUserIsChemist) {
         this.newUserIsChemist = newUserIsChemist;
+    }
+    
+    public boolean ServerSettingsConfigDTO.isOrderSelectLists() {
+        return this.orderSelectLists;
+    }
+    
+    public void ServerSettingsConfigDTO.setOrderSelectLists(boolean orderSelectLists) {
+        this.orderSelectLists = orderSelectLists;
     }
     
 }

@@ -1,4 +1,6 @@
 package com.labsynch.cmpdreg.web;
+import javax.servlet.http.HttpServletRequest;
+
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +10,8 @@ import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +25,10 @@ import com.labsynch.cmpdreg.domain.CompoundType;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class CompoundTypeController {
+
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
@@ -52,7 +57,7 @@ public class CompoundTypeController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(CompoundType.toJsonArray(CompoundType.findAllCompoundTypes()), headers, HttpStatus.OK);
+        return new ResponseEntity<String>(CompoundType.toJsonArray(CompoundType.findAllCompoundTypes("displayOrder", "ASC")), headers, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -115,5 +120,13 @@ public class CompoundTypeController {
         }
         compoundType.remove();
         return new ResponseEntity<String>(headers, HttpStatus.OK);
+    }
+    
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute CompoundType compoundType) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, compoundType);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/compoundTypes/list.jspx";
     }
 }

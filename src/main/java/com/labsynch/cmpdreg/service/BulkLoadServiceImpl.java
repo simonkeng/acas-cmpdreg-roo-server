@@ -66,6 +66,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFRequestDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFResponseDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
 import com.labsynch.cmpdreg.dto.PurgeFileDependencyCheckResponseDTO;
@@ -79,6 +80,7 @@ import com.labsynch.cmpdreg.exceptions.DupeParentException;
 import com.labsynch.cmpdreg.exceptions.MissingPropertyException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 @Service
 public class BulkLoadServiceImpl implements BulkLoadService {
@@ -134,7 +136,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			resultDTO.setErrors(errors);
 			return resultDTO;
 		}
-		if (logger.isDebugEnabled()) logger.debug("found: "+SimpleBulkLoadPropertyDTO.toJsonArray(foundProperties));
+		if (logger.isDebugEnabled()) if (logger.isDebugEnabled()) logger.debug("found: "+SimpleBulkLoadPropertyDTO.toJsonArray(foundProperties));
 		//Assembly meta DTO:
 		resultDTO.setSdfProperties(foundProperties);
 		resultDTO.setErrors(errors);
@@ -153,12 +155,12 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			BulkLoadTemplate templateToSave) {
 		try{
 			BulkLoadTemplate oldTemplate = BulkLoadTemplate.findBulkLoadTemplatesByTemplateNameEqualsAndRecordedByEquals(templateToSave.getTemplateName(), templateToSave.getRecordedBy()).getSingleResult();
-			logger.debug("Found existing template. Trying to update.");
+			if (logger.isDebugEnabled()) logger.debug("Found existing template. Trying to update.");
 			oldTemplate.update(templateToSave);
-			if (logger.isDebugEnabled()) logger.debug("Updated template to: "+oldTemplate.toJson());
+			if (logger.isDebugEnabled()) if (logger.isDebugEnabled()) logger.debug("Updated template to: "+oldTemplate.toJson());
 			return oldTemplate;
 		} catch (EmptyResultDataAccessException e){
-			logger.debug("Saving new template");
+			if (logger.isDebugEnabled()) logger.debug("Saving new template");
 			templateToSave.persist();
 			return templateToSave;
 		}
@@ -198,7 +200,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				InputStream input = connection.getInputStream();
 				byte[] bytes = IOUtils.toByteArray(input);
 				String responseJson = new String(bytes);
-				logger.debug(responseJson);
+				if (logger.isDebugEnabled()) logger.debug(responseJson);
 				Collection<CodeTableDTO> responseDTOs = CodeTableDTO.fromJsonArrayToCoes(responseJson);
 				for (CodeTableDTO projectDTO : responseDTOs){
 					Project foundProject = Project.findProjectsByCodeEquals(projectDTO.getCode()).getSingleResult();
@@ -216,8 +218,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		for (Project allowedProject : allowedProjects){
 			allowedProjectCodes.add(allowedProject.getCode());
 		}
-		logger.debug("Found allowed projects: ");
-		logger.debug(allowedProjectCodes.toString());
+		if (logger.isDebugEnabled()) logger.debug("Found allowed projects: ");
+		if (logger.isDebugEnabled()) logger.debug(allowedProjectCodes.toString());
 		
 		Collection<BulkLoadPropertyMappingDTO> mappings = registerRequestDTO.getMappings();
 		//instantiate input and output streams
@@ -318,7 +320,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					continue;
 				}
 				try{
-					parent = createParent(mol, mappings, chemist);
+					parent = createParent(mol, mappings, chemist, registerRequestDTO.getLabelPrefix());
 				}catch (Exception e){
 					logError(e, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
 					continue;
@@ -372,6 +374,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				Metalot metalot = new Metalot();
 				metalot.setLot(lot);
 				metalot.setIsosalts(lot.getSaltForm().getIsoSalts());
+				metalot.setSkipParentDupeCheck(true);
 				MetalotReturn metalotReturn = null;              
 
 
@@ -407,7 +410,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 			//generate summary html, which also writes the report file
 			String summaryHtml = generateSummaryHtml(numRecordsRead, numNewParentsLoaded, numNewLotsOldParentsLoaded, errorMap, errorSDFName, reportOutStream);
-			logger.debug(summaryHtml);
+			if (logger.isDebugEnabled()) logger.debug(summaryHtml);
 
 			//close the input and output streams, importers and exporters
 //			molReader.close();
@@ -557,7 +560,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 							|| (parent.getStereoComment() != null && foundParent.getStereoComment() != null && parent.getStereoComment().equalsIgnoreCase(foundParent.getStereoComment())));
 					boolean sameCorpName = (parent.getCorpName() != null && parent.getCorpName().equals(foundParent.getCorpName()));
 					boolean noCorpName = (parent.getCorpName() == null);
-					if (sameStereoCategory & sameStereoComment & (sameCorpName | noCorpName)){
+					boolean sameCorpPrefixOrNoPrefix = (parent.getLabelPrefix() == null || foundParent.getCorpName().contains(parent.getLabelPrefix().getLabelPrefix()));
+					if (sameStereoCategory & sameStereoComment & (sameCorpName | noCorpName) & sameCorpPrefixOrNoPrefix){
 						//parents match
 						parent = foundParent;
 						break searchResultLoop;
@@ -565,6 +569,10 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 						//corp name conflict
 						logger.error("Mismatched corp names for same parent structure, stereo category and stereo comment! sdf corp name: "+parent.getCorpName()+" db corp name: "+foundParent.getCorpName());
 						throw new DupeParentException("Mismatched corp names for same parent structure, stereo category and stereo comment!", foundParent.getCorpName(), parent.getCorpName(), new ArrayList<String>());
+					}else if (sameStereoCategory & sameStereoComment & noCorpName & !sameCorpPrefixOrNoPrefix) {
+						//corp prefix conflict
+						logger.error("Mismatched corp prefix for same parent structure, stereo category, and stereo comment! sdf corp prefix: "+parent.getLabelPrefix().getLabelPrefix()+" db corp name: "+foundParent.getCorpName());
+						throw new DupeParentException("Mismatched corp prefix for same parent structure, stereo category, and stereo comment!", foundParent.getCorpName(), parent.getLabelPrefix().getLabelPrefix(), new ArrayList<String>());
 					}else if (sameStereoCategory & !sameStereoComment & sameCorpName & !noCorpName){
 						//stereo comment conflict for same corpName
 						logger.error("Mismatched stereo comments for same parent structure, stereo category and corp name! Corp name: "+parent.getCorpName()+" sdf stereo category: "+parent.getStereoCategory().getCode()+" sdf stereo comment: "+parent.getStereoComment()+" db stereo category: "+foundParent.getStereoCategory().getCode()+" db stereo comment: "+foundParent.getStereoComment());
@@ -636,7 +644,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 						//verify the found salt form has the same parent. If so, it's a match! If not, probably belongs to a parent with another stereo category
 						SaltForm foundSaltForm = SaltForm.findSaltFormsByCdId(foundSaltFormCdId).getSingleResult();
 						if (foundSaltForm.getParent().getId() == saltForm.getParent().getId()){
-							logger.debug("Found matching existing salt form with same parent.");
+							if (logger.isDebugEnabled()) logger.debug("Found matching existing salt form with same parent.");
 							saltForm = foundSaltForm;
 							return saltForm;
 						}
@@ -720,8 +728,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				throw new MissingPropertyException("Project not specified. Please specify a valid project.");
 			}
 			else if(!allowedProjectCodes.contains(lot.getProject().getCode())){
-				logger.debug("Project is: "+lot.getProject().getCode());
-				logger.debug("AllowedProjects are: "+allowedProjectCodes.toString());
+				if (logger.isDebugEnabled()) logger.debug("Project is: "+lot.getProject().getCode());
+				if (logger.isDebugEnabled()) logger.debug("AllowedProjects are: "+allowedProjectCodes.toString());
 				throw new MissingPropertyException("You are not authorized to register a lot against project "+lot.getProject().getCode() +". Please consult your administrator.");
 			}
 		}
@@ -802,7 +810,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				lot = addLotAlias(lot, aliasType, aliasKind, lookUpProperty, lookUpStringEntry);
 				logger.info("------------- adding alias set to the lot -------------------");
 				String[] fields = {"lotAliases"};
-				if (logger.isDebugEnabled()) logger.debug(lot.toJson(fields));
+				if (logger.isDebugEnabled()) if (logger.isDebugEnabled()) logger.debug(lot.toJson(fields));
 			}
 		}
 		
@@ -998,7 +1006,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 
 	@Transactional
-	public Parent createParent(CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, Scientist chemist) throws Exception{
+	public Parent createParent(CmpdRegMolecule mol, Collection<BulkLoadPropertyMappingDTO> mappings, Scientist chemist, LabelPrefixDTO labelPrefix) throws Exception{
 		//Here we try to fetch all of the possible Lot database properties from the sdf, according to the mappings
 		Parent parent = new Parent();
 		parent.setMolStructure(mol.getMolStructure());
@@ -1078,7 +1086,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			logger.error("Caught error looking up parent property "+lookUpProperty+" with code "+lookUpString,e);
 			throw new Exception("An error has occurred looking up parent property "+lookUpProperty+" with code "+lookUpString);
 		}
-
+		
+		//Set labelPrefix DTO if it is passed in
+		if (labelPrefix != null) parent.setLabelPrefix(labelPrefix);
 
 		return parent;
 	}
@@ -1148,7 +1158,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		if (value != null) value = value.replaceAll(regexMatch, "");
 		if (value == null) value = mapping.getDefaultVal();
 		
-		if (value != null) logger.debug("requested property: " + sdfProperty + "  value: " + value);
+		if (value != null) if (logger.isDebugEnabled()) logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 	
@@ -1186,7 +1196,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		else if (stringVal ==null) value = null;
 		else value = new Double(stringVal);
 		
-		if (value != null) logger.debug("requested property: " + sdfProperty + "  value: " + value);
+		if (value != null) if (logger.isDebugEnabled()) logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 
@@ -1243,7 +1253,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 
 		}
-		logger.debug("requested property: " + sdfProperty + "  value: " + value);
+		if (logger.isDebugEnabled()) logger.debug("requested property: " + sdfProperty + "  value: " + value);
 		return value;
 	}
 
@@ -1350,7 +1360,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		}
 		numberOfLots = lots.size();
 		lots.clear();
-		logger.debug(cmpdRegDependencies.toString());
+		if (logger.isDebugEnabled()) logger.debug(cmpdRegDependencies.toString());
 		//Then check for data dependencies in ACAS.
 		if (!acasDependencies.isEmpty()){
 			try{
@@ -1359,7 +1369,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				logger.error("Caught exception checking for ACAS dependencies.",e);
 			}
 		}
-		logger.debug(acasDependencies.toString());
+		if (logger.isDebugEnabled()) logger.debug(acasDependencies.toString());
 		
 		HashSet<String> dependentFiles = new HashSet<String>();
 		for (HashSet<String> dependentSet : cmpdRegDependencies.values()){
@@ -1451,28 +1461,11 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			Map<String, HashSet<String>> acasDependencies) throws MalformedURLException, IOException {
 		//here we make an external request to the ACAS Roo server to check for dependent experimental data
 		String url = mainConfig.getServerConnection().getAcasURL()+"compounds/checkBatchDependencies";
-		String charset = "UTF-8";
-		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(true);
-		connection.setRequestProperty("Accept-Charset", charset);
-		connection.setRequestProperty("Content-Type", "application/json");
-
 		BatchCodeDependencyDTO request = new BatchCodeDependencyDTO(acasDependencies.keySet());
 		String json = request.toJson();
-		logger.info("Sending request to: "+url);
-		logger.info("with data: "+json);
-		try{
-			OutputStream output = connection.getOutputStream();
-			output.write(json.getBytes());
-		}catch (Exception e){
-			logger.error("Error occurred in making HTTP Request to ACAS",e);
-		}
-		InputStream input = connection.getInputStream();
-		byte[] bytes = IOUtils.toByteArray(input);
-		String responseJson = new String(bytes);
+		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
 		BatchCodeDependencyDTO responseDTO = BatchCodeDependencyDTO.fromJsonToBatchCodeDependencyDTO(responseJson);
-		if (logger.isDebugEnabled()) logger.debug(responseDTO.toJson());
+		if (logger.isDebugEnabled()) if (logger.isDebugEnabled()) logger.debug(responseDTO.toJson());
 		if (responseDTO.getLinkedDataExists()){
 			logger.info("Found experimental data in ACAS for some compounds.");
 			for (CodeTableDTO experimentCodeTable : responseDTO.getLinkedExperiments()){

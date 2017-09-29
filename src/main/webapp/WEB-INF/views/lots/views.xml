@@ -46,4 +46,7 @@
 <definition extends="default" name="lots/findLotsBySynthesisDateLessThan">
         <put-attribute name="body" value="/WEB-INF/views/lots/findLotsBySynthesisDateLessThan.jspx"/>
     </definition>
+<definition extends="default" name="lots/findLotsByBulkLoadFileEquals">
+        <put-attribute name="body" value="/WEB-INF/views/lots/findLotsByBulkLoadFileEquals.jspx"/>
+    </definition>
 </tiles-definitions>

@@ -48,6 +48,8 @@ public class ServerSettingsConfigDTO {
     private boolean initalDBLoad;
     
     private boolean projectRestrictions;
+    
+    private boolean compoundInventory;
 
     private String jchemVersion;
     
@@ -62,6 +64,7 @@ public class ServerSettingsConfigDTO {
     private boolean usePredefinedList;
     
     private boolean newUserIsChemist;
-
+    
+    private boolean orderSelectLists;
     
 }

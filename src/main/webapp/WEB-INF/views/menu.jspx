@@ -17,7 +17,7 @@
             <menu:item id="fi_parent_corpnamelike" messageCode="global_menu_find" url="/parents?find=ByCorpNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="M3rHnPF7xhwNDOiCmqwgMmCnuOQ="/>
             <menu:item id="fi_parent_saltforms" messageCode="global_menu_find" url="/parents?find=BySaltForms&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="yI44433bRe4ptlTLOJuDw+4IMh8="/>
         </menu:category>
-        <menu:category id="c_operator" render="false" z="user-managed">
+        <menu:category id="c_operator" render="true" z="user-managed">
             <menu:item id="i_operator_new" messageCode="global_menu_new" url="/operators?form" z="348aQG/OMwcpfhf4YOVFumU9lXA="/>
             <menu:item id="i_operator_list" messageCode="global_menu_list" url="/operators?page=1&amp;size=${empty param.size ? 10 : param.size}" z="Tz16FblnAMkG7trnwdzRokFAC6Q="/>
             <menu:item id="fi_operator_codeequals" messageCode="global_menu_find" url="/operators?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="8JL8+ru+gaX6YnBv8HM6rnGGiS4="/>
@@ -105,8 +105,9 @@
             <menu:item id="fi_vendor_codeequals" messageCode="global_menu_find" url="/vendors?find=ByCodeEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="69IaDPJSu71IVkN+va/S676ad1k="/>
             <menu:item id="fi_vendor_codelike" messageCode="global_menu_find" url="/vendors?find=ByCodeLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="F5O/oxpbL9hdNr/GN/OwdQ5No8M="/>
             <menu:item id="fi_vendor_nameequals" messageCode="global_menu_find" url="/vendors?find=ByNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="a/DllJTHIcCZkLeDzkP9ZBAMzM8="/>
+            <menu:item id="fi_vendor_namelike" messageCode="global_menu_find" url="/vendors?find=ByNameLike&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="nC7kVGkTqmTfIlPPCNoUTjfZbW8="/>
         </menu:category>
-        <menu:category id="c_puritymeasuredby" render="false" z="user-managed">
+        <menu:category id="c_puritymeasuredby" render="true" z="user-managed">
             <menu:item id="i_puritymeasuredby_new" messageCode="global_menu_new" url="/puritymeasuredbys?form" z="tvshqP/oDSgqHaraSA/XFTHK7Zg="/>
             <menu:item id="i_puritymeasuredby_list" messageCode="global_menu_list" url="/puritymeasuredbys?page=1&amp;size=${empty param.size ? 10 : param.size}" z="NlvmmDC9n6PYUeRdurr4NHaTyPU="/>
         </menu:category>

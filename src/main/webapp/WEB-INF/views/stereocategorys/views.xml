@@ -16,4 +16,7 @@
 <definition extends="default" name="stereocategorys/findStereoCategorysByCodeEquals">
         <put-attribute name="body" value="/WEB-INF/views/stereocategorys/findStereoCategorysByCodeEquals.jspx"/>
     </definition>
+<definition extends="default" name="stereocategorys/findStereoCategorysByCodeLike">
+        <put-attribute name="body" value="/WEB-INF/views/stereocategorys/findStereoCategorysByCodeLike.jspx"/>
+    </definition>
 </tiles-definitions>

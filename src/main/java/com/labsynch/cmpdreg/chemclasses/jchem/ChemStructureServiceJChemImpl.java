@@ -202,8 +202,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Override
 	public int saveStructure(String molfile, String structureTable, boolean checkForDupes) {
 
-		logger.debug("saving structure " + molfile);
-		logger.debug("saving structure to table " + structureTable);
+		if (logger.isDebugEnabled()) logger.debug("saving structure " + molfile);
+		if (logger.isDebugEnabled()) logger.debug("saving structure to table " + structureTable);
 
 
 		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
@@ -211,7 +211,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		CacheRegistrationUtil cru = null;
 
 		try {
-			logger.debug("the connection closed: " + conn.isClosed());
+			if (logger.isDebugEnabled()) logger.debug("the connection closed: " + conn.isClosed());
 			conn.setAutoCommit(true);
 			ch.setConnection(conn);
 		} catch (SQLException e1) {
@@ -282,8 +282,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			uh2 = new UpdateHandler(ch,
 					UpdateHandler.INSERT, structureTable, "");
@@ -299,7 +299,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			} else if (foundDupe){
 				cdId = 0;
 			} else {
-				logger.debug("offending molformat:  " + molfile);
+				if (logger.isDebugEnabled()) logger.debug("offending molformat:  " + molfile);
 				cdId = -1;
 			}
 
@@ -400,9 +400,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		long maxTime = maxSearchTime;
 		int maxResultCount = maxResults;
 
-		logger.debug("Search table is  " + structureTable);		
-		logger.debug("Search type is  " + searchType);		
-		logger.debug("Max number of results is  " + maxResults);		
+		if (logger.isDebugEnabled()) logger.debug("Search table is  " + structureTable);		
+		if (logger.isDebugEnabled()) logger.debug("Search type is  " + searchType);		
+		if (logger.isDebugEnabled()) logger.debug("Max number of results is  " + maxResults);		
 
 
 		if (searchType.equalsIgnoreCase("EXACT")){
@@ -448,8 +448,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			mh = new MolHandler(molfile);
 			Molecule mol = mh.getMolecule();
@@ -466,32 +466,32 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			searcher.setConnectionHandler(ch);
 			searcher.setStructureTable(structureTable);
 
-			logger.debug("definition of exact search: " + exactSearchDef);
-			logger.debug("selected search type: " + searchType);
+			if (logger.isDebugEnabled()) logger.debug("definition of exact search: " + exactSearchDef);
+			if (logger.isDebugEnabled()) logger.debug("selected search type: " + searchType);
 
 			JChemSearchOptions searchOptions = null;
 			if (searchType.equalsIgnoreCase("DUPLICATE")){
-				logger.debug("search type is DUPLICATE  ");
+				if (logger.isDebugEnabled()) logger.debug("search type is DUPLICATE  ");
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 
 			} else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
-				logger.debug("Search type is DUPLICATE_TAUTOMER");		
+				if (logger.isDebugEnabled()) logger.debug("Search type is DUPLICATE_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
 
 			} else if (searchType.equalsIgnoreCase("DUPLICATE_NO_TAUTOMER")){
-				logger.debug("Search type is DUPLICATE_NO_TAUTOMER");		
+				if (logger.isDebugEnabled()) logger.debug("Search type is DUPLICATE_NO_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 
 			}else if (searchType.equalsIgnoreCase("STEREO_IGNORE")){
-				logger.debug("Search type is no stereo");		
+				if (logger.isDebugEnabled()) logger.debug("Search type is no stereo");		
 				searchOptions = new JChemSearchOptions(SearchConstants.STEREO_IGNORE);
 				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
 
 			} else if (searchType.equalsIgnoreCase("FULL_TAUTOMER")){
-				logger.debug("Search type is exact FULL_TAUTOMER");		
+				if (logger.isDebugEnabled()) logger.debug("Search type is exact FULL_TAUTOMER");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
@@ -499,7 +499,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_ON);
 
 			} else if (searchType.equalsIgnoreCase("SUBSTRUCTURE")){
-				logger.debug("Search type is substructure");	
+				if (logger.isDebugEnabled()) logger.debug("Search type is substructure");	
 				searchOptions = new JChemSearchOptions(SearchConstants.SUBSTRUCTURE);
 
 			} else if (searchType.equalsIgnoreCase("SIMILARITY")){
@@ -507,14 +507,14 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				searchOptions.setDissimilarityThreshold(simlarityPercent);
 				//				searchOptions.setMaxTime(maxTime);	
 			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Selected Search type is full with no tautomer search");		
+				if (logger.isDebugEnabled()) logger.debug("Selected Search type is full with no tautomer search");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
 				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 			} else {
-				logger.debug("Default Search type is full with tautomer search");		
+				if (logger.isDebugEnabled()) logger.debug("Default Search type is full with tautomer search");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
@@ -556,7 +556,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		int[] hitList = searcher.getResults();
 
 		if (hitList.length > 0){
-			logger.debug("found a matching molecule!!!  " + hitList.length);
+			if (logger.isDebugEnabled()) logger.debug("found a matching molecule!!!  " + hitList.length);
 		}
 
 		return hitList;
@@ -612,10 +612,10 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		StrippedSaltDTO resultDTO = new StrippedSaltDTO();
 		resultDTO.setSaltCounts(saltCounts);
 		resultDTO.setUnidentifiedFragments(unidentifiedFragmentMolecules);
-		logger.debug("Identified stripped salts:");
+		if (logger.isDebugEnabled()) logger.debug("Identified stripped salts:");
 		for (Salt salt : saltCounts.keySet()){
-			logger.debug("Salt Abbrev: "+salt.getAbbrev());
-			logger.debug("Salt Count: "+ saltCounts.get(salt));
+			if (logger.isDebugEnabled()) logger.debug("Salt Abbrev: "+salt.getAbbrev());
+			if (logger.isDebugEnabled()) logger.debug("Salt Count: "+ saltCounts.get(salt));
 		}
 		return resultDTO;
 	}
@@ -638,9 +638,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		long maxTime = maxSearchTime;
 		int maxResultCount = maxSearchResults;
 
-		logger.debug("Search table is  " + structureTable);		
-		logger.debug("Search type is  " + searchType);	
-		logger.debug("search mol is: " + molfile);
+		if (logger.isDebugEnabled()) logger.debug("Search table is  " + structureTable);		
+		if (logger.isDebugEnabled()) logger.debug("Search type is  " + searchType);	
+		if (logger.isDebugEnabled()) logger.debug("search mol is: " + molfile);
 
 		if (searchType.equalsIgnoreCase("EXACT")){
 			searchType = exactSearchDef;
@@ -679,8 +679,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			}
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			mh = new MolHandler(molfile);
 			Molecule mol = mh.getMolecule();
@@ -691,15 +691,15 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			searcher.setStructureTable(structureTable);
 			JChemSearchOptions searchOptions = null;
 
-			logger.debug("definition of exact search: " + exactSearchDef);
-			logger.debug("selected search type: " + searchType);
+			if (logger.isDebugEnabled()) logger.debug("definition of exact search: " + exactSearchDef);
+			if (logger.isDebugEnabled()) logger.debug("selected search type: " + searchType);
 
 
 			HitColoringAndAlignmentOptions hitColorOptions = null;
 			if (searchType.equalsIgnoreCase("DUPLICATE")){
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-				logger.debug("selected DUPLICATE search for " + searchType);
+				if (logger.isDebugEnabled()) logger.debug("selected DUPLICATE search for " + searchType);
 
 			}else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
 				System.out.println("Search type is DUPLICATE_TAUTOMER");		
@@ -755,14 +755,14 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				hitColorOptions.setNonHitColor(nonHitColor);
 
 			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Default Search type is full with no tautomer search");		
+				if (logger.isDebugEnabled()) logger.debug("Default Search type is full with no tautomer search");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
 				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 			} else {
-				logger.debug("Default Search type is exact");		
+				if (logger.isDebugEnabled()) logger.debug("Default Search type is exact");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
@@ -777,9 +777,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				searchOptions.setFilterQuery("select cd_id from "+ plainTable + " where id > 0");				
 			}
 
-			logger.debug("max result count is: " + maxResultCount );
-			logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
-			logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
+			if (logger.isDebugEnabled()) logger.debug("max result count is: " + maxResultCount );
+			if (logger.isDebugEnabled()) logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
+			if (logger.isDebugEnabled()) logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
 
 			searchOptions.setMaxResultCount(maxResultCount);
 			searcher.setOrder(JChemSearch.ORDERING_BY_ID_OR_SIMILARITY);
@@ -817,7 +817,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			if (hitList.length > 0){
-				logger.debug("found a matching molecule!!!  " + hitList.length);
+				if (logger.isDebugEnabled()) logger.debug("found a matching molecule!!!  " + hitList.length);
 			}
 
 			if (this.shouldCloseConnection) {
@@ -873,9 +873,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		long maxTime = maxSearchTime;
 		int maxResultCount = maxResults;
 
-		logger.debug("Search table is  " + structureTable);		
-		logger.debug("Search type is  " + searchType);	
-		logger.debug("search mol is: " + molfile);
+		if (logger.isDebugEnabled()) logger.debug("Search table is  " + structureTable);		
+		if (logger.isDebugEnabled()) logger.debug("Search type is  " + searchType);	
+		if (logger.isDebugEnabled()) logger.debug("search mol is: " + molfile);
 
 		if (searchType.equalsIgnoreCase("EXACT")){
 			searchType = exactSearchDef;
@@ -914,8 +914,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			}
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			mh = new MolHandler(molfile);
 			Molecule mol = mh.getMolecule();
@@ -926,15 +926,15 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			searcher.setStructureTable(structureTable);
 			JChemSearchOptions searchOptions = null;
 
-			logger.debug("definition of exact search: " + exactSearchDef);
-			logger.debug("selected search type: " + searchType);
+			if (logger.isDebugEnabled()) logger.debug("definition of exact search: " + exactSearchDef);
+			if (logger.isDebugEnabled()) logger.debug("selected search type: " + searchType);
 
 
 			HitColoringAndAlignmentOptions hitColorOptions = null;
 			if (searchType.equalsIgnoreCase("DUPLICATE")){
 				searchOptions = new JChemSearchOptions(SearchConstants.DUPLICATE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
-				logger.debug("selected DUPLICATE search for " + searchType);
+				if (logger.isDebugEnabled()) logger.debug("selected DUPLICATE search for " + searchType);
 
 			}else if (searchType.equalsIgnoreCase("DUPLICATE_TAUTOMER")){
 				System.out.println("Search type is DUPLICATE_TAUTOMER");		
@@ -990,14 +990,14 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				hitColorOptions.setNonHitColor(nonHitColor);
 
 			} else if (searchType.equalsIgnoreCase("FULL")){
-				logger.debug("Default Search type is full with no tautomer search");		
+				if (logger.isDebugEnabled()) logger.debug("Default Search type is full with no tautomer search");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
 				searchOptions.setStereoSearchType(JChemSearchOptions.STEREO_IGNORE);
 				searchOptions.setTautomerSearch(SearchConstants.TAUTOMER_SEARCH_OFF);
 			} else {
-				logger.debug("Default Search type is exact");		
+				if (logger.isDebugEnabled()) logger.debug("Default Search type is exact");		
 				searchOptions = new JChemSearchOptions(SearchConstants.FULL);
 				searchOptions.setChargeMatching(JChemSearchOptions.CHARGE_MATCHING_IGNORE);
 				searchOptions.setIsotopeMatching(JChemSearchOptions.ISOTOPE_MATCHING_IGNORE);
@@ -1012,9 +1012,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				searchOptions.setFilterQuery("select cd_id from "+ plainTable + " where id > 0");				
 			}
 
-			logger.debug("max result count is: " + maxResultCount );
-			logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
-			logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
+			if (logger.isDebugEnabled()) logger.debug("max result count is: " + maxResultCount );
+			if (logger.isDebugEnabled()) logger.debug("JChemSearch.ORDERING_BY_ID_OR_SIMILARITY: " + JChemSearch.ORDERING_BY_ID_OR_SIMILARITY );
+			if (logger.isDebugEnabled()) logger.debug("JChemSearch.RUN_MODE_SYNCH_COMPLETE: " + JChemSearch.RUN_MODE_SYNCH_COMPLETE );
 
 			searchOptions.setMaxResultCount(maxResultCount);
 			searcher.setOrder(JChemSearch.ORDERING_BY_ID_OR_SIMILARITY);
@@ -1051,7 +1051,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			if (hitList.length > 0){
-				logger.debug("found a matching molecule!!!  " + hitList.length);
+				if (logger.isDebugEnabled()) logger.debug("found a matching molecule!!!  " + hitList.length);
 			}
 
 			if (this.shouldCloseConnection) {
@@ -1099,14 +1099,14 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			mh = new MolHandler(molStructure);
 			mol = mh.getMolecule();		
 		} catch (MolFormatException e1) {
-			logger.debug("failed first attempt: bad mol structure: " + molStructure);
+			if (logger.isDebugEnabled()) logger.debug("failed first attempt: bad mol structure: " + molStructure);
 			// clean up the molString and try again
 			try {
 				molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
 				mh = new MolHandler(molStructure);
 				mol = mh.getMolecule();
 			} catch (MolFormatException e2) {
-				logger.debug("failed second attempt: bad mol structure: " + molStructure);
+				if (logger.isDebugEnabled()) logger.debug("failed second attempt: bad mol structure: " + molStructure);
 				badStructureFlag = true;
 				logger.error("bad mol structure: " + molStructure);
 			}
@@ -1121,7 +1121,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public String toMolfile(String molStructure) {
-		logger.debug("here is the incoming molStructure: " +  molStructure);
+		if (logger.isDebugEnabled()) logger.debug("here is the incoming molStructure: " +  molStructure);
 		MolHandler mh = null;
 		boolean badStructureFlag = false;
 		Molecule mol = null;
@@ -1132,7 +1132,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			mol = mh.getMolecule();
 			mol.dearomatize();
 		} catch (MolFormatException e1) {
-			logger.debug("failed first attempt: bad mol structure: " + molStructure);
+			if (logger.isDebugEnabled()) logger.debug("failed first attempt: bad mol structure: " + molStructure);
 			// clean up the molString and try again
 			try {
 				molStructure = new StringBuilder().append(lineEnd).append(molStructure).append(lineEnd).toString();
@@ -1140,13 +1140,13 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				mol = mh.getMolecule();
 				mol.dearomatize();				
 			} catch (MolFormatException e2) {
-				logger.debug("failed second attempt: bad mol structure: " + molStructure);
+				if (logger.isDebugEnabled()) logger.debug("failed second attempt: bad mol structure: " + molStructure);
 				badStructureFlag = true;
 				logger.error("bad mol structure: " + molStructure);
 			}
 		}
-		logger.debug("The badStructureFlag " + badStructureFlag);
-		logger.debug("The molfile " + mol.toFormat("mol"));
+		if (logger.isDebugEnabled()) logger.debug("The badStructureFlag " + badStructureFlag);
+		if (logger.isDebugEnabled()) logger.debug("The molfile " + mol.toFormat("mol"));
 
 		if (!badStructureFlag){
 			return mol.toFormat("mol");
@@ -1163,7 +1163,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 		if (logger.isDebugEnabled()){
 			for (CIPStereoDescriptorIface single : output){
-				logger.debug(single.toString());
+				if (logger.isDebugEnabled()) logger.debug(single.toString());
 			}			
 		}
 
@@ -1523,7 +1523,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 		}
 
-		logger.debug("attempt to update structure: " + molStructure);
+		if (logger.isDebugEnabled()) logger.debug("attempt to update structure: " + molStructure);
 
 
 		try {
@@ -1553,8 +1553,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			uh2 = new UpdateHandler(ch,
 					UpdateHandler.UPDATE, structureTable, "");
@@ -1569,7 +1569,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				uh2.saveUpdateLogs(); 
 				updatedStructure = true;
 			} else {
-				logger.debug("offending molformat:  " + molStructure);
+				if (logger.isDebugEnabled()) logger.debug("offending molformat:  " + molStructure);
 				updatedStructure = false;
 			}
 
@@ -1646,8 +1646,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			logger.debug("current cache ID: " + cacheID);
-			logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			uh2 = new UpdateHandler(ch,
 					UpdateHandler.UPDATE, structureTable, "");
@@ -1661,7 +1661,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 				uh2.saveUpdateLogs(); 
 				updatedStructure = true;
 			} else {
-				logger.debug("offending molformat:  " + MolExporter.exportToFormat(mol, "mol"));
+				if (logger.isDebugEnabled()) logger.debug("offending molformat:  " + MolExporter.exportToFormat(mol, "mol"));
 				updatedStructure = false;
 			}
 

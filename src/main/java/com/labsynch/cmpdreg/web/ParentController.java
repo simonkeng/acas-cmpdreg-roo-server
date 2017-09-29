@@ -3,10 +3,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.gvnix.web.datatables.query.SearchResults;
@@ -36,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-
 import com.github.dandelion.datatables.core.ajax.DataSet;
 import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
 import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
@@ -58,7 +55,7 @@ import com.mysema.query.types.path.PathBuilder;
 @Controller
 @Transactional
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class ParentController {
 
@@ -247,7 +244,7 @@ public class ParentController {
 			e.printStackTrace();
 		}
 		parentService.update(parent);
-		//        parent.merge();
+		//		  parent.merge();
 		return "redirect:/parents/" + encodeUrlPathSegment(parent.getId().toString(), httpServletRequest);
 	}
 
@@ -310,91 +307,77 @@ public class ParentController {
 		return new ResponseEntity<String>(headers, HttpStatus.OK);
 	}
 
-	//    @Transactional
-	//    @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", produces = "application/json")
-	//    @ResponseBody
-	//    public DatatablesResponse<Map<String, String>> findAllParents(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Parent parent, HttpServletRequest request) {
-	//        // URL parameters are used as base search filters
-	//        Map<String, Object> baseSearchValuesMap = getPropertyMap(parent, request);
-	//        setDatatablesBaseFilter(baseSearchValuesMap);
-	//        SearchResults<Parent> searchResult = DatatablesUtils.findByCriteria(Parent.class, Parent.entityManager(), criterias, baseSearchValuesMap, conversionService_dtt, messageSource_dtt);
-	//        // Get datatables required counts
-	//        long totalRecords = searchResult.getTotalCount();
-	//        long recordsFound = searchResult.getResultsCount();
-	//        // Entity pk field name
-	//        String pkFieldName = "id";
-	//        org.springframework.ui.Model uiModel = new org.springframework.ui.ExtendedModelMap();
-	//        addDateTimeFormatPatterns(uiModel);
-	//        Map<String, Object> datePattern = uiModel.asMap();
-	//        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt);
-	//        return DatatablesResponse.build(dataSet, criterias);
-	//    }
-
+	//	  @Transactional
+	//	  @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", produces = "application/json")
+	//	  @ResponseBody
+	//	  public DatatablesResponse<Map<String, String>> findAllParents(@DatatablesParams DatatablesCriterias criterias, @ModelAttribute Parent parent, HttpServletRequest request) {
+	//		  // URL parameters are used as base search filters
+	//		  Map<String, Object> baseSearchValuesMap = getPropertyMap(parent, request);
+	//		  setDatatablesBaseFilter(baseSearchValuesMap);
+	//		  SearchResults<Parent> searchResult = DatatablesUtils.findByCriteria(Parent.class, Parent.entityManager(), criterias, baseSearchValuesMap, conversionService_dtt, messageSource_dtt);
+	//		  // Get datatables required counts
+	//		  long totalRecords = searchResult.getTotalCount();
+	//		  long recordsFound = searchResult.getResultsCount();
+	//		  // Entity pk field name
+	//		  String pkFieldName = "id";
+	//		  org.springframework.ui.Model uiModel = new org.springframework.ui.ExtendedModelMap();
+	//		  addDateTimeFormatPatterns(uiModel);
+	//		  Map<String, Object> datePattern = uiModel.asMap();
+	//		  DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt);
+	//		  return DatatablesResponse.build(dataSet, criterias);
+	//	  }
 	@RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=BySaltForms", produces = "application/json")
 	@ResponseBody
 	public DatatablesResponse<Map<String, String>> findParentsBySaltForms(@DatatablesParams DatatablesCriterias criterias, @RequestParam("saltForms") Set<SaltForm> saltForms) {
 		BooleanBuilder baseSearch = new BooleanBuilder();
-
 		// Base Search. Using BooleanBuilder, a cascading builder for
 		// Predicate expressions
 		PathBuilder<Parent> entity = new PathBuilder<Parent>(Parent.class, "entity");
-
-		if(saltForms != null){
+		if (saltForms != null) {
 			baseSearch.and(entity.get("saltForms").eq(saltForms));
-		}else{
+		} else {
 			baseSearch.and(entity.get("saltForms").isNull());
 		}
-
 		SearchResults<Parent> searchResult = DatatablesUtils.findByCriteria(entity, Parent.entityManager(), criterias, baseSearch);
-
 		// Get datatables required counts
 		long totalRecords = searchResult.getTotalCount();
 		long recordsFound = searchResult.getResultsCount();
-
 		// Entity pk field name
 		String pkFieldName = "id";
 		org.springframework.ui.Model uiModel = new org.springframework.ui.ExtendedModelMap();
 		addDateTimeFormatPatterns(uiModel);
 		Map<String, Object> datePattern = uiModel.asMap();
-
-		DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt); 
-		return DatatablesResponse.build(dataSet,criterias);
+		DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt);
+		return DatatablesResponse.build(dataSet, criterias);
 	}
 
 	@RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByCdId", produces = "application/json")
 	@ResponseBody
 	public DatatablesResponse<Map<String, String>> findParentsByCdId(@DatatablesParams DatatablesCriterias criterias, @RequestParam("CdId") int CdId) {
 		BooleanBuilder baseSearch = new BooleanBuilder();
-
 		// Base Search. Using BooleanBuilder, a cascading builder for
 		// Predicate expressions
 		PathBuilder<Parent> entity = new PathBuilder<Parent>(Parent.class, "entity");
-
-		if(CdId > 0){
+		if (CdId > 0) {
 			baseSearch.and(entity.getNumber("CdId", int.class).eq(CdId));
-		}else{
+		} else {
 			baseSearch.and(entity.getNumber("CdId", int.class).isNull());
 		}
-
 		SearchResults<Parent> searchResult = DatatablesUtils.findByCriteria(entity, Parent.entityManager(), criterias, baseSearch);
-
 		// Get datatables required counts
 		long totalRecords = searchResult.getTotalCount();
 		long recordsFound = searchResult.getResultsCount();
-
 		// Entity pk field name
 		String pkFieldName = "id";
 		org.springframework.ui.Model uiModel = new org.springframework.ui.ExtendedModelMap();
 		addDateTimeFormatPatterns(uiModel);
 		Map<String, Object> datePattern = uiModel.asMap();
-
-		DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt); 
-		return DatatablesResponse.build(dataSet,criterias);
+		DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), datePattern, conversionService_dtt);
+		return DatatablesResponse.build(dataSet, criterias);
 	}
 
 	void addDateTimeFormatPatterns(Model uiModel) {
 		uiModel.addAttribute("parent_registrationdate_date_format", DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
 		uiModel.addAttribute("parent_modifieddate_date_format", DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
 	}
-
 }

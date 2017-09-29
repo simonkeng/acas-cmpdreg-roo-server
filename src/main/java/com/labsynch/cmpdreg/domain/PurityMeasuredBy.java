@@ -9,7 +9,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaActiveRecord(finders = { "findPurityMeasuredBysByCodeEquals", "findPurityMeasuredBysByNameEquals" })
+@RooJpaActiveRecord(finders = { "findPurityMeasuredBysByCodeEquals", "findPurityMeasuredBysByNameEquals", "findPurityMeasuredBysByNameLike" })
 @RooJson
 public class PurityMeasuredBy {
 

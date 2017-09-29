@@ -26,5 +26,6 @@
         <field:select field="compoundType" id="c_com_labsynch_cmpdreg_domain_Parent_compoundType" itemValue="id" items="${compoundtypes}" path="/compoundTypes" z="oFH+NVi9/w/vRZUnN1nXHbMnMb0="/>
         <field:input field="comment" id="c_com_labsynch_cmpdreg_domain_Parent_comment" z="ctEa9oJ3TLmlL1rOKcysUjCiZZ8="/>
         <field:checkbox field="isMixture" id="c_com_labsynch_cmpdreg_domain_Parent_isMixture" z="9m7yLma1KO7HfSWx76zN3hDp7HU="/>
+        <field:input field="labelPrefix" id="c_com_labsynch_cmpdreg_domain_Parent_labelPrefix" z="PZRPjd0kG26Y379J85EBhiRVDJU="/>
     </form:update>
 </div>

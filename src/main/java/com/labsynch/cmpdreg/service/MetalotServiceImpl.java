@@ -1,10 +1,16 @@
 package com.labsynch.cmpdreg.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,9 +31,14 @@ import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.PreDef_CorpName;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.dto.AutoLabelDTO;
+import com.labsynch.cmpdreg.dto.CodeTableDTO;
 import com.labsynch.cmpdreg.dto.CorpNameDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
+import com.labsynch.cmpdreg.dto.CreatePlateRequestDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.dto.WellContentDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.DupeParentException;
@@ -38,6 +49,7 @@ import com.labsynch.cmpdreg.exceptions.SaltFormMolFormatException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.exceptions.UniqueNotebookException;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 
 @Service
@@ -281,22 +293,7 @@ public class MetalotServiceImpl implements MetalotService {
 				} else {
 					parent.setCdId(cdId);
 					if (parent.getCorpName() == null || parent.getCorpName().isEmpty() || parent.getCorpName().trim().equalsIgnoreCase("")){
-
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							//TODO: set parent number if required
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-						}
-
+						generateAndSetCorpName(parent);
 					} 
 					if (parent.getRegistrationDate() == null){
 						parent.setRegistrationDate(new Date());				
@@ -314,22 +311,8 @@ public class MetalotServiceImpl implements MetalotService {
 					} catch (Exception e){
 						logger.error("Caught an exception saving the parent: " + e);
 						//get a new corp name and try saving again
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							parent.persist();
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-							parent.persist();
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-							parent.persist();
-						}
+						generateAndSetCorpName(parent);
+						parent.persist();
 					}
 				} 
 			}
@@ -511,6 +494,10 @@ public class MetalotServiceImpl implements MetalotService {
 					logger.info("--------- Number of lotAliases to save: " + lotAliases.size());
 					lot = lotAliasService.updateLotAliases(lot, lotAliases);
 					if (logger.isDebugEnabled()) logger.debug("Lot aliases after save: "+ LotAlias.toJsonArray(lot.getLotAliases()));
+					
+					if (mainConfig.getServerSettings().isCompoundInventory()) {
+						createNewTube(lot);
+					}
 
 
 					lot.clear();
@@ -665,6 +652,42 @@ public class MetalotServiceImpl implements MetalotService {
 	}
 
 
+	private void createNewTube(Lot lot) throws MalformedURLException, IOException {
+		String baseurl = mainConfig.getServerConnection().getAcasURL();
+		String url = baseurl + "containers?";
+		Map<String, String> queryParams = new HashMap<String, String>();
+		queryParams.put("lsType","definition container");
+		queryParams.put("lsKind","tube");
+		queryParams.put("format","codetable");
+		String definitionContainerCodeTable = SimpleUtil.getFromExternalServer(url, queryParams, logger);
+		CodeTableDTO definitionContainer = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable).iterator().next();
+		String wellName = "A001";
+		Date recordedDate = new Date();
+		CreatePlateRequestDTO tubeRequest = new CreatePlateRequestDTO();
+		tubeRequest.setBarcode(lot.getBarcode());
+		if (tubeRequest.getBarcode() == null) tubeRequest.setBarcode(lot.getCorpName());
+		tubeRequest.setCreatedDate(recordedDate);
+		tubeRequest.setCreatedUser(lot.getRegisteredBy().getCode());
+		tubeRequest.setDefinition(definitionContainer.getCode());
+		tubeRequest.setRecordedBy(lot.getRegisteredBy().getCode());
+		Collection<WellContentDTO> wells = new ArrayList<WellContentDTO>();
+		WellContentDTO well = new WellContentDTO();
+		well.setWellName(wellName);
+		if (lot.getAmount() != null) well.setAmount(new BigDecimal(lot.getAmount()));
+		if (lot.getAmountUnits() != null) well.setAmountUnits(lot.getAmountUnits().getCode());
+		well.setBatchCode(lot.getCorpName());
+		well.setRecordedBy(lot.getRegisteredBy().getCode());
+		well.setRecordedDate(recordedDate);
+		wells.add(well);
+		tubeRequest.setWells(wells);
+		
+		url = baseurl + "containers/createTube";
+		String createTubeResponse = SimpleUtil.postRequestToExternalServer(url, tubeRequest.toJson(), logger);
+		logger.debug("Created tube: ");
+		logger.debug(createTubeResponse);
+		
+	}
+
 	private boolean checkUniqueNotebook(Lot lot) {
 		List<Lot> lots = Lot.findLotsByNotebookPageEquals(lot.getNotebookPage()).getResultList();
 		logger.debug("number of lots found by notebook entry" + lots.size());
@@ -703,6 +726,32 @@ public class MetalotServiceImpl implements MetalotService {
 		}
 		return metalot;
 
+	}
+	
+	private void generateAndSetCorpName(Parent parent) throws MalformedURLException, IOException {
+		if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
+			parent.setCorpName(CorpName.generateCorpLicensePlate());
+			//TODO: set parent number if required
+		} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
+			PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
+			parent.setCorpName(preDef_CorpName.getCorpName());
+			preDef_CorpName.setUsed(true);
+			preDef_CorpName.persist();
+			parent.setParentNumber(preDef_CorpName.getCorpNumber());							
+		} else if (corpParentFormat.equalsIgnoreCase("ACASLabelSequence")) {
+			LabelPrefixDTO labelPrefixDTO = parent.getLabelPrefix();
+			labelPrefixDTO.setNumberOfLabels(1L);
+			labelPrefixDTO.setLabelPrefix(labelPrefixDTO.getName());
+			String url = mainConfig.getServerConnection().getAcasURL()+"labelsequences/getLabels";
+			String jsonContent = labelPrefixDTO.toSafeJson();
+			String responseJson = SimpleUtil.postRequestToExternalServer(url, jsonContent, logger);
+			AutoLabelDTO autoLabel = AutoLabelDTO.fromJsonArrayToAutoes(responseJson).iterator().next();
+			parent.setCorpName(autoLabel.getAutoLabel());
+		} else {
+			CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
+			parent.setCorpName(corpName.getCorpName());
+			parent.setParentNumber(corpName.getCorpNumber());
+		}
 	}
 
 

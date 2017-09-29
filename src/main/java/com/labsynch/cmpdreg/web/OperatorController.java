@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.labsynch.cmpdreg.domain.Operator;
 
 @RooWebScaffold(path = "operators", formBackingObject = Operator.class)
@@ -21,7 +20,7 @@ import com.labsynch.cmpdreg.domain.Operator;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class OperatorController {
 

@@ -1,4 +1,6 @@
 package com.labsynch.cmpdreg.web;
+import javax.servlet.http.HttpServletRequest;
+
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +10,8 @@ import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,15 +19,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.StereoCategory;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
 
 @RooWebScaffold(path = "stereocategorys", formBackingObject = StereoCategory.class)
 @RequestMapping({ "/stereoCategorys", "/stereocategorys", "/stereoCategories" })
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class StereoCategoryController {
+
+
+	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
     @ResponseBody
@@ -52,7 +61,12 @@ public class StereoCategoryController {
         headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
         headers.add("Pragma", "no-cache"); //HTTP 1.0
         headers.setExpires(0); // Expire the cache
-        return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys()), headers, HttpStatus.OK);
+ 
+        if (mainConfig.getServerSettings().isOrderSelectLists()){
+            return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys("name","ASC")), headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>(StereoCategory.toJsonArray(StereoCategory.findAllStereoCategorys()), headers, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
@@ -126,4 +140,13 @@ public class StereoCategoryController {
         headers.add("Access-Control-Max-Age", "86400");
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
+    
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute StereoCategory stereoCategory) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, stereoCategory);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/stereocategorys/list.jspx";
+    }
+    
 }
