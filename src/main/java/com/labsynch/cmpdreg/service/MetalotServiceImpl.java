@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +81,7 @@ public class MetalotServiceImpl implements MetalotService {
 	private static boolean useStandardizer = Configuration.getConfigInfo().getServerSettings().isUseExternalStandardizerConfig();
 	private static String standardizerConfigFilePath = Configuration.getConfigInfo().getServerSettings().getStandardizerConfigFilePath();
 
-	@Transactional
+//	@Transactional
 	@Override
 	public MetalotReturn save(Metalot metaLot){
 
@@ -123,7 +126,19 @@ public class MetalotServiceImpl implements MetalotService {
 			saltFormError.setMessage("Bad molformat. Please fix the saltForm molfile: ");
 			logger.error(saltFormError.getMessage());
 			errors.add(saltFormError);
-		} catch (Exception e) {
+		} catch (NoResultException e) {
+			ErrorMessage error = new ErrorMessage();
+			error.setLevel("error");
+			error.setMessage("Bad molformat. Please fix the saltForm molfile: ");
+			logger.error(error.getMessage());
+			errors.add(error);
+		} catch (NonUniqueResultException e) {
+			ErrorMessage saltFormError = new ErrorMessage();
+			saltFormError.setLevel("error");
+			saltFormError.setMessage("Barcode already exists as a vial.");
+			logger.error(saltFormError.getMessage());
+			errors.add(saltFormError);
+		}catch (Exception e) {
 			ErrorMessage genericError = new ErrorMessage();
 			genericError.setLevel("error");
 			genericError.setMessage("Internal error encountered. Please contact your administrator.");
@@ -651,8 +666,8 @@ public class MetalotServiceImpl implements MetalotService {
 
 	}
 
-
-	private void createNewTube(Lot lot) throws MalformedURLException, IOException {
+	@Transactional
+	private void createNewTube(Lot lot) throws MalformedURLException, IOException, NoResultException, NonUniqueResultException {
 		String baseurl = mainConfig.getServerConnection().getAcasURL();
 		String url = baseurl + "containers?";
 		Map<String, String> queryParams = new HashMap<String, String>();
@@ -660,6 +675,11 @@ public class MetalotServiceImpl implements MetalotService {
 		queryParams.put("lsKind","tube");
 		queryParams.put("format","codetable");
 		String definitionContainerCodeTable = SimpleUtil.getFromExternalServer(url, queryParams, logger);
+		Collection<CodeTableDTO> definitionContainerResults = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable);
+		if (definitionContainerResults.size() == 0){
+			logger.error("Could not find definition container for tube");
+			throw new NoResultException("Could not find definition container for tube");
+		}
 		CodeTableDTO definitionContainer = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable).iterator().next();
 		String wellName = "A001";
 		Date recordedDate = new Date();
@@ -680,11 +700,20 @@ public class MetalotServiceImpl implements MetalotService {
 		well.setRecordedDate(recordedDate);
 		wells.add(well);
 		tubeRequest.setWells(wells);
-		
+				
 		url = baseurl + "containers/createTube";
-		String createTubeResponse = SimpleUtil.postRequestToExternalServer(url, tubeRequest.toJson(), logger);
-		logger.debug("Created tube: ");
-		logger.debug(createTubeResponse);
+		try {
+			String createTubeResponse = SimpleUtil.postRequestToExternalServer(url, tubeRequest.toJson(), logger);
+			logger.debug("Created tube: ");
+			logger.debug(createTubeResponse);
+		}catch (IOException e) {
+			if (e.getMessage().contains("400")) {
+				logger.error("Barcode "+tubeRequest.getBarcode()+" already exists!");
+				throw new NonUniqueResultException("Barcode "+tubeRequest.getBarcode()+" already exists!");
+			}else {
+				throw e;
+			}
+		}
 		
 	}
 

@@ -328,8 +328,8 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				try{
 					parent = validateParent(parent, mappings);
 				}catch (TransactionSystemException rollbackException) {
-					logger.error("Rollback exception", rollbackException.getCause());
-					Exception causeException = new Exception(rollbackException.getCause().getMessage(), rollbackException.getCause());
+					logger.error("Rollback exception", rollbackException.getApplicationException());
+					Exception causeException = new Exception(rollbackException.getApplicationException().getMessage(), rollbackException.getApplicationException());
 					logError(causeException, numRecordsRead, mol, mappings, errorMolExporter, errorMap, errorCSVOutStream);
 					continue;
 				}catch (Exception e){
