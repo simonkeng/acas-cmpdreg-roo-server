@@ -23,7 +23,7 @@ import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 
-@RequestMapping("/puritymeasuredbys")
+@RequestMapping({"/puritymeasuredbys","/purityMeasuredBys"})
 @Controller
 @GvNIXWebJQuery
 @GvNIXDatatables(ajax = false)

@@ -20,7 +20,7 @@ import com.labsynch.cmpdreg.domain.FileType;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-@RequestMapping("/filetypes")
+@RequestMapping({"/filetypes", "/fileTypes"})
 @Controller
 @GvNIXWebJQuery
 @GvNIXDatatables(ajax = false)
