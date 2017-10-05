@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
@@ -58,7 +59,7 @@ import chemaxon.util.ConnectionHandler;
 import chemaxon.util.HitColoringAndAlignmentOptions;
 import chemaxon.util.MolHandler;
 
-
+@Component
 public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	Logger logger = LoggerFactory.getLogger(ChemStructureServiceJChemImpl.class);
