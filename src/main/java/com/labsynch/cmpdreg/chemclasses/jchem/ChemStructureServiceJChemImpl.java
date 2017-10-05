@@ -16,6 +16,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Component;
@@ -76,16 +77,17 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		return shouldCloseConnection;
 	}
 
-	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private JdbcTemplate basicJdbcTemplate;
 
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate)
 	{
-		this.jdbcTemplate = jdbcTemplate;
+		this.basicJdbcTemplate = jdbcTemplate;
 	}
 
 	public JdbcTemplate getJdbcTemplate()
 	{
-		return jdbcTemplate;
+		return basicJdbcTemplate;
 	}
 
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
@@ -99,7 +101,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	public int getCount(String structureTable) {
 		String sql = "select count(*) from " + structureTable;
 		int count;
-		Integer countInt = jdbcTemplate.queryForObject(sql, Integer.class);
+		Integer countInt = basicJdbcTemplate.queryForObject(sql, Integer.class);
 		if (countInt == null){
 			count = 0;
 		} else {
@@ -207,7 +209,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		if (logger.isDebugEnabled()) logger.debug("saving structure to table " + structureTable);
 
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		CacheRegistrationUtil cru = null;
 
@@ -330,7 +332,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 		if (this.shouldCloseConnection) {
 
-			Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+			Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 			ConnectionHandler ch = new ConnectionHandler();	 
 			ch.setConnection(conn);
 
@@ -387,7 +389,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	public int[] searchMolStructures(String molfile, String structureTable, String plainTable, String searchType, 
 			Float simlarityPercent, int maxResults) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		try {
 			conn.setAutoCommit(true);
 		} catch (SQLException e1) {
@@ -625,7 +627,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Transactional
 	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, String plainTable, String searchType, Float simlarityPercent) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		try {
@@ -860,7 +862,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	public CmpdRegMolecule[] searchMols(String molfile, String structureTable, int[] inputCdIdHitList, 
 			String plainTable, String searchType, Float simlarityPercent, int maxResults) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		try {
@@ -1320,7 +1322,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Override
 	public boolean createJChemTable(String tableName, boolean tautomerDupe) {
 		boolean tableCreated = false;
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		try {
@@ -1353,7 +1355,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Transactional
 	public boolean dropJChemTable(String tableName) {
 		boolean tableDropped = false;
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		logger.info("is the connection active: " + ch.isConnected());
@@ -1391,7 +1393,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Override
 	@Transactional
 	public boolean deleteAllJChemTableRows(String tableName) {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		//		try {
@@ -1430,7 +1432,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public boolean deleteJChemTableRows(String tableName, int[] cdIds) {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		try {
@@ -1457,7 +1459,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public boolean createJchemPropertyTable() {
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		ch.setConnection(conn);
 		try {
@@ -1489,7 +1491,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	@Override
 	public boolean updateStructure(String molStructure, String structureTable, int cdId) {
 
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		CacheRegistrationUtil cru = null;
 
@@ -1597,7 +1599,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 	public boolean updateStructure(CmpdRegMolecule molecule, String structureTable, int cdId) {
 		CmpdRegMoleculeJChemImpl molWrapper = (CmpdRegMoleculeJChemImpl) molecule;
 		Molecule mol = molWrapper.molecule;
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		CacheRegistrationUtil cru = null;
 
@@ -1687,7 +1689,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 	@Override
 	public boolean deleteStructure(String structureTable, int cdId){
-		Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());	
+		Connection conn = DataSourceUtils.getConnection(basicJdbcTemplate.getDataSource());	
 		ConnectionHandler ch = new ConnectionHandler();
 		CacheRegistrationUtil cru = null;
 
