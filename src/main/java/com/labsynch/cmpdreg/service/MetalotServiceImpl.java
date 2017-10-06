@@ -695,6 +695,7 @@ public class MetalotServiceImpl implements MetalotService {
 		well.setWellName(wellName);
 		if (lot.getAmount() != null) well.setAmount(new BigDecimal(lot.getAmount()));
 		if (lot.getAmountUnits() != null) well.setAmountUnits(lot.getAmountUnits().getCode());
+		well.setPhysicalState("solid");
 		well.setBatchCode(lot.getCorpName());
 		well.setRecordedBy(lot.getRegisteredBy().getCode());
 		well.setRecordedDate(recordedDate);
