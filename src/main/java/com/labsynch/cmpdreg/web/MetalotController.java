@@ -39,7 +39,7 @@ import com.labsynch.cmpdreg.service.MetalotService;
 @RooWebScaffold(path = "metalots", formBackingObject = Metalot.class)
 @RequestMapping("/metalots")
 @Controller
-@Transactional
+//@Transactional
 public class MetalotController {
 		
 	@Autowired
@@ -50,7 +50,7 @@ public class MetalotController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(MetalotController.class);
 
-	
+	@Transactional
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
 	public ResponseEntity<String> showJson(@PathVariable("id") Long id) {
@@ -104,7 +104,7 @@ public class MetalotController {
 
 		logger.debug("here is the original json: " + json);
 
-
+		
 		MetalotReturn mr = metalotService.save(Metalot.fromJsonToMetalot(json));
 		boolean hasError = false;
 		for (ErrorMessage error : mr.getErrors()){
@@ -138,6 +138,7 @@ public class MetalotController {
 		return new ResponseEntity<String>(headers, HttpStatus.OK);
 	}
 
+	@Transactional
 	@RequestMapping(value = "/corpName/{corpName}", method = RequestMethod.GET, headers = "Accept=application/json, application/text, text/html")
 	@ResponseBody
 	public ResponseEntity<String> jsonFindMetalotsByCorpNameEquals(@PathVariable("corpName") String corpName) {
@@ -175,6 +176,7 @@ public class MetalotController {
 	}
 
 
+	@Transactional
 	@RequestMapping(params = "corpName", method = RequestMethod.GET, headers = "Accept=application/json, application/text, text/html")
 	@ResponseBody
 	public ResponseEntity<String> jsonFindMetalotsByCorpNameParam(@RequestParam("corpName") String corpName) {
@@ -213,12 +215,14 @@ public class MetalotController {
 	}
 
 
+	@Transactional
 	@RequestMapping(params = "find=ByCorpNameEquals", method = RequestMethod.GET)
 	public String findMetalotsByCorpNameEqualsForm(@RequestParam("corpName") String corpName, Model uiModel) {
 		uiModel.addAttribute("metalots", Parent.findParentsByCorpNameEquals(corpName).getResultList());
 		return "metalots/list";
 	}
 
+	@Transactional
 	@RequestMapping(params = "find=ByCorpNameLike", method = RequestMethod.GET)
 	public String findParentsByCorpNameLike(@RequestParam("corpName") String corpName, Model uiModel) {
 		uiModel.addAttribute("parents", Parent.findParentsByCorpNameLike(corpName).getResultList());
