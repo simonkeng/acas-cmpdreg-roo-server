@@ -131,7 +131,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 				}
 			}
 		} catch (Exception e){
-			logger.error(e.toString());
+			logger.error("Caught exception trying to read SDF properties",e);
 			errors.add(new ErrorMessage("error",e.getMessage()));
 			resultDTO.setErrors(errors);
 			return resultDTO;

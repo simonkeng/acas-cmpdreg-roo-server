@@ -33,6 +33,7 @@ public class CmpdRegSDFReaderJChemImpl implements CmpdRegSDFReader {
 	@Override
 	public CmpdRegMoleculeJChemImpl readNextMol() throws IOException{
 		Molecule mol = this.molImporter.read();
+		if (mol == null) return null;
 		CmpdRegMoleculeJChemImpl molecule = new CmpdRegMoleculeJChemImpl(mol);
 		return molecule;
 	}
