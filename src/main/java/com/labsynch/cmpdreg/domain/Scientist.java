@@ -3,6 +3,7 @@ package com.labsynch.cmpdreg.domain;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
@@ -60,6 +61,12 @@ public class Scientist {
         TypedQuery<Scientist> q = em.createQuery("SELECT DISTINCT o FROM Scientist AS o WHERE (LOWER(o.code) LIKE LOWER(:searchTerm) OR LOWER(o.name) LIKE LOWER(:searchTerm))", Scientist.class);
         q.setParameter("searchTerm", searchTerm);
         return q;
+    }
+	
+	public static List<Scientist> findScientistsWithLots() {
+        EntityManager em = Scientist.entityManager();
+        Query q = em.createNativeQuery("SELECT DISTINCT o.* FROM scientist o JOIN lot l ON l.chemist = o.id ", Scientist.class);
+        return  q.getResultList();
     }
 
 	

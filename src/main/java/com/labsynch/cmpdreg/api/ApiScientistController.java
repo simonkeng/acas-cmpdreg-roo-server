@@ -127,7 +127,7 @@ public class ApiScientistController {
 
 	@RequestMapping(headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> listJson() {
+	public ResponseEntity<String> listJson(@RequestParam(value = "withLots", required=false) Boolean withLots) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/text; charset=utf-8");
 		headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -135,6 +135,13 @@ public class ApiScientistController {
 		headers.add("Cache-Control", "no-store, no-cache, must-revalidate"); //HTTP 1.1
 		headers.add("Pragma", "no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
+		if (withLots != null && withLots) {
+			List<Scientist> foundScientists = Scientist.findScientistsWithLots();
+			if (mainConfig.getServerSettings().isOrderSelectLists()) {
+				foundScientists.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+			}
+			return new ResponseEntity<String>(Scientist.toJsonArray(foundScientists), headers, HttpStatus.OK);
+		}
 
 		if (mainConfig.getServerSettings().isOrderSelectLists()){
 			return new ResponseEntity<String>(Scientist.toJsonArray(Scientist.findAllScientists("name", "ASC")), headers, HttpStatus.OK);
