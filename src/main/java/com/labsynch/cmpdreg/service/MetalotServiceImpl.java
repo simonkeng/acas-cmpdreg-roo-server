@@ -129,7 +129,7 @@ public class MetalotServiceImpl implements MetalotService {
 		} catch (NoResultException e) {
 			ErrorMessage error = new ErrorMessage();
 			error.setLevel("error");
-			error.setMessage("Bad molformat. Please fix the saltForm molfile: ");
+			error.setMessage("Could not find a definition container to create vials with. Please see your system administrator.");
 			logger.error(error.getMessage());
 			errors.add(error);
 		} catch (NonUniqueResultException e) {
