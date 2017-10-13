@@ -66,6 +66,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFRequestDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFResponseDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.CodeTableDTO;
+import com.labsynch.cmpdreg.dto.ContainerBatchCodeDTO;
 import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
@@ -81,6 +82,8 @@ import com.labsynch.cmpdreg.exceptions.MissingPropertyException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.SimpleUtil;
+
+import flexjson.JSONSerializer;
 
 @Service
 public class BulkLoadServiceImpl implements BulkLoadService {
@@ -1361,8 +1364,20 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		numberOfLots = lots.size();
 		lots.clear();
 		if (logger.isDebugEnabled()) logger.debug(cmpdRegDependencies.toString());
+		//Check for all the vials in ACAS that reference lots being purged
+		Integer numberOfDependentContainers = null;
+		Collection<ContainerBatchCodeDTO> dependentContainers;
+		if (!acasDependencies.isEmpty()){
+			try{
+				dependentContainers = checkDependentACASContainers(acasDependencies.keySet());
+				numberOfDependentContainers = dependentContainers.size();
+			} catch (Exception e){
+				logger.error("Caught exception checking for ACAS dependencies.",e);
+			}
+		}
 		//Then check for data dependencies in ACAS.
 		if (!acasDependencies.isEmpty()){
+			//TODO: check dependencies differently if config to check by barcode is enabled
 			try{
 				acasDependencies = checkACASDependencies(acasDependencies);
 			} catch (Exception e){
@@ -1385,21 +1400,31 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		}
 		
 		if (!dependentFiles.isEmpty() || !dependentExperiments.isEmpty() || !dependentSingleRegLots.isEmpty()){
-			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments, dependentSingleRegLots);
+			String summary = generateErrorCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, dependentFiles, dependentExperiments, dependentSingleRegLots, numberOfDependentContainers);
 			return new PurgeFileDependencyCheckResponseDTO(summary, false);
 		}
 		else{
-			String summary = generateSuccessfulCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots);
+			String summary = generateSuccessfulCheckHtml(numberOfParents, numberOfSaltForms, numberOfLots, numberOfDependentContainers);
 			return new PurgeFileDependencyCheckResponseDTO(summary, true);
 		}
 	}
 
+	private Collection<ContainerBatchCodeDTO> checkDependentACASContainers(Set<String> batchCodes) throws MalformedURLException, IOException {
+		String url = mainConfig.getServerConnection().getAcasURL()+"containers/getContainerDTOsByBatchCodes";
+		String json = (new JSONSerializer()).serialize(batchCodes);
+		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
+		Collection<ContainerBatchCodeDTO> responseDTOs = ContainerBatchCodeDTO.fromJsonArrayToContainerBatchCoes(responseJson);
+		return responseDTOs;
+		
+	}
+
 	public String generateSuccessfulCheckHtml(int numberOfParents,
-			int numberOfSaltForms, int numberOfLots) {
+			int numberOfSaltForms, int numberOfLots, Integer numberOfDependentContainers) {
 		String summary = "<div>Are you sure you want to purge this file?</div>";
 		summary+="<div style=\"margin-top:15px;\">";
 		summary+="<div>"+numberOfParents+" parent compounds will be deleted."+"</div>";
 		summary+="<div>"+numberOfLots+" compound lots will be deleted."+"</div>";
+		if (numberOfDependentContainers != null && numberOfDependentContainers > 0) summary+="<div>"+numberOfDependentContainers+" containers referencing these lots will be deleted."+"</div>";
 		//		summary+="<div style=\"margin-top:15px;margin-bottom:10px;\">";
 		//		summary+=""+numErrorRecords+" errors have been written to: "+errorSDFName+"";
 		//		summary+="</div>";
@@ -1411,11 +1436,12 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public String generateErrorCheckHtml(int numberOfParents,
 			int numberOfSaltForms, int numberOfLots,
 			HashSet<String> dependentFiles,
-			HashSet<String> dependentExperiments, HashSet<String> dependentSingleRegLots) {
+			HashSet<String> dependentExperiments, HashSet<String> dependentSingleRegLots, Integer numberOfDependentContainers) {
 		String summary = "<div>File cannot be purged.</div>";
 		summary+="<div style=\"margin-top:15px;\">";
 		summary+="<div>"+numberOfParents+" parent compounds were referenced."+"</div>";
 		summary+="<div>"+numberOfLots+" compound lots were referenced."+"</div>";
+		if (numberOfDependentContainers != null && numberOfDependentContainers > 0) summary+="<div>"+numberOfDependentContainers+" containers reference these lots."+"</div>";
 		
 		boolean hasCmpdRegDependencies = !dependentFiles.isEmpty();
 		boolean hasAcasDependencies = !dependentExperiments.isEmpty();
@@ -1485,12 +1511,32 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 
 	@Override
 	@Transactional
-	public PurgeFileResponseDTO purgeFile(BulkLoadFile bulkLoadFile){
+	public PurgeFileResponseDTO purgeFile(BulkLoadFile bulkLoadFile) throws MalformedURLException, IOException{
 		int numLots = 0;
 		int numSaltForms = 0;
 		int numParents = 0;
+		int numContainers = 0;
 		String fileName = bulkLoadFile.getFileName();
 		Collection<Lot> lots = Lot.findLotsByBulkLoadFileEquals(bulkLoadFile).getResultList();
+		//TODO: purge all ACAS containers that reference these lots.
+		Set<String> lotCorpNames = new HashSet<String>();
+		for (Lot lot : lots) {
+			lotCorpNames.add(lot.getCorpName());
+		}
+		if(!lotCorpNames.isEmpty()) {
+			Collection<ContainerBatchCodeDTO> containerBatchCodeDTOs = checkDependentACASContainers(lotCorpNames);
+			numContainers = containerBatchCodeDTOs.size();
+			Collection<String> containerCodeNames = new ArrayList<String>();
+			for (ContainerBatchCodeDTO dto : containerBatchCodeDTOs) {
+				containerCodeNames.add(dto.getContainerCodeName());
+			}
+			if (!containerCodeNames.isEmpty()) {
+				String url = mainConfig.getServerConnection().getAcasURL()+"containers/deleteArrayByCodeNames";
+				String json = (new JSONSerializer()).serialize(containerCodeNames);
+				SimpleUtil.postRequestToExternalServer(url, json, logger);
+			}
+		}
+		
 		numLots = lots.size();
 		for (Lot lot : lots){
 			Collection<FileList> fileLists = lot.getFileLists();
@@ -1527,16 +1573,17 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		}
 		bulkLoadFile.remove();
 
-		String summary = generateSuccessfulPurgeHtml(fileName, numParents, numSaltForms, numLots);
+		String summary = generateSuccessfulPurgeHtml(fileName, numParents, numSaltForms, numLots, numContainers);
 		return new PurgeFileResponseDTO(summary, true, fileName);
 	}
 
 	public String generateSuccessfulPurgeHtml(String fileName, int numberOfParents,
-			int numberOfSaltForms, int numberOfLots) {
+			int numberOfSaltForms, int numberOfLots, int numContainers) {
 		String summary = "<div>Successfully purged file: "+fileName+"</div>";
 		summary+="<div style=\"margin-top:15px;\">";
 		summary+="<div>"+numberOfParents+" parent compounds were deleted."+"</div>";
 		summary+="<div>"+numberOfLots+" compound lots were deleted."+"</div>";
+		summary+="<div>"+numContainers+" containers were deleted."+"</div>";
 		//		summary+="<div style=\"margin-top:15px;margin-bottom:10px;\">";
 		//		summary+=""+numErrorRecords+" errors have been written to: "+errorSDFName+"";
 		//		summary+="</div>";

@@ -1,5 +1,7 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -314,7 +316,7 @@ public class BulkLoadServiceTest {
 	@Test
 	@Transactional
 	@Rollback(value=false)
-	public void registerAndPurge(){
+	public void registerAndPurge() throws MalformedURLException, IOException{
 		String fileName = "src/test/resources/single_compound_hcl_hbr_salt.sdf";
     	Collection<BulkLoadPropertyMappingDTO> mappings = new HashSet<BulkLoadPropertyMappingDTO>();
     	mappings.add(new BulkLoadPropertyMappingDTO("Parent Stereo Category", null, true, "unknown"));
