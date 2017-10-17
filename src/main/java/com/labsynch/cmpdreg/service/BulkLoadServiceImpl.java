@@ -1366,7 +1366,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		if (logger.isDebugEnabled()) logger.debug(cmpdRegDependencies.toString());
 		//Check for all the vials in ACAS that reference lots being purged
 		Integer numberOfDependentContainers = null;
-		Collection<ContainerBatchCodeDTO> dependentContainers;
+		Collection<ContainerBatchCodeDTO> dependentContainers = null;
 		if (!acasDependencies.isEmpty()){
 			try{
 				dependentContainers = checkDependentACASContainers(acasDependencies.keySet());
@@ -1377,11 +1377,28 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		}
 		//Then check for data dependencies in ACAS.
 		if (!acasDependencies.isEmpty()){
-			//TODO: check dependencies differently if config to check by barcode is enabled
-			try{
-				acasDependencies = checkACASDependencies(acasDependencies);
-			} catch (Exception e){
-				logger.error("Caught exception checking for ACAS dependencies.",e);
+			//check dependencies differently if config to check by barcode is enabled
+			if (mainConfig.getServerSettings().isCheckACASDependenciesByBarcode()) {
+				try {
+					Map<String, HashSet<String>> acasBarcodeDependencies = new HashMap<String, HashSet<String>>();
+					for (ContainerBatchCodeDTO container : dependentContainers) {
+						acasBarcodeDependencies.put(container.getContainerBarcode(), new HashSet<String>());
+					}
+					acasBarcodeDependencies = checkACASDependencies(acasBarcodeDependencies);
+					for (ContainerBatchCodeDTO containerBatchDTO : dependentContainers) {
+						HashSet<String> currentDependencies = acasDependencies.get(containerBatchDTO.getBatchCode());
+						currentDependencies.addAll(acasBarcodeDependencies.get(containerBatchDTO.getContainerBarcode()));
+						acasDependencies.put(containerBatchDTO.getBatchCode(), currentDependencies);
+					}
+				} catch (Exception e){
+					logger.error("Caught exception checking for ACAS dependencies by barcode.",e);
+				}
+			}else {
+				try{
+					acasDependencies = checkACASDependencies(acasDependencies);
+				} catch (Exception e){
+					logger.error("Caught exception checking for ACAS dependencies.",e);
+				}
 			}
 		}
 		if (logger.isDebugEnabled()) logger.debug(acasDependencies.toString());
@@ -1518,7 +1535,6 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		int numContainers = 0;
 		String fileName = bulkLoadFile.getFileName();
 		Collection<Lot> lots = Lot.findLotsByBulkLoadFileEquals(bulkLoadFile).getResultList();
-		//TODO: purge all ACAS containers that reference these lots.
 		Set<String> lotCorpNames = new HashSet<String>();
 		for (Lot lot : lots) {
 			lotCorpNames.add(lot.getCorpName());

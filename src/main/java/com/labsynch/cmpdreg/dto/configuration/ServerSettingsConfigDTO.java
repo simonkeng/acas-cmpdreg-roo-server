@@ -67,4 +67,6 @@ public class ServerSettingsConfigDTO {
     
     private boolean orderSelectLists;
     
+    private boolean checkACASDependenciesByBarcode;
+    
 }
