@@ -1039,8 +1039,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 			int[] hitList_cdId = searcher.getResults();
 
-
-			hitList = searcher.getHitsAsMolecules(hitList_cdId, hitColorOptions, fieldNames, fieldValues);
+			if (hitList_cdId.length > 0) {
+				hitList = searcher.getHitsAsMolecules(hitList_cdId, hitColorOptions, fieldNames, fieldValues);
+			}
 
 			for (int i = 0; i < hitList_cdId.length; i++) { 
 				System.out.println("ID: " + hitList_cdId[i]);
@@ -1053,7 +1054,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			}
 
 
-			if (hitList.length > 0){
+			if (hitList != null && hitList.length > 0){
 				if (logger.isDebugEnabled()) logger.debug("found a matching molecule!!!  " + hitList.length);
 			}
 
@@ -1083,8 +1084,10 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		}
 
 		List<CmpdRegMolecule> resultList = new ArrayList<CmpdRegMolecule>();
-		for (Molecule hit : hitList) {
-			resultList.add(new CmpdRegMoleculeJChemImpl(hit));
+		if (hitList != null){
+			for (Molecule hit : hitList) {
+				resultList.add(new CmpdRegMoleculeJChemImpl(hit));
+			}
 		}
 		CmpdRegMolecule[] resultArray = new CmpdRegMolecule[resultList.size()];
 		

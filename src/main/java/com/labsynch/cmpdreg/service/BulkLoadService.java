@@ -1,5 +1,8 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import org.springframework.stereotype.Service;
 
 import com.labsynch.cmpdreg.domain.BulkLoadFile;
@@ -23,7 +26,7 @@ public interface BulkLoadService {
 
 	public PurgeFileDependencyCheckResponseDTO checkPurgeFileDependencies(BulkLoadFile bulkLoadFile);
 
-	public PurgeFileResponseDTO purgeFile(BulkLoadFile bulkLoadFile);
+	public PurgeFileResponseDTO purgeFile(BulkLoadFile bulkLoadFile) throws MalformedURLException, IOException;
 
 
 }
