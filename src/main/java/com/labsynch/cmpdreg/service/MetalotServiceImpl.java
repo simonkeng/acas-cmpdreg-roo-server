@@ -777,6 +777,7 @@ public class MetalotServiceImpl implements MetalotService {
 			String responseJson = SimpleUtil.postRequestToExternalServer(url, jsonContent, logger);
 			AutoLabelDTO autoLabel = AutoLabelDTO.fromJsonArrayToAutoes(responseJson).iterator().next();
 			parent.setCorpName(autoLabel.getAutoLabel());
+			parent.setParentNumber(autoLabel.getLabelNumber());
 		} else {
 			CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
 			parent.setCorpName(corpName.getCorpName());

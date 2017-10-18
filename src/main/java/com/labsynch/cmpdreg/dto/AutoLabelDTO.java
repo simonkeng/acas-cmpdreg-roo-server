@@ -9,4 +9,5 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJson
 public class AutoLabelDTO {
 	private String autoLabel;
+	private Integer labelNumber;
 }
