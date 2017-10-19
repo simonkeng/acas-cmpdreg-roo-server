@@ -15,4 +15,12 @@ privileged aspect AutoLabelDTO_Roo_JavaBean {
         this.autoLabel = autoLabel;
     }
     
+    public Integer AutoLabelDTO.getLabelNumber() {
+        return this.labelNumber;
+    }
+    
+    public void AutoLabelDTO.setLabelNumber(Integer labelNumber) {
+        this.labelNumber = labelNumber;
+    }
+    
 }
