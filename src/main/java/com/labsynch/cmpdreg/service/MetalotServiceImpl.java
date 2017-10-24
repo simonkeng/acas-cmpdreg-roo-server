@@ -223,14 +223,16 @@ public class MetalotServiceImpl implements MetalotService {
 								if (parent.getStereoCategory().getCode().equalsIgnoreCase(queryParent.getStereoCategory().getCode())){
 									//parent structure and stereo category matches
 									//determine if Stereo Comment is different
-									if (parent.getStereoComment() == null && queryParent.getStereoComment() == null){
+									boolean parentHasStereoComment = (parent.getStereoComment() != null && parent.getStereoComment().length() > 0);
+									boolean queryParentHasStereoComment = (queryParent.getStereoComment() == null && queryParent.getStereoComment().length() > 0);
+									if (!parentHasStereoComment & !queryParentHasStereoComment){
 										//both stereo comments are null => dupes
 										dupeParentCount++;
 										dupeParent = true;
 										logger.error("dupe parent is: " + queryParent.getCorpName());
 										if (queryParent.getCorpName() != null) dupeParentNames = dupeParentNames.concat(queryParent.getCorpName()).concat(" ");
 										if (queryParent.getCommonName() != null) dupeParentNames = dupeParentNames.concat(queryParent.getCommonName().concat(" "));
-									}else if (parent.getStereoComment() == null || queryParent.getStereoComment() == null){
+									}else if (!parentHasStereoComment || !queryParentHasStereoComment){
 										//stereo comments are different - one is null and the other isn't - parents are not dupes
 									}else if (parent.getStereoComment().equalsIgnoreCase(queryParent.getStereoComment())){
 										//both stereo comments non-null
