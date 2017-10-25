@@ -687,7 +687,7 @@ public class MetalotServiceImpl implements MetalotService {
 		Date recordedDate = new Date();
 		CreatePlateRequestDTO tubeRequest = new CreatePlateRequestDTO();
 		tubeRequest.setBarcode(lot.getBarcode());
-		if (tubeRequest.getBarcode() == null) tubeRequest.setBarcode(lot.getCorpName());
+		if (tubeRequest.getBarcode() == null || tubeRequest.getBarcode().length() < 1) tubeRequest.setBarcode(lot.getCorpName());
 		tubeRequest.setCreatedDate(recordedDate);
 		tubeRequest.setCreatedUser(lot.getRegisteredBy().getCode());
 		tubeRequest.setDefinition(definitionContainer.getCode());
