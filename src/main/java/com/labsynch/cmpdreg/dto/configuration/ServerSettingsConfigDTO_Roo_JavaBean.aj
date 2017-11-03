@@ -239,12 +239,12 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.orderSelectLists = orderSelectLists;
     }
     
-    public boolean ServerSettingsConfigDTO.isCheckACASDependenciesByBarcode() {
-        return this.checkACASDependenciesByBarcode;
+    public boolean ServerSettingsConfigDTO.isCheckACASDependenciesByContainerCode() {
+        return this.checkACASDependenciesByContainerCode;
     }
     
-    public void ServerSettingsConfigDTO.setCheckACASDependenciesByBarcode(boolean checkACASDependenciesByBarcode) {
-        this.checkACASDependenciesByBarcode = checkACASDependenciesByBarcode;
+    public void ServerSettingsConfigDTO.setCheckACASDependenciesByContainerCode(boolean checkACASDependenciesByContainerCode) {
+        this.checkACASDependenciesByContainerCode = checkACASDependenciesByContainerCode;
     }
     
 }
