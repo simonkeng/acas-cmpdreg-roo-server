@@ -1378,16 +1378,16 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		//Then check for data dependencies in ACAS.
 		if (!acasDependencies.isEmpty()){
 			//check dependencies differently if config to check by barcode is enabled
-			if (mainConfig.getServerSettings().isCheckACASDependenciesByBarcode()) {
+			if (mainConfig.getServerSettings().isCheckACASDependenciesByContainerCode()) {
 				try {
-					Map<String, HashSet<String>> acasBarcodeDependencies = new HashMap<String, HashSet<String>>();
+					Map<String, HashSet<String>> acasContainerDependencies = new HashMap<String, HashSet<String>>();
 					for (ContainerBatchCodeDTO container : dependentContainers) {
-						acasBarcodeDependencies.put(container.getContainerBarcode(), new HashSet<String>());
+						acasContainerDependencies.put(container.getContainerCodeName(), new HashSet<String>());
 					}
-					acasBarcodeDependencies = checkACASDependencies(acasBarcodeDependencies);
+					acasContainerDependencies = checkACASDependencies(acasContainerDependencies);
 					for (ContainerBatchCodeDTO containerBatchDTO : dependentContainers) {
 						HashSet<String> currentDependencies = acasDependencies.get(containerBatchDTO.getBatchCode());
-						currentDependencies.addAll(acasBarcodeDependencies.get(containerBatchDTO.getContainerBarcode()));
+						currentDependencies.addAll(acasContainerDependencies.get(containerBatchDTO.getContainerCodeName()));
 						acasDependencies.put(containerBatchDTO.getBatchCode(), currentDependencies);
 					}
 				} catch (Exception e){
