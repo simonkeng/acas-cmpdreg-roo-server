@@ -69,7 +69,7 @@
     	"initalDBLoad": false,
     	"projectRestrictions": false,
     	"compoundInventory": true,
-    	"checkACASDependenciesByBarcode": false,
+    	"checkACASDependenciesByContainerCode": false,
     	"jchemVersion": "16.4.25.0",
     	"databaseType": "postgres",
     	"standardizeStructure": false,

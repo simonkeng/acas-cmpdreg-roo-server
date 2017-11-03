@@ -1387,7 +1387,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					acasContainerDependencies = checkACASDependencies(acasContainerDependencies);
 					for (ContainerBatchCodeDTO containerBatchDTO : dependentContainers) {
 						HashSet<String> currentDependencies = acasDependencies.get(containerBatchDTO.getBatchCode());
-						currentDependencies.addAll(acasContainerDependencies.get(containerBatchDTO.getContainerBarcode()));
+						currentDependencies.addAll(acasContainerDependencies.get(containerBatchDTO.getContainerCodeName()));
 						acasDependencies.put(containerBatchDTO.getBatchCode(), currentDependencies);
 					}
 				} catch (Exception e){
