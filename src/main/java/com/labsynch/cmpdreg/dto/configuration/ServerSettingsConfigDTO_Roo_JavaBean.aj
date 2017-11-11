@@ -175,6 +175,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.compoundInventory = compoundInventory;
     }
     
+    public boolean ServerSettingsConfigDTO.isDisableTubeCreationIfNoBarcode() {
+        return this.disableTubeCreationIfNoBarcode;
+    }
+    
+    public void ServerSettingsConfigDTO.setDisableTubeCreationIfNoBarcode(boolean disableTubeCreationIfNoBarcode) {
+        this.disableTubeCreationIfNoBarcode = disableTubeCreationIfNoBarcode;
+    }
+    
     public String ServerSettingsConfigDTO.getJchemVersion() {
         return this.jchemVersion;
     }

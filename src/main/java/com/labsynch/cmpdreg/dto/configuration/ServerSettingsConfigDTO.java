@@ -50,6 +50,8 @@ public class ServerSettingsConfigDTO {
     private boolean projectRestrictions;
     
     private boolean compoundInventory;
+    
+    private boolean disableTubeCreationIfNoBarcode;
 
     private String jchemVersion;
     
