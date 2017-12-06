@@ -50,6 +50,8 @@ public class ServerSettingsConfigDTO {
     private boolean projectRestrictions;
     
     private boolean compoundInventory;
+    
+    private boolean disableTubeCreationIfNoBarcode;
 
     private String jchemVersion;
     
@@ -67,6 +69,6 @@ public class ServerSettingsConfigDTO {
     
     private boolean orderSelectLists;
     
-    private boolean checkACASDependenciesByBarcode;
+    private boolean checkACASDependenciesByContainerCode;
     
 }

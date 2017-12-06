@@ -222,6 +222,17 @@ public class Lot {
     
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "lot", fetch = FetchType.LAZY)
 	private Set<LotAlias> lotAliases = new HashSet<LotAlias>();
+   
+    @Transient
+    private transient String storageLocation;
+    
+    public String getStorageLocation() {
+    		return this.storageLocation;
+    }
+    
+    public void setStorageLocation(String storageLocation) {
+    		this.storageLocation = storageLocation;
+    }
     
     public long getBuid() {
         return this.buid;

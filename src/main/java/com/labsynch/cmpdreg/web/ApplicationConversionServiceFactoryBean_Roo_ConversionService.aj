@@ -117,7 +117,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<Lot, String> ApplicationConversionServiceFactoryBean.getLotToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<com.labsynch.cmpdreg.domain.Lot, java.lang.String>() {
             public String convert(Lot lot) {
-                return new StringBuilder().append(lot.getBuid()).append(' ').append(lot.getAsDrawnStruct()).append(' ').append(lot.getLotAsDrawnCdId()).append(' ').append(lot.getCorpName()).toString();
+                return new StringBuilder().append(lot.getStorageLocation()).append(' ').append(lot.getBuid()).append(' ').append(lot.getAsDrawnStruct()).append(' ').append(lot.getLotAsDrawnCdId()).toString();
             }
         };
     }

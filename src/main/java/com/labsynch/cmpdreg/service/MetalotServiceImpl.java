@@ -41,6 +41,7 @@ import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.CreatePlateRequestDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.dto.SetTubeLocationDTO;
 import com.labsynch.cmpdreg.dto.WellContentDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
@@ -513,7 +514,10 @@ public class MetalotServiceImpl implements MetalotService {
 					if (logger.isDebugEnabled()) logger.debug("Lot aliases after save: "+ LotAlias.toJsonArray(lot.getLotAliases()));
 					
 					if (mainConfig.getServerSettings().isCompoundInventory()) {
-						createNewTube(lot);
+						boolean hasBarcode = (lot.getBarcode() != null && lot.getBarcode().length() > 0);
+						if (hasBarcode || !mainConfig.getServerSettings().isDisableTubeCreationIfNoBarcode() ) {
+							createNewTube(lot);
+						}
 					}
 
 
@@ -687,7 +691,7 @@ public class MetalotServiceImpl implements MetalotService {
 		Date recordedDate = new Date();
 		CreatePlateRequestDTO tubeRequest = new CreatePlateRequestDTO();
 		tubeRequest.setBarcode(lot.getBarcode());
-		if (tubeRequest.getBarcode() == null) tubeRequest.setBarcode(lot.getCorpName());
+		if (tubeRequest.getBarcode() == null || tubeRequest.getBarcode().length() < 1) tubeRequest.setBarcode(lot.getCorpName());
 		tubeRequest.setCreatedDate(recordedDate);
 		tubeRequest.setCreatedUser(lot.getRegisteredBy().getCode());
 		tubeRequest.setDefinition(definitionContainer.getCode());
@@ -718,6 +722,32 @@ public class MetalotServiceImpl implements MetalotService {
 			}
 		}
 		
+		if(lot.getStorageLocation() != null && lot.getStorageLocation().length() > 0) {
+			SetTubeLocationDTO moveDTO = new SetTubeLocationDTO();
+			moveDTO.setBarcode(tubeRequest.getBarcode());
+			moveDTO.setLocationBreadCrumb(lot.getStorageLocation());
+			moveDTO.setUser(lot.getRegisteredBy().getCode());
+			moveDTO.setDate(recordedDate);
+			try {
+				String rootLabel = lot.getStorageLocation().split(">")[0];
+				moveDTO.setRootLabel(rootLabel);
+			} catch (Exception e) {
+				//do nothing
+			}
+			Collection<SetTubeLocationDTO> moveDTOs = new ArrayList<SetTubeLocationDTO>();
+			moveDTOs.add(moveDTO);
+			String acasAppUrl = mainConfig.getServerConnection().getAcasAppURL();
+			url = acasAppUrl + "setLocationByBreadCrumb";
+			try {
+				String setLocationResponse = SimpleUtil.postRequestToExternalServer(url, SetTubeLocationDTO.toJsonArray(moveDTOs), logger);
+				logger.debug("Successfully set location: ");
+				logger.debug(setLocationResponse);
+			}catch (IOException e) {
+				logger.error("Hit error trying to set location of new tube",e);
+				logger.error(e.getMessage());
+				throw e;
+			}
+		}
 	}
 
 	private boolean checkUniqueNotebook(Lot lot) {

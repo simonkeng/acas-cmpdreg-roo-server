@@ -791,6 +791,9 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		lot.setObservedMassTwo(getNumericValueFromMappings(mol, "Lot Observed Mass #2", mappings));
 		lot.setTareWeight(getNumericValueFromMappings(mol, "Lot Tare Weight", mappings));
 		lot.setTotalAmountStored(getNumericValueFromMappings(mol, "Lot Total Amount Stored", mappings));
+		
+		//special field for Lot Inventory - not saved in Lot table
+		lot.setStorageLocation(getStringValueFromMappings(mol, "Lot Storage Location", mappings));
 
 		//conversions
 		lot.setIsVirtual(Boolean.valueOf(getStringValueFromMappings(mol, "Lot Is Virtual", mappings)));
@@ -1378,16 +1381,16 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		//Then check for data dependencies in ACAS.
 		if (!acasDependencies.isEmpty()){
 			//check dependencies differently if config to check by barcode is enabled
-			if (mainConfig.getServerSettings().isCheckACASDependenciesByBarcode()) {
+			if (mainConfig.getServerSettings().isCheckACASDependenciesByContainerCode()) {
 				try {
-					Map<String, HashSet<String>> acasBarcodeDependencies = new HashMap<String, HashSet<String>>();
+					Map<String, HashSet<String>> acasContainerDependencies = new HashMap<String, HashSet<String>>();
 					for (ContainerBatchCodeDTO container : dependentContainers) {
-						acasBarcodeDependencies.put(container.getContainerBarcode(), new HashSet<String>());
+						acasContainerDependencies.put(container.getContainerCodeName(), new HashSet<String>());
 					}
-					acasBarcodeDependencies = checkACASDependencies(acasBarcodeDependencies);
+					acasContainerDependencies = checkACASDependencies(acasContainerDependencies);
 					for (ContainerBatchCodeDTO containerBatchDTO : dependentContainers) {
 						HashSet<String> currentDependencies = acasDependencies.get(containerBatchDTO.getBatchCode());
-						currentDependencies.addAll(acasBarcodeDependencies.get(containerBatchDTO.getContainerBarcode()));
+						currentDependencies.addAll(acasContainerDependencies.get(containerBatchDTO.getContainerCodeName()));
 						acasDependencies.put(containerBatchDTO.getBatchCode(), currentDependencies);
 					}
 				} catch (Exception e){

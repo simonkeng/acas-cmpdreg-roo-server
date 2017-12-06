@@ -57,8 +57,6 @@ public class RegSearchServiceImpl implements RegSearchService {
 			System.out.println("search with structure: " + molStructure);
 			
 			CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
-			if (logger.isDebugEnabled()) System.out.println("search with structure: " + mol.getSmiles());
-
 
 			String format = "png";
 			String wSize = "600";
