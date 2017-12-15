@@ -16,4 +16,7 @@
 <definition extends="default" name="scientists/findScientistsByCodeEquals">
         <put-attribute name="body" value="/WEB-INF/views/scientists/findScientistsByCodeEquals.jspx"/>
     </definition>
+<definition extends="default" name="scientists/findScientistsByCodeLike">
+        <put-attribute name="body" value="/WEB-INF/views/scientists/findScientistsByCodeLike.jspx"/>
+    </definition>
 </tiles-definitions>

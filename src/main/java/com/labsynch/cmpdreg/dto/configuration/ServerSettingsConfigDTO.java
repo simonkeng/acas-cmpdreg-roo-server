@@ -48,6 +48,10 @@ public class ServerSettingsConfigDTO {
     private boolean initalDBLoad;
     
     private boolean projectRestrictions;
+    
+    private boolean compoundInventory;
+    
+    private boolean disableTubeCreationIfNoBarcode;
 
     private String jchemVersion;
     
@@ -64,5 +68,7 @@ public class ServerSettingsConfigDTO {
     private boolean newUserIsChemist;
     
     private boolean orderSelectLists;
+    
+    private boolean checkACASDependenciesByContainerCode;
     
 }

@@ -1,4 +1,6 @@
 package com.labsynch.cmpdreg.web;
+import javax.servlet.http.HttpServletRequest;
+
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
@@ -8,6 +10,8 @@ import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.StereoCategory;
-import com.labsynch.cmpdreg.domain.Vendor;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
@@ -24,9 +27,10 @@ import com.labsynch.cmpdreg.utils.Configuration;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class StereoCategoryController {
+
 
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
@@ -136,4 +140,13 @@ public class StereoCategoryController {
         headers.add("Access-Control-Max-Age", "86400");
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
+    
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute StereoCategory stereoCategory) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, stereoCategory);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/stereocategorys/list.jspx";
+    }
+    
 }

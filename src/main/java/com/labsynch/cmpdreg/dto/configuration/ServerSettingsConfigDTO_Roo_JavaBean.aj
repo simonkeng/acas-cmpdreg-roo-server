@@ -167,6 +167,22 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.projectRestrictions = projectRestrictions;
     }
     
+    public boolean ServerSettingsConfigDTO.isCompoundInventory() {
+        return this.compoundInventory;
+    }
+    
+    public void ServerSettingsConfigDTO.setCompoundInventory(boolean compoundInventory) {
+        this.compoundInventory = compoundInventory;
+    }
+    
+    public boolean ServerSettingsConfigDTO.isDisableTubeCreationIfNoBarcode() {
+        return this.disableTubeCreationIfNoBarcode;
+    }
+    
+    public void ServerSettingsConfigDTO.setDisableTubeCreationIfNoBarcode(boolean disableTubeCreationIfNoBarcode) {
+        this.disableTubeCreationIfNoBarcode = disableTubeCreationIfNoBarcode;
+    }
+    
     public String ServerSettingsConfigDTO.getJchemVersion() {
         return this.jchemVersion;
     }
@@ -229,6 +245,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
     
     public void ServerSettingsConfigDTO.setOrderSelectLists(boolean orderSelectLists) {
         this.orderSelectLists = orderSelectLists;
+    }
+    
+    public boolean ServerSettingsConfigDTO.isCheckACASDependenciesByContainerCode() {
+        return this.checkACASDependenciesByContainerCode;
+    }
+    
+    public void ServerSettingsConfigDTO.setCheckACASDependenciesByContainerCode(boolean checkACASDependenciesByContainerCode) {
+        this.checkACASDependenciesByContainerCode = checkACASDependenciesByContainerCode;
     }
     
 }

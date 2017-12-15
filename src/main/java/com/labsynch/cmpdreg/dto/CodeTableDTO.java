@@ -18,6 +18,10 @@ public class CodeTableDTO {
 	private String name;
 
 	private String comments;
+	
+	private Boolean ignored;
+	
+	private Long id;
 
 	public static void sortCodeTableByName(ArrayList<CodeTableDTO> codeTableArray){
 		Collections.sort(codeTableArray, new Comparator<CodeTableDTO>() {

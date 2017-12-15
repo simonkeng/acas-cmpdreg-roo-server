@@ -23,7 +23,6 @@
 
 	<beans:bean id="postSuccessAuthHandler"
 		class="com.labsynch.cmpdreg.utils.PostSuccessfulAuthenticationHandler">
-		<beans:property name="defaultTargetUrl" value="/"></beans:property>
 	</beans:bean>
 
 	<!-- Security event logging -->

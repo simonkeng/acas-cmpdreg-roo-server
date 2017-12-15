@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_com_labsynch_cmpdreg_service_SaltLoader" object="${saltloader}" path="/saltloaders" z="jEF/CiO16cVZ2S3OTqB7Sto1lQE=">
+        <field:display field="name" id="s_com_labsynch_cmpdreg_service_SaltLoader_name" object="${saltloader}" z="mchRLn1kbcFFsiE14b/1A+atuRo="/>
+        <field:display field="description" id="s_com_labsynch_cmpdreg_service_SaltLoader_description" object="${saltloader}" z="oZi9R28Cg/D3BWgPxIgJGU1DKJA="/>
+        <field:display field="numberOfSalts" id="s_com_labsynch_cmpdreg_service_SaltLoader_numberOfSalts" object="${saltloader}" z="Ru1GCBOG+p33scT88+rkuS0RL40="/>
+        <field:display field="size" id="s_com_labsynch_cmpdreg_service_SaltLoader_size" object="${saltloader}" z="J0/pvSXsMLg8aNAXILdlwDcw4lc="/>
+        <field:display field="uploaded" id="s_com_labsynch_cmpdreg_service_SaltLoader_uploaded" object="${saltloader}" z="PBhPj+pIjsRWwCBplnskNnCvKKw="/>
+        <field:display field="file" id="s_com_labsynch_cmpdreg_service_SaltLoader_file" object="${saltloader}" z="LLen13BGRWsP61ILnf0OS3QulDs="/>
+        <field:display field="fileName" id="s_com_labsynch_cmpdreg_service_SaltLoader_fileName" object="${saltloader}" z="l4r/F0OhephDyCs29h/gi+fybow="/>
+        <field:display date="true" dateTimePattern="${saltLoader_loadeddate_date_format}" field="loadedDate" id="s_com_labsynch_cmpdreg_service_SaltLoader_loadedDate" object="${saltloader}" z="88+FxdxFuNt/FhT/nHIO1v4VRsc="/>
+    </page:show>
+</div>

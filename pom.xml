@@ -30,12 +30,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 	<groupId>com.labsynch.cmpdreg</groupId>
 	<artifactId>cmpdreg</artifactId>
 	<packaging>war</packaging>
-	<version>1.11-BUILD-SNAPSHOT</version>
+	<version>1.13-BUILD-SNAPSHOT</version>
 	<name>cmpdreg</name>
 	<description>ACAS Compound Registration Java persistence layer</description>
 	<properties>
-		<aspectj.version>1.8.1</aspectj.version>
-		<java.version>1.7</java.version>
+		<aspectj.version>1.8.10</aspectj.version>
+		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<roo.version>1.3.1.RELEASE</roo.version>
 		<slf4j.version>1.7.5</slf4j.version>
@@ -44,6 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 		<querydsl.version>3.4.3</querydsl.version>
 		<spring-security.version>3.1.0.RELEASE</spring-security.version>
 		<jchem.version>16.4.25.0</jchem.version>
+		<indigo.version>1.2.3.r0</indigo.version>
 		<git-sha-1>${buildNumber}</git-sha-1>
 		<BuildScmBranch>${scmBranch}</BuildScmBranch>
 	</properties>
@@ -110,6 +111,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<url>http://spring-roo-repository.springsource.org/release</url>
 		</pluginRepository>
 	</pluginRepositories>
+	<!-- Maven Build profile controls whether to use JChem or Indigo -->
+	<profiles>
+		<profile>
+			<id>default</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.chemaxon</groupId>
+					<artifactId>jchem</artifactId>
+					<version>${jchem.version}</version>
+				</dependency>
+			</dependencies>	
+			<properties>
+				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/indigo/**</exclude.chemistry.package>
+				<exclude.chemistry.migrations>com/labsynch/cmpdreg/db/migration/*/indigo/**</exclude.chemistry.migrations>
+			</properties>
+		</profile>
+		<profile>
+			<id>indigo</id>
+			<dependencies>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo-renderer</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.epam.indigo</groupId>
+					<artifactId>indigo-inchi</artifactId>
+					<version>${indigo.version}</version>
+				</dependency>
+			</dependencies>	
+			<properties>
+				<exclude.chemistry.package>com/labsynch/cmpdreg/chemclasses/jchem/**</exclude.chemistry.package>
+				<exclude.chemistry.migrations>com/labsynch/cmpdreg/db/migration/*/jchem/**</exclude.chemistry.migrations>
+			</properties>
+		</profile>
+	</profiles>
 	<dependencies>
 		<!-- General dependencies for standard applications -->
 		<dependency>
@@ -237,11 +279,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<version>1.7</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.chemaxon</groupId>
-			<artifactId>jchem</artifactId>
-			<version>${jchem.version}</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.trove4j/trove4j -->
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>
@@ -425,11 +462,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<version>1.4.1.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>org.postgis</groupId>
-			<artifactId>postgis-jdbc</artifactId>
-			<version>1.3.3</version>
-		</dependency>
-		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
 			<artifactId>querydsl-apt</artifactId>
 			<version>${querydsl.version}</version>
@@ -542,17 +574,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.6.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<useIncrementalCompilation>false</useIncrementalCompilation>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<excludes>
+						<exclude>${exclude.chemistry.package}</exclude>
+						<exclude>${exclude.chemistry.migrations}</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.4</version>
+				<version>1.9</version>
 				<dependencies>
 					<!-- NB: You must use Maven 2.0.9 or above or these are ignored (see 
 						MNG-2972) -->
@@ -584,6 +621,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 							<artifactId>spring-aspects</artifactId>
 						</aspectLibrary>
 					</aspectLibraries>
+					<Xlint>ignore</Xlint>
+					<complianceLevel>${java.version}</complianceLevel>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 					<!-- Aspects in src/main/java and src/main/aspects are added as default 
@@ -591,6 +630,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 						as default in the test-compile goal. Aspects in src/main/java are added in 
 						the test-compile goal if weaveWithAspectsInMainSourceFolder is set to true -->
 					<weaveWithAspectsInMainSourceFolder>false</weaveWithAspectsInMainSourceFolder>
+					<excludes>
+								<exclude>${exclude.chemistry.package}</exclude>
+								<exclude>${exclude.chemistry.migrations}</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -669,6 +712,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
+				<configuration>
+					<excludes>
+								<exclude>${exclude.chemistry.package}</exclude>
+								<exclude>${exclude.chemistry.migrations}</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

@@ -13,4 +13,7 @@
 <definition extends="default" name="filetypes/update">
         <put-attribute name="body" value="/WEB-INF/views/filetypes/update.jspx"/>
     </definition>
+<definition extends="default" name="filetypes/findFileTypesByCodeEquals">
+        <put-attribute name="body" value="/WEB-INF/views/filetypes/findFileTypesByCodeEquals.jspx"/>
+    </definition>
 </tiles-definitions>

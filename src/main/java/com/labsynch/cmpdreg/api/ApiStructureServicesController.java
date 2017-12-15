@@ -26,6 +26,7 @@ import com.labsynch.cmpdreg.dto.MolConvertInputDTO;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.MolInputDTO;
 import com.labsynch.cmpdreg.dto.ParentAliasDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.SearchFormService;
 
@@ -52,6 +53,9 @@ public class ApiStructureServicesController {
 		} catch (IOException e) {
 			logger.error(e.toString());
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("Cannot read input molfile: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
 		}
 		output.setStructure(standardizedMol);
 		output.setFormat("mol");
@@ -72,6 +76,9 @@ public class ApiStructureServicesController {
 		} catch (IOException e) {
 			logger.error(e.toString());
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("Cannot read input molfile: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<String>(output.toJson(), headers, HttpStatus.OK);
@@ -90,6 +97,9 @@ public class ApiStructureServicesController {
 		} catch (IOException e) {
 			logger.error(e.toString());
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("Cannot read input molfile: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<String>(output.getStructure(), headers, HttpStatus.OK);
 	}
@@ -107,6 +117,9 @@ public class ApiStructureServicesController {
 		} catch (IOException e) {
 			logger.error(e.toString());
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("Cannot read input molfile: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<String>(output, headers, HttpStatus.OK);
 	}
@@ -124,6 +137,9 @@ public class ApiStructureServicesController {
 		} catch (IOException e) {
 			logger.error(e.toString());
 			return new ResponseEntity<String>("IO ERROR", headers, HttpStatus.BAD_REQUEST);
+		} catch (CmpdRegMolFormatException e) {
+			logger.error(e.toString());
+			return new ResponseEntity<String>("Cannot read input molfile: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<String>(output, headers, HttpStatus.OK);
 	}

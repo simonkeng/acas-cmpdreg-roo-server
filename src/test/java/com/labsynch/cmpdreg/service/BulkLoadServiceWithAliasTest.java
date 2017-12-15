@@ -1,5 +1,7 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -53,7 +55,7 @@ public class BulkLoadServiceWithAliasTest {
 	@Autowired
 	private ChemStructureService chemStructServ;
 	
-	private void purgeAllFiles(){
+	private void purgeAllFiles() throws MalformedURLException, IOException{
     	logger.info("Now attempting to purge all files");
     	List<BulkLoadFile> filesToPurge = BulkLoadFile.findAllBulkLoadFiles();
     	for (BulkLoadFile bulkLoadFile : filesToPurge){
@@ -79,7 +81,7 @@ public class BulkLoadServiceWithAliasTest {
 	}
 
 	@Test
-	public void deleteCmpds(){
+	public void deleteCmpds() throws MalformedURLException, IOException{
 		if (isUnitTestDB){
 			purgeAllFiles();
 			deleteAllCmpds();			

@@ -24,5 +24,6 @@
         <field:display field="compoundType" id="s_com_labsynch_cmpdreg_domain_Parent_compoundType" object="${parent}" z="DmiOlOkYcRtbkYPd3JtZUzu2cNE="/>
         <field:display field="comment" id="s_com_labsynch_cmpdreg_domain_Parent_comment" object="${parent}" z="nwqA40juz2VN8h+qGZ+WuP/13LI="/>
         <field:display field="isMixture" id="s_com_labsynch_cmpdreg_domain_Parent_isMixture" object="${parent}" z="a7l4JQTADCTFpPRvt5u0trq1TFI="/>
+        <field:display field="labelPrefix" id="s_com_labsynch_cmpdreg_domain_Parent_labelPrefix" object="${parent}" z="Lmfngc66K/Z6R4iUWskt4MXbK9I="/>
     </page:show>
 </div>

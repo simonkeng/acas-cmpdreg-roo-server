@@ -13,13 +13,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.marvin.io.MolExportException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriter;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -32,6 +31,12 @@ public class ExportSDFServiceTest {
 
 	@Autowired
 	private StructureImageService structureImageService;
+	
+	@Autowired
+	private CmpdRegSDFWriterFactory sdfWriterFactory;
+	
+	@Autowired
+	private CmpdRegMoleculeFactory moleculeFactory;
 
 	//@Test
 	public void exportSDFileTest(){
@@ -49,15 +54,11 @@ public class ExportSDFServiceTest {
 		logger.debug(testJSON);
 
 		Collection<SearchCompoundReturnDTO> compounds = SearchCompoundReturnDTO.fromJsonArrayToSearchCompoes(testJSON);
-
+		String fileName = "exportSDFTest.sdf";
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		MolHandler mh = null;
-		MolExporter molExporter = null;
+		CmpdRegSDFWriter molExporter = null;
 		try {
-			molExporter = new MolExporter(outputStream, "sdf");
-		} catch (MolExportException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			molExporter = sdfWriterFactory.getCmpdRegSDFWriter(fileName);
 		} catch (IllegalArgumentException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -66,20 +67,18 @@ public class ExportSDFServiceTest {
 			e1.printStackTrace();
 		}
 
-
 		for (SearchCompoundReturnDTO compound : compounds){
 			logger.debug("compound: " + compound.getCorpName());
 			try {
-				mh = new MolHandler(compound.getMolStructure());
-				Molecule mol = mh.getMolecule();
+				CmpdRegMolecule mol = moleculeFactory.getCmpdRegMolecule(compound.getMolStructure());
 				logger.debug("here is the imported mol: " + MoleculeUtil.exportMolAsText(mol, "smiles"));
 				mol.setProperty("corpName", compound.getCorpName());
 				mol.setProperty("stereoCategoryName", compound.getStereoCategoryName());
 				mol.setProperty("stereoComment", compound.getStereoComment());
 				mol.setProperty("lotIDs", compound.getLotIDs().toString());
-				molExporter.write(mol);
+				molExporter.writeMol(mol);
 
-			} catch (MolFormatException e) {
+			} catch (CmpdRegMolFormatException e) {
 				System.out.println("bad structure error: " + compound.getMolStructure());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -90,9 +89,6 @@ public class ExportSDFServiceTest {
 		try {
 			molExporter.close();
 			outputStream.close();
-		} catch (MolExportException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

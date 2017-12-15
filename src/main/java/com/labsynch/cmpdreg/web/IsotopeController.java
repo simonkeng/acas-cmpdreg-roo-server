@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.gvnix.web.datatables.query.SearchResults;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
-
 import com.github.dandelion.datatables.core.ajax.DataSet;
 import com.github.dandelion.datatables.core.ajax.DatatablesCriterias;
 import com.github.dandelion.datatables.core.ajax.DatatablesResponse;
@@ -48,7 +45,7 @@ import com.mysema.query.types.path.PathBuilder;
 @Transactional
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
 @RooWebFinder
 public class IsotopeController {
 
@@ -272,42 +269,34 @@ public class IsotopeController {
         headers.setExpires(0); // Expire the cache
         return new ResponseEntity<String>(headers, HttpStatus.OK);
     }
-    
+
     @RequestMapping(headers = "Accept=application/json", value = "/datatables/ajax", params = "ajax_find=ByAbbrevEqualsAndNameEquals", produces = "application/json")
     @ResponseBody
     public DatatablesResponse<Map<String, String>> findIsotopesByAbbrevEqualsAndNameEquals(@DatatablesParams DatatablesCriterias criterias, @RequestParam("abbrev") String abbrev, @RequestParam("name") String name) {
         BooleanBuilder baseSearch = new BooleanBuilder();
-        
         // Base Search. Using BooleanBuilder, a cascading builder for
         // Predicate expressions
         PathBuilder<Isotope> entity = new PathBuilder<Isotope>(Isotope.class, "entity");
-        
-        if(abbrev != null){
+        if (abbrev != null) {
             baseSearch.and(entity.getString("abbrev").equalsIgnoreCase(abbrev));
-        }else{
+        } else {
             baseSearch.and(entity.getString("abbrev").isNull());
         }
-        if(name != null){
+        if (name != null) {
             baseSearch.and(entity.getString("name").equalsIgnoreCase(name));
-        }else{
+        } else {
             baseSearch.and(entity.getString("name").isNull());
         }
-        
         SearchResults<Isotope> searchResult = DatatablesUtils.findByCriteria(entity, Isotope.entityManager(), criterias, baseSearch);
-
-//		ConversionService conversionService = null;
-//		MessageSource messageSource = null;
-//		DatatablesUtils.findByCriteria(entity, Isotope.entityManager(), criterias, baseSearch, conversionService, messageSource);
-
-		// Get datatables required counts
+        //		ConversionService conversionService = null;
+        //		MessageSource messageSource = null;
+        //		DatatablesUtils.findByCriteria(entity, Isotope.entityManager(), criterias, baseSearch, conversionService, messageSource);
+        // Get datatables required counts
         long totalRecords = searchResult.getTotalCount();
         long recordsFound = searchResult.getResultsCount();
-        
         // Entity pk field name
         String pkFieldName = "id";
-        
-        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt); 
-        return DatatablesResponse.build(dataSet,criterias);
+        DataSet<Map<String, String>> dataSet = DatatablesUtils.populateDataSet(searchResult.getResults(), pkFieldName, totalRecords, recordsFound, criterias.getColumnDefs(), null, conversionService_dtt);
+        return DatatablesResponse.build(dataSet, criterias);
     }
-
 }

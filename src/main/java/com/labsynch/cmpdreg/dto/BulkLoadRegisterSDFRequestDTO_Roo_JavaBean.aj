@@ -5,6 +5,7 @@ package com.labsynch.cmpdreg.dto;
 
 import com.labsynch.cmpdreg.dto.BulkLoadPropertyMappingDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadRegisterSDFRequestDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import java.util.Collection;
 import java.util.Date;
 
@@ -32,6 +33,14 @@ privileged aspect BulkLoadRegisterSDFRequestDTO_Roo_JavaBean {
     
     public void BulkLoadRegisterSDFRequestDTO.setFileDate(Date fileDate) {
         this.fileDate = fileDate;
+    }
+    
+    public LabelPrefixDTO BulkLoadRegisterSDFRequestDTO.getLabelPrefix() {
+        return this.labelPrefix;
+    }
+    
+    public void BulkLoadRegisterSDFRequestDTO.setLabelPrefix(LabelPrefixDTO labelPrefix) {
+        this.labelPrefix = labelPrefix;
     }
     
     public Collection<BulkLoadPropertyMappingDTO> BulkLoadRegisterSDFRequestDTO.getMappings() {

@@ -29,6 +29,7 @@ import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.SearchFormReturnDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -90,7 +91,7 @@ public class ProjectRolesTest {
 	}
 
 	@Test
-	public void searchWithProjectRestrictions() throws ParseException {
+	public void searchWithProjectRestrictions() throws ParseException, CmpdRegMolFormatException {
 
 		SearchFormDTO searchParams = new SearchFormDTO();
 
@@ -144,7 +145,7 @@ public class ProjectRolesTest {
 	}
 	
 	@Test
-	public void searchNotAllowedProject() throws ParseException {
+	public void searchNotAllowedProject() throws ParseException, CmpdRegMolFormatException {
 		//This test is written for a database populated with only the loadAgainstProjectTest results.
 		//This test will fail unless the configuration.json property "projectRestrictions" is true
 		SearchFormDTO searchParams = new SearchFormDTO();

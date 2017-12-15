@@ -1,28 +1,34 @@
 package com.labsynch.cmpdreg.web;
+import javax.servlet.http.HttpServletRequest;
 
 import org.gvnix.addon.datatables.GvNIXDatatables;
 import org.gvnix.addon.web.mvc.addon.jquery.GvNIXWebJQuery;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.roo.addon.web.mvc.controller.finder.RooWebFinder;
+import org.springframework.roo.addon.web.mvc.controller.json.RooWebJson;
 import org.springframework.roo.addon.web.mvc.controller.scaffold.RooWebScaffold;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.FileType;
-import com.labsynch.cmpdreg.domain.PhysicalState;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.utils.Configuration;
 
-@RooWebScaffold(path = "filetypes", formBackingObject = FileType.class)
-@RequestMapping(value = {"/fileTypes", "/filetypes"})
+@RequestMapping({"/filetypes", "/fileTypes"})
 @Controller
 @GvNIXWebJQuery
-@GvNIXDatatables(ajax = true)
+@GvNIXDatatables(ajax = false)
+@RooWebJson(jsonObject = FileType.class)
+@RooWebScaffold(path = "filetypes", formBackingObject = FileType.class)
+@RooWebFinder
 public class FileTypeController {
-
+	
 	private static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
 
 	@RequestMapping(headers = "Accept=application/json")
@@ -54,5 +60,15 @@ public class FileTypeController {
 		headers.add("Pragma","no-cache"); //HTTP 1.0
 		headers.setExpires(0); // Expire the cache
         return new ResponseEntity<String>(headers, HttpStatus.OK);
+	}
+
+	
+    @RequestMapping(produces = "text/html", value = "/list")
+    public String listDatatablesDetail(Model uiModel, HttpServletRequest request, @ModelAttribute FileType fileType) {
+        // Do common datatables operations: get entity list filtered by request parameters
+        listDatatables(uiModel, request, fileType);
+        // Show only the list fragment (without footer, header, menu, etc.) 
+        return "forward:/WEB-INF/views/filetypes/list.jspx";
     }
+    
 }

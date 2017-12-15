@@ -12,16 +12,15 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
 import com.labsynch.cmpdreg.domain.IsoSalt;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.dto.ParentDTO;
 import com.labsynch.cmpdreg.dto.RegSearchDTO;
 import com.labsynch.cmpdreg.dto.SaltFormDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -30,6 +29,9 @@ import com.labsynch.cmpdreg.dto.SaltFormDTO;
 public class RegSearchTest {
 	@Autowired
 	private ChemStructureService structureService;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
 
 	//    @Test
 	public void basicParentSearch() {
@@ -63,28 +65,21 @@ public class RegSearchTest {
 	}   
 
 	@Test
-	public void searchCmpds() {
+	public void searchCmpds() throws CmpdRegMolFormatException {
 
 		RegSearchDTO regSearchDTO = new RegSearchDTO();
 		Set<Parent> parents = new HashSet<Parent>();
 		String molStructure = "CC1=C(C)"; 
 //		"CC";
-		MolHandler mh = null;
-		try {
-			mh = new MolHandler(molStructure);
-		} catch (MolFormatException e) {
-			System.out.println("bad structure error: " + molStructure);
-		}
-
-		Molecule mol = mh.getMolecule();
+		CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(molStructure);
 		regSearchDTO.setAsDrawnStructure(molStructure);
 		regSearchDTO.setAsDrawnMolFormula(mol.getFormula());
 		regSearchDTO.setAsDrawnMolWeight(mol.getMass());
 		
-		System.out.println("search mol: " + mol.toFormat("smiles"));
+		System.out.println("search mol: " + mol.getSmiles());
 
 
-		int[] parentHits = structureService.searchMolStructures(mol.toFormat("mol"), "Parent_Structure", "FULL", 0f);
+		int[] parentHits = structureService.searchMolStructures(mol.getMolStructure(), "Parent_Structure", "FULL", 0f);
 		for (int hit : parentHits){
 			System.out.println("hit - cd_id: " + hit);
 

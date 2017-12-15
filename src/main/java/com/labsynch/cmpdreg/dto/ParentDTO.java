@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -16,6 +17,9 @@ import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAnnotation;
 import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.domain.StereoCategory;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.service.ChemStructureService;
+import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
 @RooJavaBean
 @RooToString
@@ -70,7 +74,11 @@ public class ParentDTO{
 		this.setIsMixture(parent.getIsMixture());
 		//this may be commented out in when we display by id
 		this.setMolStructure(parent.getMolStructure());
-		this.setMolFormula(parent.getMolFormula());
+		try{
+			this.setMolFormula(MoleculeUtil.getMolFormula(parent.getMolStructure()));
+		}catch (CmpdRegMolFormatException e) {
+			//leave mol formula blank
+		}
 		this.setCdId(parent.getCdId());
 		this.setMolWeight(parent.getMolWeight());
 		this.setExactMass(parent.getExactMass());

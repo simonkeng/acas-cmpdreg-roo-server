@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.QcCompound;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.QcCmpdService;
-
-import chemaxon.formats.MolFormatException;
 
 @RequestMapping(value = {"/api/v1/qcCompoundServices"})
 @Controller
@@ -62,7 +61,7 @@ public class ApiQcCompoundServicesController {
 	@Transactional
 	@RequestMapping(value = "/qcParentStructs", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws MolFormatException, IOException{
+	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws CmpdRegMolFormatException, IOException{
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");		
 		if (adminCode.equalsIgnoreCase("lajolla-check")){
@@ -89,7 +88,11 @@ public class ApiQcCompoundServicesController {
 			// searches for dupes in the qc compound tables if the correct code is sent (basic guard)
 			logger.info("checking parent structs and saving to QC table");
 			int numberOfDisplayChanges = 0;
-			numberOfDisplayChanges = qcCmpdServ.dupeCheckQCStructures();
+			try {
+				numberOfDisplayChanges = qcCmpdServ.dupeCheckQCStructures();
+			} catch (CmpdRegMolFormatException e) {
+				return new ResponseEntity<String>("Encountered error in searching: "+e.toString(), headers, HttpStatus.BAD_REQUEST);
+			}
 			logger.info("number of compounds with display change: " + numberOfDisplayChanges);
 			return new ResponseEntity<String>("Qc Compound check done. Number of display changes: " + numberOfDisplayChanges, headers, HttpStatus.OK);
 		} else {
@@ -110,7 +113,7 @@ public class ApiQcCompoundServicesController {
 				reportFile = "/tmp/qcDupeReport.sdf";
 			}
 			qcCmpdServ.exportQCReport(reportFile, exportType);
-		} catch (IOException e) {
+		} catch (IOException | CmpdRegMolFormatException e) {
 			return new ResponseEntity<String>("ERROR: unable to generate report", headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

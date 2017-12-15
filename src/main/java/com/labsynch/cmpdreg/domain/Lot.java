@@ -29,7 +29,6 @@ import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.criterion.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,7 +48,11 @@ import flexjson.JSONSerializer;
 @RooJavaBean
 @RooToString
 @RooJson
-@RooJpaActiveRecord(finders = { "findLotsByCorpNameEquals", "findLotsByCorpNameLike", "findLotsBySynthesisDateBetween", "findLotsBySaltForm", "findLotsBySynthesisDateGreaterThan", "findLotsBySynthesisDateLessThan", "findLotsByChemistAndSynthesisDateBetween", "findLotsByIsVirtualNot", "findLotsByBuid", "findLotsByNotebookPageEquals", "findLotsByNotebookPageEqualsAndIgnoreNot", "findLotsByBulkLoadFileEquals" })
+@RooJpaActiveRecord(finders = { "findLotsByCorpNameEquals", "findLotsByCorpNameLike", "findLotsBySynthesisDateBetween", 
+		                         "findLotsBySaltForm", "findLotsBySynthesisDateGreaterThan", "findLotsBySynthesisDateLessThan", 
+		                         "findLotsByChemistAndSynthesisDateBetween", "findLotsByIsVirtualNot", "findLotsByBuid", 
+		                         "findLotsByNotebookPageEquals", "findLotsByNotebookPageEqualsAndIgnoreNot", 
+		                         "findLotsByBulkLoadFileEquals" })
 public class Lot {
 	
     private static final Logger logger = LoggerFactory.getLogger(Lot.class);
@@ -219,6 +222,17 @@ public class Lot {
     
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "lot", fetch = FetchType.LAZY)
 	private Set<LotAlias> lotAliases = new HashSet<LotAlias>();
+   
+    @Transient
+    private transient String storageLocation;
+    
+    public String getStorageLocation() {
+    		return this.storageLocation;
+    }
+    
+    public void setStorageLocation(String storageLocation) {
+    		this.storageLocation = storageLocation;
+    }
     
     public long getBuid() {
         return this.buid;
@@ -582,6 +596,23 @@ public class Lot {
         return q.getSingleResult();
     }
 
+    public static Long countLotsByVendor(Vendor vendor) {
+        if (vendor == null) throw new IllegalArgumentException("The vendor argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(l) FROM Lot l WHERE l.vendor = :vendor ", Long.class);
+        q.setParameter("vendor", vendor);
+        return q.getSingleResult();
+    }
+
+    public static Long countLotsByRegisteredBy(Scientist registeredBy) {
+        if (registeredBy == null) throw new IllegalArgumentException("The registeredBy argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(l) FROM Lot l WHERE l.registeredBy = :registeredBy ", Long.class);
+        q.setParameter("registeredBy", registeredBy);
+        return q.getSingleResult();
+    }
+    
+    
     public static TypedQuery<Lot> findLotsByParent(Parent parent) {
         if (parent == null) throw new IllegalArgumentException("The parent argument is required");
         EntityManager em = Lot.entityManager();

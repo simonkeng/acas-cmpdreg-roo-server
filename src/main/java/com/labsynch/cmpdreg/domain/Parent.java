@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -27,6 +28,7 @@ import javax.validation.constraints.Size;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
@@ -34,11 +36,10 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
-
-import chemaxon.formats.MolFormatException;
-import chemaxon.struc.Molecule;
-import chemaxon.util.MolHandler;
+import com.labsynch.cmpdreg.service.ChemStructureService;
+import com.labsynch.cmpdreg.service.ParentService;
 
 @Transactional
 @RooJavaBean
@@ -127,32 +128,9 @@ public class Parent {
     
     private Boolean isMixture;
     
-
-	public String getMolFormula() {
-		if (this.molFormula == null && this.getMolStructure() != null){
-			return getMolFormula(this.getMolStructure());
-		} else {
-			return this.molFormula;
-		}
-	}
-
-	public  String getMolFormula(String molStructure) {
-		MolHandler mh = null;
-		boolean badStructureFlag = false;
-		Molecule mol = null;
-		try {
-			mh = new MolHandler(molStructure);
-			mol = mh.getMolecule();			
-		} catch (MolFormatException e) {
-			badStructureFlag = true;
-		}
-
-		if (!badStructureFlag){
-			return mol.getFormula();
-		} else {
-			return null;
-		}
-	}
+    @Transient
+    private transient LabelPrefixDTO labelPrefix;
+    
 
 	@Transactional
 	public static void deleteAllParents(){        
@@ -318,5 +296,22 @@ public class Parent {
 		return parentIds;
 	}
 	
+	public LabelPrefixDTO getLabelPrefix() {
+		return this.labelPrefix;
+	}
+	
+	public void setLabelPrefix(LabelPrefixDTO labelPrefix) {
+		this.labelPrefix = labelPrefix;
+	}
+	
+
+    public static Long countParentsByStereoCategory(StereoCategory stereoCategory) {
+        if (stereoCategory == null) throw new IllegalArgumentException("The stereoCategory argument is required");
+        EntityManager em = Lot.entityManager();
+        TypedQuery<Long> q = em.createQuery("SELECT COUNT(p) FROM Parent p WHERE p.stereoCategory = :stereoCategory ", Long.class);
+        q.setParameter("stereoCategory", stereoCategory);
+        return q.getSingleResult();
+    }
+    
 
 }

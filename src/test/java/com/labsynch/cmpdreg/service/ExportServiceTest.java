@@ -29,6 +29,7 @@ import com.labsynch.cmpdreg.dto.PurgeFileResponseDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.SearchFormReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchResultExportRequestDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -63,7 +64,7 @@ public class ExportServiceTest {
 	
 	@Test
 	@Transactional
-	public void exportSearchResults(){
+	public void exportSearchResults() throws CmpdRegMolFormatException{
 		SearchFormDTO searchParams = new SearchFormDTO();
 		Scientist chemist = Scientist.findScientistsByCodeEquals("cchemist").getSingleResult();
 		searchParams.setChemist(chemist);

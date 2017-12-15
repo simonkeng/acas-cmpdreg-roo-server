@@ -1,22 +1,28 @@
 package com.labsynch.cmpdreg.service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import chemaxon.formats.MolFormatException;
 
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.FileList;
@@ -28,10 +34,17 @@ import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.PreDef_CorpName;
 import com.labsynch.cmpdreg.domain.SaltForm;
 import com.labsynch.cmpdreg.domain.Scientist;
+import com.labsynch.cmpdreg.dto.AutoLabelDTO;
+import com.labsynch.cmpdreg.dto.CodeTableDTO;
 import com.labsynch.cmpdreg.dto.CorpNameDTO;
+import com.labsynch.cmpdreg.dto.LabelPrefixDTO;
+import com.labsynch.cmpdreg.dto.CreatePlateRequestDTO;
 import com.labsynch.cmpdreg.dto.Metalot;
 import com.labsynch.cmpdreg.dto.MetalotReturn;
+import com.labsynch.cmpdreg.dto.SetTubeLocationDTO;
+import com.labsynch.cmpdreg.dto.WellContentDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.DupeParentException;
 import com.labsynch.cmpdreg.exceptions.DupeSaltFormCorpNameException;
 import com.labsynch.cmpdreg.exceptions.DupeSaltFormStructureException;
@@ -40,6 +53,7 @@ import com.labsynch.cmpdreg.exceptions.SaltFormMolFormatException;
 import com.labsynch.cmpdreg.exceptions.SaltedCompoundException;
 import com.labsynch.cmpdreg.exceptions.UniqueNotebookException;
 import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
 
 
 @Service
@@ -68,7 +82,7 @@ public class MetalotServiceImpl implements MetalotService {
 	private static boolean useStandardizer = Configuration.getConfigInfo().getServerSettings().isUseExternalStandardizerConfig();
 	private static String standardizerConfigFilePath = Configuration.getConfigInfo().getServerSettings().getStandardizerConfigFilePath();
 
-	@Transactional
+//	@Transactional
 	@Override
 	public MetalotReturn save(Metalot metaLot){
 
@@ -77,7 +91,7 @@ public class MetalotServiceImpl implements MetalotService {
 		try {
 			mr = this.processAndSave(metaLot, mr, errors);
 
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			ErrorMessage parentError = new ErrorMessage();
 			parentError.setLevel("error");
 			parentError.setMessage("Bad molformat. Please fix the molfile: ");
@@ -113,7 +127,19 @@ public class MetalotServiceImpl implements MetalotService {
 			saltFormError.setMessage("Bad molformat. Please fix the saltForm molfile: ");
 			logger.error(saltFormError.getMessage());
 			errors.add(saltFormError);
-		} catch (Exception e) {
+		} catch (NoResultException e) {
+			ErrorMessage error = new ErrorMessage();
+			error.setLevel("error");
+			error.setMessage("Could not find a definition container to create vials with. Please see your system administrator.");
+			logger.error(error.getMessage());
+			errors.add(error);
+		} catch (NonUniqueResultException e) {
+			ErrorMessage saltFormError = new ErrorMessage();
+			saltFormError.setLevel("error");
+			saltFormError.setMessage("Barcode already exists as a vial.");
+			logger.error(saltFormError.getMessage());
+			errors.add(saltFormError);
+		}catch (Exception e) {
 			ErrorMessage genericError = new ErrorMessage();
 			genericError.setLevel("error");
 			genericError.setMessage("Internal error encountered. Please contact your administrator.");
@@ -130,7 +156,7 @@ public class MetalotServiceImpl implements MetalotService {
 	public MetalotReturn processAndSave(Metalot metaLot, MetalotReturn mr, ArrayList<ErrorMessage> errors) 
 			throws UniqueNotebookException, DupeParentException, JsonParseException, 
 			DupeSaltFormCorpNameException, DupeSaltFormStructureException, SaltFormMolFormatException, 
-			SaltedCompoundException, IOException {
+			SaltedCompoundException, IOException, CmpdRegMolFormatException {
 
 		logger.info("attempting to save the metaLot. ");
 
@@ -198,14 +224,16 @@ public class MetalotServiceImpl implements MetalotService {
 								if (parent.getStereoCategory().getCode().equalsIgnoreCase(queryParent.getStereoCategory().getCode())){
 									//parent structure and stereo category matches
 									//determine if Stereo Comment is different
-									if (parent.getStereoComment() == null && queryParent.getStereoComment() == null){
+									boolean parentHasStereoComment = (parent.getStereoComment() != null && parent.getStereoComment().length() > 0);
+									boolean queryParentHasStereoComment = (queryParent.getStereoComment() == null && queryParent.getStereoComment().length() > 0);
+									if (!parentHasStereoComment & !queryParentHasStereoComment){
 										//both stereo comments are null => dupes
 										dupeParentCount++;
 										dupeParent = true;
 										logger.error("dupe parent is: " + queryParent.getCorpName());
 										if (queryParent.getCorpName() != null) dupeParentNames = dupeParentNames.concat(queryParent.getCorpName()).concat(" ");
 										if (queryParent.getCommonName() != null) dupeParentNames = dupeParentNames.concat(queryParent.getCommonName().concat(" "));
-									}else if (parent.getStereoComment() == null || queryParent.getStereoComment() == null){
+									}else if (!parentHasStereoComment || !queryParentHasStereoComment){
 										//stereo comments are different - one is null and the other isn't - parents are not dupes
 									}else if (parent.getStereoComment().equalsIgnoreCase(queryParent.getStereoComment())){
 										//both stereo comments non-null
@@ -279,26 +307,11 @@ public class MetalotServiceImpl implements MetalotService {
 				cdId = chemService.saveStructure(parent.getMolStructure(), "Parent_Structure", checkForDupe);
 				if (cdId == -1){
 					logger.error("Bad molformat. Please fix the molfile: " + parent.getMolStructure());
-					throw new MolFormatException();
+					throw new CmpdRegMolFormatException();
 				} else {
 					parent.setCdId(cdId);
 					if (parent.getCorpName() == null || parent.getCorpName().isEmpty() || parent.getCorpName().trim().equalsIgnoreCase("")){
-
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							//TODO: set parent number if required
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-						}
-
+						generateAndSetCorpName(parent);
 					} 
 					if (parent.getRegistrationDate() == null){
 						parent.setRegistrationDate(new Date());				
@@ -316,22 +329,8 @@ public class MetalotServiceImpl implements MetalotService {
 					} catch (Exception e){
 						logger.error("Caught an exception saving the parent: " + e);
 						//get a new corp name and try saving again
-						if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
-							parent.setCorpName(CorpName.generateCorpLicensePlate());
-							parent.persist();
-						} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
-							PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
-							parent.setCorpName(preDef_CorpName.getCorpName());
-							preDef_CorpName.setUsed(true);
-							preDef_CorpName.persist();
-							parent.setParentNumber(preDef_CorpName.getCorpNumber());							
-							parent.persist();
-						} else {
-							CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
-							parent.setCorpName(corpName.getCorpName());
-							parent.setParentNumber(corpName.getCorpNumber());
-							parent.persist();
-						}
+						generateAndSetCorpName(parent);
+						parent.persist();
 					}
 				} 
 			}
@@ -513,6 +512,13 @@ public class MetalotServiceImpl implements MetalotService {
 					logger.info("--------- Number of lotAliases to save: " + lotAliases.size());
 					lot = lotAliasService.updateLotAliases(lot, lotAliases);
 					if (logger.isDebugEnabled()) logger.debug("Lot aliases after save: "+ LotAlias.toJsonArray(lot.getLotAliases()));
+					
+					if (mainConfig.getServerSettings().isCompoundInventory()) {
+						boolean hasBarcode = (lot.getBarcode() != null && lot.getBarcode().length() > 0);
+						if (hasBarcode || !mainConfig.getServerSettings().isDisableTubeCreationIfNoBarcode() ) {
+							createNewTube(lot);
+						}
+					}
 
 
 					lot.clear();
@@ -666,6 +672,83 @@ public class MetalotServiceImpl implements MetalotService {
 
 	}
 
+	@Transactional
+	private void createNewTube(Lot lot) throws MalformedURLException, IOException, NoResultException, NonUniqueResultException {
+		String baseurl = mainConfig.getServerConnection().getAcasURL();
+		String url = baseurl + "containers?";
+		Map<String, String> queryParams = new HashMap<String, String>();
+		queryParams.put("lsType","definition container");
+		queryParams.put("lsKind","tube");
+		queryParams.put("format","codetable");
+		String definitionContainerCodeTable = SimpleUtil.getFromExternalServer(url, queryParams, logger);
+		Collection<CodeTableDTO> definitionContainerResults = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable);
+		if (definitionContainerResults.size() == 0){
+			logger.error("Could not find definition container for tube");
+			throw new NoResultException("Could not find definition container for tube");
+		}
+		CodeTableDTO definitionContainer = CodeTableDTO.fromJsonArrayToCoes(definitionContainerCodeTable).iterator().next();
+		String wellName = "A001";
+		Date recordedDate = new Date();
+		CreatePlateRequestDTO tubeRequest = new CreatePlateRequestDTO();
+		tubeRequest.setBarcode(lot.getBarcode());
+		if (tubeRequest.getBarcode() == null || tubeRequest.getBarcode().length() < 1) tubeRequest.setBarcode(lot.getCorpName());
+		tubeRequest.setCreatedDate(recordedDate);
+		tubeRequest.setCreatedUser(lot.getRegisteredBy().getCode());
+		tubeRequest.setDefinition(definitionContainer.getCode());
+		tubeRequest.setRecordedBy(lot.getRegisteredBy().getCode());
+		Collection<WellContentDTO> wells = new ArrayList<WellContentDTO>();
+		WellContentDTO well = new WellContentDTO();
+		well.setWellName(wellName);
+		if (lot.getAmount() != null) well.setAmount(new BigDecimal(lot.getAmount()));
+		if (lot.getAmountUnits() != null) well.setAmountUnits(lot.getAmountUnits().getCode());
+		well.setPhysicalState("solid");
+		well.setBatchCode(lot.getCorpName());
+		well.setRecordedBy(lot.getRegisteredBy().getCode());
+		well.setRecordedDate(recordedDate);
+		wells.add(well);
+		tubeRequest.setWells(wells);
+				
+		url = baseurl + "containers/createTube";
+		try {
+			String createTubeResponse = SimpleUtil.postRequestToExternalServer(url, tubeRequest.toJson(), logger);
+			logger.debug("Created tube: ");
+			logger.debug(createTubeResponse);
+		}catch (IOException e) {
+			if (e.getMessage().contains("400")) {
+				logger.error("Barcode "+tubeRequest.getBarcode()+" already exists!");
+				throw new NonUniqueResultException("Barcode "+tubeRequest.getBarcode()+" already exists!");
+			}else {
+				throw e;
+			}
+		}
+		
+		if(lot.getStorageLocation() != null && lot.getStorageLocation().length() > 0) {
+			SetTubeLocationDTO moveDTO = new SetTubeLocationDTO();
+			moveDTO.setBarcode(tubeRequest.getBarcode());
+			moveDTO.setLocationBreadCrumb(lot.getStorageLocation());
+			moveDTO.setUser(lot.getRegisteredBy().getCode());
+			moveDTO.setDate(recordedDate);
+			try {
+				String rootLabel = lot.getStorageLocation().split(">")[0];
+				moveDTO.setRootLabel(rootLabel);
+			} catch (Exception e) {
+				//do nothing
+			}
+			Collection<SetTubeLocationDTO> moveDTOs = new ArrayList<SetTubeLocationDTO>();
+			moveDTOs.add(moveDTO);
+			String acasAppUrl = mainConfig.getServerConnection().getAcasAppURL();
+			url = acasAppUrl + "setLocationByBreadCrumb";
+			try {
+				String setLocationResponse = SimpleUtil.postRequestToExternalServer(url, SetTubeLocationDTO.toJsonArray(moveDTOs), logger);
+				logger.debug("Successfully set location: ");
+				logger.debug(setLocationResponse);
+			}catch (IOException e) {
+				logger.error("Hit error trying to set location of new tube",e);
+				logger.error(e.getMessage());
+				throw e;
+			}
+		}
+	}
 
 	private boolean checkUniqueNotebook(Lot lot) {
 		List<Lot> lots = Lot.findLotsByNotebookPageEquals(lot.getNotebookPage()).getResultList();
@@ -705,6 +788,33 @@ public class MetalotServiceImpl implements MetalotService {
 		}
 		return metalot;
 
+	}
+	
+	private void generateAndSetCorpName(Parent parent) throws MalformedURLException, IOException {
+		if (corpParentFormat.equalsIgnoreCase("license_plate_format")){
+			parent.setCorpName(CorpName.generateCorpLicensePlate());
+			//TODO: set parent number if required
+		} else if (corpParentFormat.equalsIgnoreCase("pre_defined_format")){
+			PreDef_CorpName preDef_CorpName = PreDef_CorpName.findNextCorpName();
+			parent.setCorpName(preDef_CorpName.getCorpName());
+			preDef_CorpName.setUsed(true);
+			preDef_CorpName.persist();
+			parent.setParentNumber(preDef_CorpName.getCorpNumber());							
+		} else if (corpParentFormat.equalsIgnoreCase("ACASLabelSequence")) {
+			LabelPrefixDTO labelPrefixDTO = parent.getLabelPrefix();
+			labelPrefixDTO.setNumberOfLabels(1L);
+			labelPrefixDTO.setLabelPrefix(labelPrefixDTO.getName());
+			String url = mainConfig.getServerConnection().getAcasURL()+"labelsequences/getLabels";
+			String jsonContent = labelPrefixDTO.toSafeJson();
+			String responseJson = SimpleUtil.postRequestToExternalServer(url, jsonContent, logger);
+			AutoLabelDTO autoLabel = AutoLabelDTO.fromJsonArrayToAutoes(responseJson).iterator().next();
+			parent.setCorpName(autoLabel.getAutoLabel());
+			parent.setParentNumber(autoLabel.getLabelNumber());
+		} else {
+			CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
+			parent.setCorpName(corpName.getCorpName());
+			parent.setParentNumber(corpName.getCorpNumber());
+		}
 	}
 
 

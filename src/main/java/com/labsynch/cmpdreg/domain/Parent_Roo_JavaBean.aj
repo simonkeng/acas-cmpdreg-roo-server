@@ -88,6 +88,10 @@ privileged aspect Parent_Roo_JavaBean {
         this.exactMass = exactMass;
     }
     
+    public String Parent.getMolFormula() {
+        return this.molFormula;
+    }
+    
     public void Parent.setMolFormula(String molFormula) {
         this.molFormula = molFormula;
     }

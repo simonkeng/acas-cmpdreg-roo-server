@@ -4,11 +4,11 @@
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_com_labsynch_cmpdreg_domain_Parent" items="${parents}" z="iZBsVTWL3i06/bp1Vw8gE21JItg=">
         <table:table data="${parents}" id="l_com_labsynch_cmpdreg_domain_Parent" path="/parents" z="sEMQuKpamD/XXktvWZn1OdRWPn4=">
-            <table:column id="c_com_labsynch_cmpdreg_domain_Parent_molFormula" property="molFormula" z="ukB+uwrXwOg/Gpxy/ySujMS5xXU="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Parent_corpName" property="corpName" z="WZbzhQ1OV3Ak9BtmpUFx6J1CPcs="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Parent_parentNumber" property="parentNumber" z="r4drJEpggfr3srIsrg9ga5YeoWI="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Parent_chemist" property="chemist" z="7fVDUQTgZx1Y68XAXu+wojAjPVc="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Parent_commonName" property="commonName" z="2WLoE5IdQiYkhMtJXl/lx7meC/k="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Parent_labelPrefix" property="labelPrefix" z="aZI4JUNtD4zdBQdh+Gfl1IE09q4="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Parent_stereoCategory" property="stereoCategory" z="mxSNHes7IJjXHpVo4kYI+u0NolQ="/>
         </table:table>
     </page:list>

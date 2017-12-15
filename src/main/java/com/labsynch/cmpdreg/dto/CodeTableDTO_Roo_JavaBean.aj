@@ -31,4 +31,20 @@ privileged aspect CodeTableDTO_Roo_JavaBean {
         this.comments = comments;
     }
     
+    public Boolean CodeTableDTO.getIgnored() {
+        return this.ignored;
+    }
+    
+    public void CodeTableDTO.setIgnored(Boolean ignored) {
+        this.ignored = ignored;
+    }
+    
+    public Long CodeTableDTO.getId() {
+        return this.id;
+    }
+    
+    public void CodeTableDTO.setId(Long id) {
+        this.id = id;
+    }
+    
 }

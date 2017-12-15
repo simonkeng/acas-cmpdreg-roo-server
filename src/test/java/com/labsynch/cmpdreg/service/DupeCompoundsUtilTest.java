@@ -16,14 +16,13 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import chemaxon.formats.MolExporter;
-import chemaxon.formats.MolFormatException;
-import chemaxon.formats.MolImporter;
-import chemaxon.marvin.io.MPropHandler;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMoleculeFactory;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReader;
+import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFReaderFactory;
 import com.labsynch.cmpdreg.domain.Compound;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 
 
@@ -36,6 +35,12 @@ public class DupeCompoundsUtilTest {
 
 	@Autowired
 	private ChemStructureService chemStructServ;
+	
+	@Autowired
+	CmpdRegMoleculeFactory cmpdRegMoleculeFactory;
+
+	@Autowired
+	CmpdRegSDFReaderFactory sdfReaderFactory;
 
 
 	//create the jchem table to store the compounds
@@ -77,24 +82,21 @@ public class DupeCompoundsUtilTest {
 		//simple utility to load compounds without any properties
 		String fileName = "src/test/resources/nci1000.sdf";
 
-		FileInputStream fis;	
-
 		// Open an input stream
 		try {
-			fis = new FileInputStream (fileName);
-			MolImporter mi = new MolImporter(fis);
-			Molecule mol = null;
+			CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(fileName);
+			CmpdRegMolecule mol = null;
 
 			int count = 0;
 			int cdid = 0;
-			while ((mol = mi.read()) != null) {
+			while ((mol = mi.readNextMol()) != null) {
 				
-				logger.info("attempting to save: "  + MolExporter.exportToFormat(mol, "smiles"));
-				cdid = chemStructServ.saveStructure(MolExporter.exportToFormat(mol, "smiles"), "Compound_Structure");
+				logger.info("attempting to save: "  + mol.getSmiles());
+				cdid = chemStructServ.saveStructure(mol.getSmiles(), "Compound_Structure");
 				logger.info("current mol count is: " + count + "    cd_id: " + cdid);
 				Compound cmpd = new Compound();
 				cmpd.setCdId(cdid);
-				cmpd.setExternal_id(MPropHandler.convertToString(mol.properties(), "CD_ID"));
+				cmpd.setExternal_id(mol.getProperty("CD_ID"));
 				cmpd.setCreatedDate(new Date());
 				cmpd.persist();
 				
@@ -105,12 +107,11 @@ public class DupeCompoundsUtilTest {
 			}	
 
 			mi.close();
-			fis.close();
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -126,15 +127,13 @@ public class DupeCompoundsUtilTest {
 		String fileName = "queryCmpds.sdf";
 
 
-		FileInputStream fis;	
 		StringWriter outputWriter = new StringWriter();
 
 
 		// Open an input stream
 		try {
-			fis = new FileInputStream (fileName);
-			MolImporter mi = new MolImporter(fis);
-			Molecule mol = null;
+			CmpdRegSDFReader mi = sdfReaderFactory.getCmpdRegSDFReader(fileName);
+			CmpdRegMolecule mol = null;
 			
 			
 			//write header
@@ -142,10 +141,10 @@ public class DupeCompoundsUtilTest {
 			outputWriter.write(headerLine);
 
 			int count = 0;
-			while ((mol = mi.read()) != null) {
+			while ((mol = mi.readNextMol()) != null) {
 				
 				//logger.info("attempting to search: "  + MolExporter.exportToFormat(mol, "smiles"));
-				int[] results = chemStructServ.searchMolStructures(MolExporter.exportToFormat(mol, "mol"), "Compound_Structure", "DUPLICATE_TAUTOMER");
+				int[] results = chemStructServ.searchMolStructures(mol.getMolStructure(), "Compound_Structure", "DUPLICATE_TAUTOMER");
 				//logger.info("current mol count is: " + count + "    results: " + results.length);
 				
 				if (results.length > 0){
@@ -153,7 +152,7 @@ public class DupeCompoundsUtilTest {
 					for (int result : results){
 						//logger.info("Query mol is : " + MolExporter.exportToFormat(mol, "smiles") + "   query cd_id: " + mol.getProperty("cd_id") + "    Hit is: " + result);	
 						Compound target = Compound.findCompoundsByCdId(result).getSingleResult();
-						logger.info("Query mol is : " + MolExporter.exportToFormat(mol, "smiles") + "   query cd_id: " + mol.getProperty("cd_id") + "    Hit is: " + target.getExternal_id());	
+						logger.info("Query mol is : " + mol.getSmiles() + "   query cd_id: " + mol.getProperty("cd_id") + "    Hit is: " + target.getExternal_id());	
 
 						outputWriter.append(mol.getProperty("cd_id"));
 						outputWriter.append(",");
@@ -173,14 +172,13 @@ public class DupeCompoundsUtilTest {
 		outputWriter.close();
 
 		mi.close();
-		fis.close();
 		
 		logger.info(outputWriter.toString());
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (MolFormatException e) {
+		} catch (CmpdRegMolFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {

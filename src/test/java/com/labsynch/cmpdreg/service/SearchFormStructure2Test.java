@@ -19,6 +19,7 @@ import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.dto.SearchCompoundReturnDTO;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import com.labsynch.cmpdreg.dto.SearchFormReturnDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -38,7 +39,7 @@ public class SearchFormStructure2Test {
 
 
 	@Test
-	public void searchParentAliasTest() throws ParseException {
+	public void searchParentAliasTest() throws ParseException, CmpdRegMolFormatException {
 
 		SearchFormDTO searchParams = new SearchFormDTO();
 

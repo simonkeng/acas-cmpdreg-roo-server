@@ -14,10 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import chemaxon.jchem.db.DatabaseSearchException;
-import chemaxon.struc.Molecule;
-
+import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.domain.Salt;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -33,14 +32,14 @@ public class SaltStructureServiceTest {
 	private static Logger logger = Logger.getRootLogger();
 	
 //	@Test
-	public void test_1() throws SQLException, DatabaseSearchException, IOException{
+	public void test_1() throws SQLException, IOException{
 //		int count = jcs.getCount();
 //		System.out.println("here is the count " + count);
 //		
 //		String molfile = "CCC";
 //		MolHandler mh = new MolHandler(molfile);
 //		Molecule mol = mh.getMolecule();
-//		String saltStructure = mol.toFormat("mol");
+//		String saltStructure = mol.getMolStructure();
 //	
 //		Integer cdId = jcs.saveStructure(saltStructure);
 //		System.out.println("here is the new structure id: " + cdId);
@@ -51,14 +50,14 @@ public class SaltStructureServiceTest {
 	}
 	
 //	@Test
-	public void test_2() throws SQLException, DatabaseSearchException, IOException{
+	public void test_2() throws SQLException, IOException{
 //		int count = jcs.getCount();
 //		System.out.println("here is the count " + count);
 //		
 //		String molfile = "CCC";
 //		MolHandler mh = new MolHandler(molfile);
 //		Molecule mol = mh.getMolecule();
-//		String saltStructure = mol.toFormat("mol");
+//		String saltStructure = mol.getMolStructure();
 //	
 //		Integer cdId = jcs.saveStructure(saltStructure);
 //		System.out.println("here is the new structure id: " + cdId);
@@ -72,7 +71,7 @@ public class SaltStructureServiceTest {
 	//@Test
 	@Transactional
 	@Rollback(false)
-	public void updateTest() {
+	public void updateTest() throws CmpdRegMolFormatException {
 		List<Salt> salts = Salt.findAllSalts();
 		Salt updatedSalt;
 		for (Salt salt : salts){
@@ -91,12 +90,12 @@ public class SaltStructureServiceTest {
     @Test
 	@Transactional
 	@Rollback(false)
-    public void updateSingleSalt() {
+    public void updateSingleSalt() throws CmpdRegMolFormatException {
     
     Salt salt = Salt.findSalt(20702L);
-	Molecule mol = chemService.toMolecule("C(=O)(C(F)(F)F)O");
+	CmpdRegMolecule mol = chemService.toMolecule("C(=O)(C(F)(F)F)O");
 	salt.setOriginalStructure(salt.getMolStructure());
-	salt.setMolStructure(mol.toFormat("mol"));
+	salt.setMolStructure(mol.getMolStructure());
 	salt.setFormula(mol.getFormula());
 	salt.setMolWeight(mol.getMass());
 	salt.setCharge(mol.getTotalCharge());

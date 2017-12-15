@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:find finderName="ByAliasNameEqualsAndLsTypeEqualsAndLsKindEquals" id="ff_com_labsynch_cmpdreg_domain_SaltFormAlias" path="/saltformaliases" z="CXHfm446f4vNkrFpH3hbtfAcnuc=">
+        <field:input disableFormBinding="true" field="aliasName" id="f_com_labsynch_cmpdreg_domain_SaltFormAlias_aliasName" required="true" z="wUQZKeamDR0yA/zjzN+bHh0Kfr0="/>
+        <field:input disableFormBinding="true" field="lsType" id="f_com_labsynch_cmpdreg_domain_SaltFormAlias_lsType" required="true" z="pZc5wqAODa0K/jM3Ag2AaGp7sio="/>
+        <field:input disableFormBinding="true" field="lsKind" id="f_com_labsynch_cmpdreg_domain_SaltFormAlias_lsKind" required="true" z="XkA4iNdD1mF/53Hx6F+yxItaY7o="/>
+    </form:find>
+</div>

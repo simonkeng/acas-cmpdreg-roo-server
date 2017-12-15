@@ -31,4 +31,23 @@ privileged aspect ScientistController_Roo_Controller_Finder {
         return "scientists/list";
     }
     
+    @RequestMapping(params = { "find=ByCodeLike", "form" }, method = RequestMethod.GET)
+    public String ScientistController.findScientistsByCodeLikeForm(Model uiModel) {
+        return "scientists/findScientistsByCodeLike";
+    }
+    
+    @RequestMapping(params = "find=ByCodeLike", method = RequestMethod.GET)
+    public String ScientistController.findScientistsByCodeLike(@RequestParam("code") String code, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @RequestParam(value = "sortFieldName", required = false) String sortFieldName, @RequestParam(value = "sortOrder", required = false) String sortOrder, Model uiModel) {
+        if (page != null || size != null) {
+            int sizeNo = size == null ? 10 : size.intValue();
+            final int firstResult = page == null ? 0 : (page.intValue() - 1) * sizeNo;
+            uiModel.addAttribute("scientists", Scientist.findScientistsByCodeLike(code, sortFieldName, sortOrder).setFirstResult(firstResult).setMaxResults(sizeNo).getResultList());
+            float nrOfPages = (float) Scientist.countFindScientistsByCodeLike(code) / sizeNo;
+            uiModel.addAttribute("maxPages", (int) ((nrOfPages > (int) nrOfPages || nrOfPages == 0.0) ? nrOfPages + 1 : nrOfPages));
+        } else {
+            uiModel.addAttribute("scientists", Scientist.findScientistsByCodeLike(code, sortFieldName, sortOrder).getResultList());
+        }
+        return "scientists/list";
+    }
+    
 }
