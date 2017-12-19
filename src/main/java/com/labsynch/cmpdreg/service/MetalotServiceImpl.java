@@ -80,6 +80,7 @@ public class MetalotServiceImpl implements MetalotService {
 	private static final Logger logger = LoggerFactory.getLogger(MetalotServiceImpl.class);
 	public static final String corpParentFormat = Configuration.getConfigInfo().getServerSettings().getCorpParentFormat();
 	private static boolean useStandardizer = Configuration.getConfigInfo().getServerSettings().isUseExternalStandardizerConfig();
+    private static boolean useLDStandardizer = Configuration.getConfigInfo().getServerSettings().isUseLDStandardizer();
 	private static String standardizerConfigFilePath = Configuration.getConfigInfo().getServerSettings().getStandardizerConfigFilePath();
 
 //	@Transactional

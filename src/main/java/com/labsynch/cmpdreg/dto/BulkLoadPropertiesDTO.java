@@ -47,7 +47,7 @@ public class BulkLoadPropertiesDTO {
     private Collection<BulkLoadPropertyMappingDTO> bulkLoadProperties;
     
     private Collection<ErrorMessage> errors;
-    
+        
     private int numRecordsRead;
     
     private String templateName;

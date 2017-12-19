@@ -207,6 +207,14 @@ privileged aspect ServerSettingsConfigDTO_Roo_JavaBean {
         this.standardizeStructure = standardizeStructure;
     }
     
+    public boolean ServerSettingsConfigDTO.isUseLDStandardizer() {
+        return this.useLDStandardizer;
+    }
+    
+    public void ServerSettingsConfigDTO.setUseLDStandardizer(boolean useLDStandardizer) {
+        this.useLDStandardizer = useLDStandardizer;
+    }
+    
     public boolean ServerSettingsConfigDTO.isUseExternalStandardizerConfig() {
         return this.useExternalStandardizerConfig;
     }

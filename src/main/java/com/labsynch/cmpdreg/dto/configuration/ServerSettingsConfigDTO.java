@@ -58,6 +58,8 @@ public class ServerSettingsConfigDTO {
     private String databaseType;
     
     private boolean standardizeStructure;
+    
+    private boolean useLDStandardizer;
 
     private boolean useExternalStandardizerConfig;
     
