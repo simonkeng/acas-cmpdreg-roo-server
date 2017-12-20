@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 	<groupId>com.labsynch.cmpdreg</groupId>
 	<artifactId>cmpdreg</artifactId>
 	<packaging>war</packaging>
-	<version>1.11-BUILD-SNAPSHOT</version>
+	<version>1.13-BUILD-SNAPSHOT</version>
 	<name>cmpdreg</name>
 	<description>ACAS Compound Registration Java persistence layer</description>
 	<properties>
