@@ -288,6 +288,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			String registeredCSVHeaders = "Record Number,"
 					+ "Corp Name in File,"
 					+ "Corp Name in DB,"
+					+ "Registered Parent Corp Name,"
 					+ "Registered Parent Aliases,"
 					+ "Registered Lot Aliases,"
 					+ "Registration Level\n";
@@ -450,9 +451,11 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 	public void writeRegisteredMol(int numRecordsRead, CmpdRegMolecule mol, MetalotReturn metalotReturn, Collection<BulkLoadPropertyMappingDTO> mappings, CmpdRegSDFWriter registeredMolExporter, FileOutputStream registeredCSVOutStream, Boolean isNewParent) throws IOException, CmpdRegMolFormatException {
 		String sdfCorpName = "";
 		String dbCorpName = "";
+		String registeredParentCorpName = "";
 		BulkLoadPropertyMappingDTO mapping = BulkLoadPropertyMappingDTO.findMappingByDbPropertyEquals(mappings, "Lot Corp Name");
 		if (mapping!=null) sdfCorpName = mol.getProperty(mapping.getSdfProperty());
 		dbCorpName = metalotReturn.getMetalot().getLot().getCorpName();
+		registeredParentCorpName = metalotReturn.getMetalot().getLot().getSaltForm().getParent().getCorpName();
 		Collection<ParentAlias> parentAliases = metalotReturn.getMetalot().getLot().getSaltForm().getParent().getParentAliases();
 		Collection<LotAlias> lotAliases = metalotReturn.getMetalot().getLot().getLotAliases();
 		List<String> parentAliasList = new ArrayList<String>();
@@ -468,6 +471,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 			}
 		}
 		mol.setProperty("Registered Lot Corp Name", dbCorpName);
+		mol.setProperty("Registered Parent Corp Name", registeredParentCorpName);
 		String allParentAliases = "";
 		if (!parentAliasList.isEmpty()){
 			for (String alias : parentAliasList){
@@ -489,7 +493,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 		else registrationLevel = "New lot of existing parent";
 		mol.setProperty("Registration Level", registrationLevel);
 		registeredMolExporter.writeMol(mol);
-		String csvRow = numRecordsRead+","+sdfCorpName+","+dbCorpName+","+allParentAliases+","+allLotAliases+","+registrationLevel+"\n";
+		String csvRow = numRecordsRead+","+sdfCorpName+","+dbCorpName+","+registeredParentCorpName+","+allParentAliases+","+allLotAliases+","+registrationLevel+"\n";
 		registeredCSVOutStream.write(csvRow.getBytes());
 
 	}
