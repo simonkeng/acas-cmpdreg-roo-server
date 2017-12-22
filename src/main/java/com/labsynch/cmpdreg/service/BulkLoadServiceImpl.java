@@ -568,7 +568,7 @@ public class BulkLoadServiceImpl implements BulkLoadService {
 					boolean sameCorpName = (parent.getCorpName() != null && parent.getCorpName().equals(foundParent.getCorpName()));
 					boolean noCorpName = (parent.getCorpName() == null);
 					boolean sameCorpPrefixOrNoPrefix = (parent.getLabelPrefix() == null || foundParent.getCorpName().contains(parent.getLabelPrefix().getLabelPrefix()));
-					if (sameStereoCategory & sameStereoComment & (sameCorpName | noCorpName) & sameCorpPrefixOrNoPrefix){
+					if (sameStereoCategory & sameStereoComment & (sameCorpName | (noCorpName & sameCorpPrefixOrNoPrefix))){
 						//parents match
 						parent = foundParent;
 						break searchResultLoop;
