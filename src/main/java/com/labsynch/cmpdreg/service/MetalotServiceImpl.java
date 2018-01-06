@@ -323,15 +323,13 @@ public class MetalotServiceImpl implements MetalotService {
 
 					parent.setMolFormula(chemService.getMolFormula(parent.getMolStructure()));
 					//add unique constraint to parent corp name as well (parent and lot)
-					try {
-						logger.debug("Saving new parent with corp name "+parent.getCorpName()+" and parent number "+parent.getParentNumber());
-						parent.persist();
-					} catch (Exception e){
-						logger.error("Caught an exception saving the parent: " + e);
-						//get a new corp name and try saving again
+					boolean corpNameAlreadyExists = checkCorpNameAlreadyExists(parent.getCorpName());
+					while (corpNameAlreadyExists) {
 						generateAndSetCorpName(parent);
-						parent.persist();
+						corpNameAlreadyExists = checkCorpNameAlreadyExists(parent.getCorpName());
 					}
+					logger.debug("Saving new parent with corp name "+parent.getCorpName()+" and parent number "+parent.getParentNumber());
+					parent.persist();
 				} 
 			}
 
@@ -814,6 +812,14 @@ public class MetalotServiceImpl implements MetalotService {
 			CorpNameDTO corpName = CorpName.generateParentNameFromSequence();
 			parent.setCorpName(corpName.getCorpName());
 			parent.setParentNumber(corpName.getCorpNumber());
+		}
+	}
+	
+	private boolean checkCorpNameAlreadyExists(String corpName) {
+		if (Parent.countFindParentsByCorpNameEquals(corpName) > 0L){
+			return true;
+		}else {
+			return false;
 		}
 	}
 
