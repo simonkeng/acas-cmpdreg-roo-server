@@ -12,16 +12,6 @@ import java.util.List;
 
 privileged aspect LDStandardizerInputDTO_Roo_Json {
     
-    public String LDStandardizerInputDTO.toJson() {
-        return new JSONSerializer()
-        .exclude("*.class").serialize(this);
-    }
-    
-    public String LDStandardizerInputDTO.toJson(String[] fields) {
-        return new JSONSerializer()
-        .include(fields).exclude("*.class").serialize(this);
-    }
-    
     public static LDStandardizerInputDTO LDStandardizerInputDTO.fromJsonToLDStandardizerInputDTO(String json) {
         return new JSONDeserializer<LDStandardizerInputDTO>()
         .use(null, LDStandardizerInputDTO.class).deserialize(json);

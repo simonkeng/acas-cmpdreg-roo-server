@@ -72,7 +72,8 @@
 		"standardizeStructure": false,
 		"useExternalStandardizerConfig": false,
 		"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml",
-		"orderSelectLists": true
+		"orderSelectLists": true,
+		"ldServerURL": "mcneilco-standardizer-dev"
 	},
 	"bulkLoadSettings": {
 		"useProjectRoles": false,

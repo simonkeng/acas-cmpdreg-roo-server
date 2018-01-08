@@ -48,9 +48,13 @@ public class ParentServiceImpl implements ParentService {
 	Logger logger = LoggerFactory.getLogger(ParentServiceImpl.class);
 
 	public static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
+    private static boolean useLDStandardizer = Configuration.getConfigInfo().getServerSettings().isUseLDStandardizer();
 
 	@Autowired
 	public ChemStructureService chemStructureService;
+	
+	@Autowired
+	public LDStandardizerService ldStandardizerService;
 
 	@Autowired
 	public ParentLotService parentLotService;
@@ -178,9 +182,16 @@ public class ParentServiceImpl implements ParentService {
 				logger.warn("Did not find the asDrawnStruct for parent: " + parentId + "  " + parent.getCorpName());
 				originalStructure = parent.getMolStructure();
 			}
-			result = chemStructureService.standardizeStructure(originalStructure);
-			parent.setMolStructure(result);
-			parent = parentStructureService.update(parent);
+			if(useLDStandardizer){
+				result = ldStandardizerService.standardizeStructure(originalStructure);
+				parent.setMolStructure(result);
+				parent = parentStructureService.update(parent);
+			}
+			else{
+				result = chemStructureService.standardizeStructure(originalStructure);
+				parent.setMolStructure(result);
+				parent = parentStructureService.update(parent);
+			}
 		}
 
 		return parentIds.size();
@@ -204,9 +215,16 @@ public class ParentServiceImpl implements ParentService {
 				logger.warn("Did not find the asDrawnStruct for parent: " + parentId + "  " + parent.getCorpName());
 				originalStructure = parent.getMolStructure();
 			}
-			result = chemStructureService.standardizeStructure(originalStructure);
-			parent.setMolStructure(result);
-			parent = parentStructureService.update(parent);
+			if(useLDStandardizer){
+				result = ldStandardizerService.standardizeStructure(originalStructure);
+				parent.setMolStructure(result);
+				parent = parentStructureService.update(parent);
+			}
+			else{
+				result = chemStructureService.standardizeStructure(originalStructure);
+				parent.setMolStructure(result);
+				parent = parentStructureService.update(parent);
+			}
 		}
 
 		return parentIds.size();
@@ -376,7 +394,12 @@ public class ParentServiceImpl implements ParentService {
 			} else {
 				asDrawnStruct = parent.getMolStructure();
 			}
-			qcCompound.setMolStructure(chemStructureService.standardizeStructure(asDrawnStruct));				
+			if(useLDStandardizer){
+				qcCompound.setMolStructure(ldStandardizerService.standardizeStructure(asDrawnStruct));
+			}
+			else{
+				qcCompound.setMolStructure(chemStructureService.standardizeStructure(asDrawnStruct));
+			}
 			boolean matching = chemStructureService.compareStructures(asDrawnStruct, qcCompound.getMolStructure(), "DUPLICATE");
 			if (!matching){
 				qcCompound.setDisplayChange(true);

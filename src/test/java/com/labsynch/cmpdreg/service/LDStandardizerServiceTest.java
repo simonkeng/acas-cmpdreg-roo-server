@@ -1,5 +1,7 @@
 package com.labsynch.cmpdreg.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,12 +21,19 @@ import com.labsynch.cmpdreg.dto.BulkLoadPropertiesDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerActionDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerInputDTO;
+import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
+import com.labsynch.cmpdreg.utils.SimpleUtil;
+
+import flexjson.JSONSerializer;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:/META-INF/spring/applicationContext.xml", "classpath:/META-INF/spring/applicationContext-security.xml"})
 @Configurable
 
 public class LDStandardizerServiceTest {
+	
+    // private static boolean ldServerURL = Configuration.getConfigInfo().getServerSettings()
 	
 	private static final Logger logger = LoggerFactory.getLogger(LDStandardizerServiceTest.class);
 	
@@ -33,7 +42,7 @@ public class LDStandardizerServiceTest {
 	
 	@Test
 	@Transactional
-	public void ldStandardizerServiceTest(){
+	public void ldStandardizerServiceTest() throws MalformedURLException, IOException{
     	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
     	LDStandardizerActionDTO ldStandardizerAction = new LDStandardizerActionDTO();
     	ldStandardizerAction.setName("CLEAN_2D");
@@ -50,6 +59,13 @@ public class LDStandardizerServiceTest {
     	ldStandardizerDTO.setOutput_format("MOL");
     	
     	logger.info(ldStandardizerDTO.toJson());
+		String json = ldStandardizerDTO.toJson();
+    	
+		String url = "https://mcneilco-standardizer-dev.onschrodinger.com/standardizer/api/v0/standardize";
+		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
+		
+		logger.info(responseJson);
+//		logger.info(mainConfig.getServerSettings().get)
    	
 	}
 

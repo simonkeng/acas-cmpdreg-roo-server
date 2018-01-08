@@ -61,6 +61,9 @@ public class MetalotServiceImpl implements MetalotService {
 
 	@Autowired
 	private ChemStructureService chemService;
+	
+	@Autowired
+	private LDStandardizerService ldStandardizerService;
 
 
 	@Autowired
@@ -211,8 +214,14 @@ public class MetalotServiceImpl implements MetalotService {
 			logger.debug("this is a new parent");
 			String molStructure;
 			if (useStandardizer){
-				molStructure = chemService.standardizeStructure(parent.getMolStructure());
-				parent.setMolStructure(molStructure);
+				if (useLDStandardizer){
+					molStructure = ldStandardizerService.standardizeStructure(parent.getMolStructure());
+					parent.setMolStructure(molStructure);
+				}
+				else{
+					molStructure = chemService.standardizeStructure(parent.getMolStructure());
+					parent.setMolStructure(molStructure);
+				}
 			}
 			int dupeParentCount = 0;			
 			if (!metaLot.isSkipParentDupeCheck()){
