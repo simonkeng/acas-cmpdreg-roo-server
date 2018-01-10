@@ -1,11 +1,12 @@
 package com.labsynch.cmpdreg.service;
 
-import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -17,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.CorpName;
 import com.labsynch.cmpdreg.domain.Lot;
-
-import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
@@ -107,5 +106,20 @@ public class CustomCorpNameTest {
 		String output = CorpName.generateCorpLicensePlate();
 		logger.info("custom license plate: " + output);
 
+	}
+	
+	@Test
+	public void parseCorpNameTest(){
+		Map<String, Long> corpNames = new HashMap<String, Long>();
+		corpNames.put("CMPD-0001234", 1234L);
+		corpNames.put("CMPD-0001", 1L);
+		corpNames.put("CMPD0001234", 1234L);
+		corpNames.put("CMP1-001234", 1234L);
+		corpNames.put("CMP1-001234-001A", 1234L);
+		corpNames.put("CMPDTHEBESTNONUMBERS", 0L);
+		for(String corpName : corpNames.keySet()){
+			Long parentNumber = CorpName.parseParentNumber(corpName);
+			Assert.assertEquals(corpNames.get(corpName), parentNumber);
+		}
 	}
 }

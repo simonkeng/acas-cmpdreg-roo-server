@@ -328,6 +328,10 @@ public class MetalotServiceImpl implements MetalotService {
 						generateAndSetCorpName(parent);
 						corpNameAlreadyExists = checkCorpNameAlreadyExists(parent.getCorpName());
 					}
+					//try to set the parentNumber if it is not set already
+					if (parent.getParentNumber() < 1){
+						parent.setParentNumber(CorpName.parseParentNumber(parent.getCorpName()));
+					}
 					logger.debug("Saving new parent with corp name "+parent.getCorpName()+" and parent number "+parent.getParentNumber());
 					parent.persist();
 				} 
