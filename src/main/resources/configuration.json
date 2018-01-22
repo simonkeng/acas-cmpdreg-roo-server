@@ -69,8 +69,9 @@
 		"checkACASDependenciesByContainerCode": false,
 		"jchemVersion": "16.4.25.0",
 		"databaseType": "postgres",
-		"standardizeStructure": false,
-		"useExternalStandardizerConfig": false,
+		"standardizeStructure": true,
+		"useExternalStandardizerConfig": true,
+		"useLDStandardizer": true,
 		"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml",
 		"orderSelectLists": true,
 		"ldServerURL": "mcneilco-standardizer-dev"

@@ -21,7 +21,9 @@ import com.labsynch.cmpdreg.dto.BulkLoadPropertiesDTO;
 import com.labsynch.cmpdreg.dto.BulkLoadSDFPropertyRequestDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerActionDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerInputDTO;
+import com.labsynch.cmpdreg.dto.LDStandardizerOutputDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.SimpleUtil;
 
@@ -42,29 +44,40 @@ public class LDStandardizerServiceTest {
 	
 	@Test
 	@Transactional
-	public void ldStandardizerServiceTest() throws MalformedURLException, IOException{
-    	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
-    	LDStandardizerActionDTO ldStandardizerAction = new LDStandardizerActionDTO();
-    	ldStandardizerAction.setName("CLEAN_2D");
-    	Collection<LDStandardizerActionDTO> ldStandardizerActions = new ArrayList<LDStandardizerActionDTO>();
-    	ldStandardizerActions.add(ldStandardizerAction);
-    	ldStandardizerDTO.setActions(ldStandardizerActions);
-    	
-    	HashMap<String, String> structures = new HashMap<String, String>();
-    	structures.put("CMPD-0000001", "\n  Mrv1621 12131714292D          \n\n  9  9  0  0  0  0            999 V2000\n   -1.2202    0.4084    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202   -1.2417    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.2087    0.4083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202    1.2334    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.1097   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  2  0  0  0  0\n  5  6  1  0  0  0  0\n  1  6  2  0  0  0  0\n  6  7  1  0  0  0  0\n  1  8  1  0  0  0  0\n  2  9  1  0  0  0  0\nM  END\n$$$$");
-    	ldStandardizerDTO.setStructures(structures);
-    	
-    	ldStandardizerDTO.setAuth_token("nonce");
-    	ldStandardizerDTO.setTimeout(10);
-    	ldStandardizerDTO.setOutput_format("MOL");
-    	
-    	logger.info(ldStandardizerDTO.toJson());
-		String json = ldStandardizerDTO.toJson();
-    	
-		String url = "https://mcneilco-standardizer-dev.onschrodinger.com/standardizer/api/v0/standardize";
-		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
+	public void ldStandardizerServiceTest() throws MalformedURLException, IOException, CmpdRegMolFormatException{
+//    	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
+//    	LDStandardizerActionDTO ldStandardizerAction = new LDStandardizerActionDTO();
+//    	ldStandardizerAction.setName("CLEAN_2D");
+//    	Collection<LDStandardizerActionDTO> ldStandardizerActions = new ArrayList<LDStandardizerActionDTO>();
+//    	ldStandardizerActions.add(ldStandardizerAction);
+//    	ldStandardizerDTO.setActions(ldStandardizerActions);
+//    	
+//    	HashMap<String, String> structures = new HashMap<String, String>();
+//    	structures.put("key1", "\n  Mrv1621 12131714292D          \n\n  9  9  0  0  0  0            999 V2000\n   -1.2202    0.4084    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202   -1.2417    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.2087    0.4083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202    1.2334    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.1097   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  2  0  0  0  0\n  5  6  1  0  0  0  0\n  1  6  2  0  0  0  0\n  6  7  1  0  0  0  0\n  1  8  1  0  0  0  0\n  2  9  1  0  0  0  0\nM  END\n$$$$");
+//    	ldStandardizerDTO.setStructures(structures);
+//    	
+//    	ldStandardizerDTO.setAuth_token("nonce");
+//    	ldStandardizerDTO.setTimeout(10);
+//    	ldStandardizerDTO.setOutput_format("MOL");
+//    	
+//    	logger.info(ldStandardizerDTO.toJson());
+//	String json = ldStandardizerDTO.toJson();
+//	
+//	String url = "https://mcneilco-standardizer-dev.onschrodinger.com/standardizer/api/v0/standardize";
+//	String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
+//	
+//	logger.info(responseJson);
+//	LDStandardizerOutputDTO response = LDStandardizerOutputDTO.fromJsonToLDStandardizerOutputDTO(responseJson);
+//	logger.info(response.toJson());
 		
-		logger.info(responseJson);
+	String molStructure;
+	molStructure = ldStandardizerService.standardizeStructure("\n  Mrv1621 12131714292D          \n\n  9  9  0  0  0  0            999 V2000\n   -1.2202    0.4084    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9347   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202   -1.2417    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.8292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5058   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.2087    0.4083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2202    1.2334    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.1097   -0.0042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0  0  0  0\n  2  3  2  0  0  0  0\n  3  4  1  0  0  0  0\n  4  5  2  0  0  0  0\n  5  6  1  0  0  0  0\n  1  6  2  0  0  0  0\n  6  7  1  0  0  0  0\n  1  8  1  0  0  0  0\n  2  9  1  0  0  0  0\nM  END\n$$$$");
+	
+//	Assert.assertEquals("SUCCESS", response.getJob_status());
+//	Assert.assertEquals("MOL", response.getStructures().get("key1").getFormat());
+//	Assert.assertTrue(response.getStructures().get("key1").getStructure().contains("RDKit"));
+	Assert.assertTrue(molStructure.contains("RDKit"));
+
 //		logger.info(mainConfig.getServerSettings().get)
    	
 	}
