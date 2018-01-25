@@ -73,8 +73,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 	private static String exactSearchDef = mainConfig.getServerSettings().getExactMatchDef();
 	private static long maxSearchTime = mainConfig.getServerSettings().getMaxSearchTime();
 	private static int maxSearchResults = mainConfig.getServerSettings().getMaxSearchResults();
-	private static boolean useStandardizer = mainConfig.getServerSettings().isUseExternalStandardizerConfig();
-	private static String standardizerConfigFilePath = mainConfig.getServerSettings().getStandardizerConfigFilePath();
+	private static final boolean shouldStandardize = Configuration.getConfigInfo().getStandardizerSettings().getShouldStandardize();
+    private static final String standardizerConfigFilePath = Configuration.getConfigInfo().getStandardizerSettings().getJchemSettings().getStandardizerConfigFilePath();
 	
 	private Indigo indigo = new Indigo();
 	
@@ -219,7 +219,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			String bingoFunction = null;
 			String orderBy = " ORDER BY cd_id";
 			
-			if (useStandardizer){
+			if (shouldStandardize){
 				mol = standardizeMolecule(mol);
 				mol.dearomatize();				
 			} else {
@@ -408,7 +408,7 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			String orderBy = " ORDER BY cd_id";
 			String filterIdsClause = "";
 			
-			if (useStandardizer){
+			if (shouldStandardize){
 				mol = standardizeMolecule(mol);
 				mol.aromatize();				
 			} else {
