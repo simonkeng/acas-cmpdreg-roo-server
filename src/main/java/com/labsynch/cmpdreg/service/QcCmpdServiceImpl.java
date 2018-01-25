@@ -24,6 +24,7 @@ import com.labsynch.cmpdreg.domain.ParentAlias;
 import com.labsynch.cmpdreg.domain.QcCompound;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
@@ -63,7 +64,7 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 
 	@Override
-	public void exportQCReport(String outputFilePathName, String exportType) throws IOException, CmpdRegMolFormatException{
+	public void exportQCReport(String outputFilePathName, String exportType) throws StandardizerException, CmpdRegMolFormatException, IOException{
 		List<Long> qcIds = QcCompound.findPotentialQcCmpds().getResultList();
 		if (exportType.equalsIgnoreCase("csv")){
 			exportQcCompoundsToCsv(qcIds, outputFilePathName);
@@ -142,7 +143,7 @@ public class QcCmpdServiceImpl implements QcCmpdService {
 
 	@Transactional
 	@Override
-	public int qcCheckParentStructures() throws CmpdRegMolFormatException, IOException{
+	public int qcCheckParentStructures() throws CmpdRegMolFormatException, IOException, StandardizerException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		QcCompound qcCompound;

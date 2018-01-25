@@ -10,6 +10,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 import flexjson.JSONSerializer;
 import flexjson.transformer.DateTransformer;
+import com.labsynch.cmpdreg.utils.ExcludeNulls;
 
 @RooJavaBean
 @RooToString
@@ -28,6 +29,7 @@ public class LDStandardizerInputDTO {
 	public String toJson() {
         return new JSONSerializer().include("actions")
         		.exclude("*.class")
+        		.transform(new ExcludeNulls(), void.class)
         		.serialize(this);
     }
 

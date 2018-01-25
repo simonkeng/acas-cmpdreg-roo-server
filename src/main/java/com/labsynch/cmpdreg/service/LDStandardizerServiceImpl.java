@@ -1,66 +1,73 @@
 package com.labsynch.cmpdreg.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-//import com.labsynch.cmpdreg.chemclasses.jchem.LicenseException;
-//import com.labsynch.cmpdreg.chemclasses.jchem.MolFormatException;
-//import com.labsynch.cmpdreg.chemclasses.jchem.MolHandler;
-//import com.labsynch.cmpdreg.chemclasses.jchem.Molecule;
-//import com.labsynch.cmpdreg.chemclasses.jchem.Standardizer;
-import com.labsynch.cmpdreg.domain.CorpName;
-import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.dto.LDStandardizerActionDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerInputDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerOutputDTO;
+import com.labsynch.cmpdreg.dto.SimpleStandardizerLiveDesignPropertyDTO;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
+import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.SimpleUtil;
+import com.labsynch.cmpdreg.utils.SimpleUtil.PostResponse;
 
 @Service
 public class LDStandardizerServiceImpl implements LDStandardizerService {
-	private static final Logger logger = LoggerFactory.getLogger(LDStandardizerService.class);
-
-	@Override
-	public String standardizeStructure(String molfile) throws IOException {
-
-	    	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
-	    	LDStandardizerActionDTO ldStandardizerAction = new LDStandardizerActionDTO();
-	    	ldStandardizerAction.setName("CLEAN_2D");
-	    	Collection<LDStandardizerActionDTO> ldStandardizerActions = new ArrayList<LDStandardizerActionDTO>();
-	    	ldStandardizerActions.add(ldStandardizerAction);
-	    	ldStandardizerDTO.setActions(ldStandardizerActions);
-	    	
-	    	HashMap<String, String> structures = new HashMap<String, String>();
-	    	structures.put("key1", molfile);
-	    	ldStandardizerDTO.setStructures(structures);
-	    	
-	    	ldStandardizerDTO.setAuth_token("nonce");
-	    	ldStandardizerDTO.setTimeout(10);
-	    	ldStandardizerDTO.setOutput_format("MOL");
-	    	
-	    	logger.info(ldStandardizerDTO.toJson());
-		String json = ldStandardizerDTO.toJson();
-		
-		String url = "https://mcneilco-standardizer-dev.onschrodinger.com/standardizer/api/v0/standardize";
-		String responseJson = SimpleUtil.postRequestToExternalServer(url, json, logger);
-		
-		LDStandardizerOutputDTO response = LDStandardizerOutputDTO.fromJsonToLDStandardizerOutputDTO(responseJson);
-		logger.info(response.toJson());
-
-		return response.getStructures().get("key1").getStructure();
 	
+	private static final Logger logger = LoggerFactory.getLogger(LDStandardizerService.class);
+	private static final SimpleStandardizerLiveDesignPropertyDTO ldStandardizerSettings = Configuration.getConfigInfo().getStandardizerSettings().getLivedesignSettings();
+	private static final String standardizerURL = ldStandardizerSettings.getUrl();
+	private static final String standardizerToken = ldStandardizerSettings.getToken();
+	private static final String standardizerOutputFormat = ldStandardizerSettings.getOutputFormat();
+	private static final int standardizerTimeout = ldStandardizerSettings.getTimeout();
+	private static final Collection<LDStandardizerActionDTO> ldStandardizerActions = ldStandardizerSettings.getActions();
+	
+	
+	@Override
+	public String standardizeStructure(String molfile) throws StandardizerException {
+
+    	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
+
+    	
+    	HashMap<String, String> structures = new HashMap<String, String>();
+    	structures.put("key1", molfile);
+    	ldStandardizerDTO.setStructures(structures);
+    	ldStandardizerDTO.setActions(ldStandardizerActions);
+    	ldStandardizerDTO.setAuth_token(standardizerToken);
+    	ldStandardizerDTO.setTimeout(standardizerTimeout);
+    	ldStandardizerDTO.setOutput_format(standardizerOutputFormat);
+    	
+    	logger.info(ldStandardizerDTO.toJson());
+    	String json = ldStandardizerDTO.toJson();
+	
+		try {
+			PostResponse responseObject = SimpleUtil.postRequestToExternalServerReturnObject(standardizerURL, json, logger);
+			logger.info("Standardizer Response:" + responseObject.getJson());
+
+			if (responseObject.getStatus() == 200 ){
+				LDStandardizerOutputDTO response = LDStandardizerOutputDTO.fromJsonToLDStandardizerOutputDTO(responseObject.getJson());
+				switch (response.getJob_status()) {
+					case "SUCCESS":
+						return response.getStructures().get("key1").getStructure();
+					case "ERROR":
+						throw new StandardizerException("Unknown error returned from standardizer:" + responseObject.getJson());
+					default: 
+						throw new StandardizerException("Unknown job status response returned from Live Design: " + response.getJob_status());
+				}
+				
+			} else {
+				throw new StandardizerException("Unknown error during standardization: " + responseObject.getJson());
+			}
+		} catch (IOException e){
+			throw new StandardizerException("Error connecting to the Live Design standardizer " + e.getMessage());
+		}
+		
 	}
 }
 

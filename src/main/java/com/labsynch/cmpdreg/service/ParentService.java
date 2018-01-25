@@ -10,19 +10,20 @@ import com.labsynch.cmpdreg.dto.CodeTableDTO;
 import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 
 
 
 public interface ParentService {
 
-	ParentValidationDTO validateUniqueParent(Parent queryParent) throws CmpdRegMolFormatException;
+	ParentValidationDTO validateUniqueParent(Parent queryParent) throws CmpdRegMolFormatException, StandardizerException;
 
 	Collection<CodeTableDTO> updateParent(Parent parent);
 
-	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, IOException;
+	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, StandardizerException, IOException;
 	Parent updateParentMeta(ParentEditDTO parentDTO, String modifiedByUser);
 
-	void qcCheckParentStructures() throws CmpdRegMolFormatException, IOException;
+	void qcCheckParentStructures() throws CmpdRegMolFormatException, StandardizerException, IOException;
 
 	void dupeCheckQCStructures() throws CmpdRegMolFormatException;
 
@@ -30,9 +31,9 @@ public interface ParentService {
 
 	int findDupeParentStructures(String dupeCheckFile);
 
-	int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException;
+	int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException, StandardizerException;
 
-	int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException;
+	int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException, StandardizerException;
 
 
 	String updateParentMetaArray(String jsonInput, String modifiedByUser);

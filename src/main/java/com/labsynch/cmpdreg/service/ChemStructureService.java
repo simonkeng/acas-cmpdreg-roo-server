@@ -8,6 +8,7 @@ import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
 import com.labsynch.cmpdreg.dto.MolConvertOutputDTO;
 import com.labsynch.cmpdreg.dto.StrippedSaltDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 
 @Service
 public interface ChemStructureService {
@@ -87,7 +88,7 @@ public interface ChemStructureService {
 
 	StrippedSaltDTO stripSalts(CmpdRegMolecule inputStructure) throws CmpdRegMolFormatException;
 
-	public String standardizeStructure(String molfile) throws CmpdRegMolFormatException, IOException;
+	public String standardizeStructure(String molfile) throws CmpdRegMolFormatException, StandardizerException, IOException;
 
 	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
 

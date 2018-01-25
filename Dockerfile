@@ -8,7 +8,7 @@ RUN 	["mvn", "install:install-file","-Dfile=/lib/jchem-16.4.25.0.jar","-Dartifac
 RUN 	["mvn", "dependency:resolve", "-P default"]
 RUN		["mvn", "clean"]
 ADD		. /src
-RUN		mvn compile war:war -P default
+RUN		mvn compile war:war -P jchem
 RUN		mv target/cmpdreg*.war $CATALINA_HOME/webapps/cmpdreg.war
 RUN             mv target/*BUILD* $CATALINA_HOME/webapps/cmpdreg
 RUN		rm -rf /src

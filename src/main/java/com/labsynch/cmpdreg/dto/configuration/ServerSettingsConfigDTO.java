@@ -56,15 +56,7 @@ public class ServerSettingsConfigDTO {
     private String jchemVersion;
     
     private String databaseType;
-    
-    private boolean standardizeStructure;
-    
-    private boolean useLDStandardizer;
-
-    private boolean useExternalStandardizerConfig;
-    
-    private String standardizerConfigFilePath;
-
+            
     private boolean usePredefinedList;
     
     private boolean newUserIsChemist;

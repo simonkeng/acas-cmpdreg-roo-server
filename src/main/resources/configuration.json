@@ -41,6 +41,23 @@
 		"showLotInventory": false,
 		"disableEditMyLots": false
 	},
+	"standardizerSettings": {
+		"shouldStandardize": false,
+		"type": "jchem",
+		"livedesignSettings": {
+		  "url": "https://livedesignserver/standardizer/api/v0/standardize",
+		  "token": "nonce",
+		  "outputFormat": "MOL",
+		  "timeout": 10,
+		  "actions":[
+				{"name":"REMOVE_EXPLICIT_HYDROGENS"},
+				{"name":"CLEAN_2D"}
+			]
+		},
+		"jchemSettings": {
+		  "standardizerConfigFilePath": "webapps/cmpdreg/WEB-INF/classes/standardizerConfig.xml.example"
+		}
+	},
 	"serverSettings": {
 		"corpPrefix": "CMPD",
 		"corpSeparator": "-",
@@ -69,12 +86,7 @@
 		"checkACASDependenciesByContainerCode": false,
 		"jchemVersion": "16.4.25.0",
 		"databaseType": "postgres",
-		"standardizeStructure": true,
-		"useExternalStandardizerConfig": true,
-		"useLDStandardizer": true,
-		"standardizerConfigFilePath": "/opt/acas/conf/standardizerConfig.xml",
-		"orderSelectLists": true,
-		"ldServerURL": "mcneilco-standardizer-dev"
+		"orderSelectLists": true
 	},
 	"bulkLoadSettings": {
 		"useProjectRoles": false,

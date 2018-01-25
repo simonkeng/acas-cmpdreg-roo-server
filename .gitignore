@@ -1,0 +1,6 @@
+/target/
+/.settings/
+.classpath
+.project
+/lib/jchem*.jar
+/log.roo

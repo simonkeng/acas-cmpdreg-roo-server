@@ -18,6 +18,7 @@ import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.QcCompound;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext.xml")
@@ -37,7 +38,7 @@ public class ChemStructStandardizerServicesTest {
 	private ParentService parentServ;
 
 	@Test
-	public void molconvertInchiTest() throws IOException, CmpdRegMolFormatException {
+	public void molconvertInchiTest() throws IOException, CmpdRegMolFormatException, StandardizerException {
 		String structure = "CCC";
 		String result = chemStructServ.standardizeStructure(structure);
 		logger.info(result);
@@ -55,7 +56,7 @@ public class ChemStructStandardizerServicesTest {
 	}
 
 	//	@Test
-	public void standardizeAllParents() throws CmpdRegMolFormatException, IOException {
+	public void standardizeAllParents() throws CmpdRegMolFormatException, StandardizerException, IOException, CmpdRegMolFormatException {
 		int numberOfParents = parentServ.restandardizeAllParentStructures();
 		logger.info("number of parents standardized: " + numberOfParents);
 	}
@@ -82,7 +83,7 @@ public class ChemStructStandardizerServicesTest {
 
 	//@Test
 	//@Transactional
-	public void qcCheckParents() throws CmpdRegMolFormatException, IOException{
+	public void qcCheckParents() throws CmpdRegMolFormatException, IOException, StandardizerException{
 		//		parentServ.qcCheckParentStructures();
 		qcCmpdServ.qcCheckParentStructures();
 	}
@@ -93,7 +94,7 @@ public class ChemStructStandardizerServicesTest {
 	}
 
 	@Test
-	public void qcGenerateQCReport() throws IOException, CmpdRegMolFormatException{
+	public void qcGenerateQCReport() throws IOException, CmpdRegMolFormatException, StandardizerException{
 		String outputFilePathName = "/tmp/qcReport.csv";
 		String exportType = "csv";
 		qcCmpdServ.exportQCReport(outputFilePathName, exportType );

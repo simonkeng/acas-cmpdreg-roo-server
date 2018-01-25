@@ -20,5 +20,7 @@ public class MainConfigDTO {
     private ServerSettingsConfigDTO serverSettings;
     
     private BulkLoadSettingsConfigDTO bulkLoadSettings;
-
+    
+    private StandardizerSettingsConfigDTO standardizerSettings;
+    
 }

@@ -15,4 +15,36 @@ privileged aspect LDStandardizerActionDTO_Roo_JavaBean {
         this.name = name;
     }
     
+    public String LDStandardizerActionDTO.getStructure() {
+        return this.structure;
+    }
+    
+    public void LDStandardizerActionDTO.setStructure(String structure) {
+        this.structure = structure;
+    }
+    
+    public String LDStandardizerActionDTO.getLabel() {
+        return this.label;
+    }
+    
+    public void LDStandardizerActionDTO.setLabel(String label) {
+        this.label = label;
+    }
+    
+    public String LDStandardizerActionDTO.getMethod() {
+        return this.method;
+    }
+    
+    public void LDStandardizerActionDTO.setMethod(String method) {
+        this.method = method;
+    }
+    
+    public String[] LDStandardizerActionDTO.getSalts() {
+        return this.salts;
+    }
+    
+    public void LDStandardizerActionDTO.setSalts(String[] salts) {
+        this.salts = salts;
+    }
+    
 }

@@ -9,7 +9,7 @@
             <table:column id="c_com_labsynch_cmpdreg_domain_Lot_saltForm" property="saltForm" z="28l826X0SUu505YoyovrriyvmqQ="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Lot_asDrawnStruct" property="asDrawnStruct" z="Pzx6kKgrykssy18Q/nctPrmu0oU="/>
             <table:column id="c_com_labsynch_cmpdreg_domain_Lot_lotAsDrawnCdId" property="lotAsDrawnCdId" z="iNqA4JeWWuxFecQXSuyoaiwHp8Y="/>
-            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_corpName" property="corpName" z="Ej+m/uwLnRTmk/bc3RXVsUHfsnQ="/>
+            <table:column id="c_com_labsynch_cmpdreg_domain_Lot_storageLocation" property="storageLocation" z="dQBHI7HicTkAHVnH1n9/TLOU48U="/>
         </table:table>
     </page:list>
 </div>

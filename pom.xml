@@ -114,7 +114,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 	<!-- Maven Build profile controls whether to use JChem or Indigo -->
 	<profiles>
 		<profile>
-			<id>default</id>
+			<id>jchem</id>
 			<dependencies>
 				<dependency>
 					<groupId>com.chemaxon</groupId>
@@ -214,7 +214,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>3.2.1</version>
+			<version>5.0.6</version>
 		</dependency>
 		<!-- ROO dependencies -->
 		<dependency>

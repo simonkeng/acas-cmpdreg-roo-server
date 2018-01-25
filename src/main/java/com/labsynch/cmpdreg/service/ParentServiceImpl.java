@@ -37,6 +37,7 @@ import com.labsynch.cmpdreg.dto.ParentEditDTO;
 import com.labsynch.cmpdreg.dto.ParentValidationDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
@@ -48,7 +49,8 @@ public class ParentServiceImpl implements ParentService {
 	Logger logger = LoggerFactory.getLogger(ParentServiceImpl.class);
 
 	public static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
-    private static boolean useLDStandardizer = Configuration.getConfigInfo().getServerSettings().isUseLDStandardizer();
+	private static final boolean shouldStandardize = Configuration.getConfigInfo().getStandardizerSettings().getShouldStandardize();
+    private static final String standardizerType = Configuration.getConfigInfo().getStandardizerSettings().getType();
 
 	@Autowired
 	public ChemStructureService chemStructureService;
@@ -164,7 +166,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 
 	@Override
-	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, IOException{
+	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, StandardizerException, IOException {
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		List<Lot> lots;
@@ -182,15 +184,19 @@ public class ParentServiceImpl implements ParentService {
 				logger.warn("Did not find the asDrawnStruct for parent: " + parentId + "  " + parent.getCorpName());
 				originalStructure = parent.getMolStructure();
 			}
-			if(useLDStandardizer){
-				result = ldStandardizerService.standardizeStructure(originalStructure);
-				parent.setMolStructure(result);
-				parent = parentStructureService.update(parent);
-			}
-			else{
-				result = chemStructureService.standardizeStructure(originalStructure);
-				parent.setMolStructure(result);
-				parent = parentStructureService.update(parent);
+			if (shouldStandardize){
+				switch (standardizerType) {
+				case "livedesign":
+					result = ldStandardizerService.standardizeStructure(originalStructure);
+					parent.setMolStructure(result);
+					parent = parentStructureService.update(parent);
+					break;
+				case "jchem":
+					result = chemStructureService.standardizeStructure(originalStructure);
+					parent.setMolStructure(result);
+					parent = parentStructureService.update(parent);
+					break;
+				}
 			}
 		}
 
@@ -198,7 +204,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 	
 	@Override
-	public int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException{
+	public int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, StandardizerException, IOException {
 		Parent parent;
 		List<Lot> lots;
 		Lot lot;
@@ -215,15 +221,18 @@ public class ParentServiceImpl implements ParentService {
 				logger.warn("Did not find the asDrawnStruct for parent: " + parentId + "  " + parent.getCorpName());
 				originalStructure = parent.getMolStructure();
 			}
-			if(useLDStandardizer){
+			
+			switch (standardizerType) {
+			case "livedesign":
 				result = ldStandardizerService.standardizeStructure(originalStructure);
 				parent.setMolStructure(result);
 				parent = parentStructureService.update(parent);
-			}
-			else{
+				break;
+			case "jchem":
 				result = chemStructureService.standardizeStructure(originalStructure);
 				parent.setMolStructure(result);
 				parent = parentStructureService.update(parent);
+				break;
 			}
 		}
 
@@ -231,7 +240,7 @@ public class ParentServiceImpl implements ParentService {
 	}
 	
 	@Override
-	public int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException{
+	public int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException, StandardizerException{
 		List<Long> parentIds = QcCompound.findParentsWithDisplayChanges().getResultList();
 		int result = restandardizeParentStructures(parentIds);
 		return result;
@@ -371,7 +380,7 @@ public class ParentServiceImpl implements ParentService {
 
 	@Override
 	@Transactional
-	public void qcCheckParentStructures() throws CmpdRegMolFormatException, IOException{
+	public void qcCheckParentStructures() throws CmpdRegMolFormatException, IOException, StandardizerException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
 		QcCompound qcCompound;
@@ -394,12 +403,16 @@ public class ParentServiceImpl implements ParentService {
 			} else {
 				asDrawnStruct = parent.getMolStructure();
 			}
-			if(useLDStandardizer){
+			
+			switch (standardizerType) {
+			case "livedesign":
 				qcCompound.setMolStructure(ldStandardizerService.standardizeStructure(asDrawnStruct));
-			}
-			else{
+				break;
+			case "jchem":
 				qcCompound.setMolStructure(chemStructureService.standardizeStructure(asDrawnStruct));
+				break;
 			}
+
 			boolean matching = chemStructureService.compareStructures(asDrawnStruct, qcCompound.getMolStructure(), "DUPLICATE");
 			if (!matching){
 				qcCompound.setDisplayChange(true);

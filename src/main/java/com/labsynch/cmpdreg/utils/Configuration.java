@@ -44,7 +44,6 @@ public class Configuration {
 	
 	public static MainConfigDTO getConfigInfo() {
 		String configurationString = null;
-		logger.debug("In getConfigInfo class: use external config file: " + Configuration.isUseExternalConfig());
 		try {
 			if (Configuration.isUseExternalConfig()){
 				configurationString = new String(Files.readAllBytes(Paths.get(Configuration.getConfigFilePath())));

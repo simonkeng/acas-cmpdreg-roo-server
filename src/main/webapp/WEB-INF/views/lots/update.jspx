@@ -55,5 +55,6 @@
         <field:input field="totalAmountStored" id="c_com_labsynch_cmpdreg_domain_Lot_totalAmountStored" validationMessageCode="field_invalid_number" z="yZaM8ZG8zMdqFhcuNnblEEiWj9Q="/>
         <field:select field="totalAmountStoredUnits" id="c_com_labsynch_cmpdreg_domain_Lot_totalAmountStoredUnits" itemValue="id" items="${units}" path="/units" z="EG2YIeNeKLagpo9AwrGyb1QJzzY="/>
         <field:simple field="lotAliases" id="c_com_labsynch_cmpdreg_domain_Lot_lotAliases" messageCode="entity_reference_not_managed" messageCodeAttribute="Lot Alias" z="W6JopqVnz7B3WrTkH+YHb939klg="/>
+        <field:input field="storageLocation" id="c_com_labsynch_cmpdreg_domain_Lot_storageLocation" z="wcLtGuxP0UZaqXrb6A9BCnUnS/s="/>
     </form:update>
 </div>

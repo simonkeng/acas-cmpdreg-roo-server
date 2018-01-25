@@ -53,5 +53,6 @@
         <field:display field="tareWeightUnits" id="s_com_labsynch_cmpdreg_domain_Lot_tareWeightUnits" object="${lot}" z="NC5gqqGqJKp+cHgsRN4ccxtUx5o="/>
         <field:display field="totalAmountStored" id="s_com_labsynch_cmpdreg_domain_Lot_totalAmountStored" object="${lot}" z="jgaX3ck5jSD7b6Kmzyx0H6ab7TI="/>
         <field:display field="totalAmountStoredUnits" id="s_com_labsynch_cmpdreg_domain_Lot_totalAmountStoredUnits" object="${lot}" z="X/o+2LDQ9nFBC49ws3ZK/RFFSpc="/>
+        <field:display field="storageLocation" id="s_com_labsynch_cmpdreg_domain_Lot_storageLocation" object="${lot}" z="AnO+rWsfEiLN5L6tuEWKTr2JkAI="/>
     </page:show>
 </div>

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.labsynch.cmpdreg.domain.QcCompound;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 import com.labsynch.cmpdreg.service.ChemStructureService;
 import com.labsynch.cmpdreg.service.QcCmpdService;
 
@@ -61,7 +62,7 @@ public class ApiQcCompoundServicesController {
 	@Transactional
 	@RequestMapping(value = "/qcParentStructs", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws CmpdRegMolFormatException, IOException{
+	public ResponseEntity<String> checkParentStructs(@RequestParam String adminCode) throws CmpdRegMolFormatException, IOException, StandardizerException{
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");		
 		if (adminCode.equalsIgnoreCase("lajolla-check")){
@@ -113,7 +114,7 @@ public class ApiQcCompoundServicesController {
 				reportFile = "/tmp/qcDupeReport.sdf";
 			}
 			qcCmpdServ.exportQCReport(reportFile, exportType);
-		} catch (IOException | CmpdRegMolFormatException e) {
+		} catch (IOException | StandardizerException | CmpdRegMolFormatException e) {
 			return new ResponseEntity<String>("ERROR: unable to generate report", headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

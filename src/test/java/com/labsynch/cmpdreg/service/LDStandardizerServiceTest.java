@@ -24,6 +24,7 @@ import com.labsynch.cmpdreg.dto.LDStandardizerInputDTO;
 import com.labsynch.cmpdreg.dto.LDStandardizerOutputDTO;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
+import com.labsynch.cmpdreg.exceptions.StandardizerException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.SimpleUtil;
 
@@ -44,7 +45,7 @@ public class LDStandardizerServiceTest {
 	
 	@Test
 	@Transactional
-	public void ldStandardizerServiceTest() throws MalformedURLException, IOException, CmpdRegMolFormatException{
+	public void ldStandardizerServiceTest() throws MalformedURLException, IOException, CmpdRegMolFormatException, StandardizerException{
 //    	LDStandardizerInputDTO ldStandardizerDTO = new LDStandardizerInputDTO();
 //    	LDStandardizerActionDTO ldStandardizerAction = new LDStandardizerActionDTO();
 //    	ldStandardizerAction.setName("CLEAN_2D");

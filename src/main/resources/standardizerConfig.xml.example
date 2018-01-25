@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<StandardizerConfiguration Version="0.1">
+  <Actions>
+    <RemoveFragment ID="keeplargest" Measure="atomCount" Method="keepLargest"/>
+    <RemoveAttachedData ID="Remove Attached Data"/>
+    <SetAbsoluteStereo ID="Set Absolute Stereo" />
+    <Neutralize ID="Neutralize"/>
+    <Dearomatize ID="Dearomatize"/>
+    <Transformation Exact="false" ID="Transform Nitro" SearchOptions="sep=, undefinedRAtom:a" Structure="[#8-:2]-[#7+:1]=[O:3]&gt;&gt;[O:2]=[N:1]=[O:3] |^1:1,4|" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Nitroso" SearchOptions="" Structure="[#6]-[#7H2+:1]-[#8;X1-:2]&gt;&gt;[#6]-[#7:1]=[O:2]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Phosphonium Ylide" SearchOptions="" Structure="[#6][P-:1]([#6])([#6])[#6+:2]&gt;&gt;[#6][P:1]([#6])([#6])=[#6;A:2]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Sulfon" SearchOptions="" Structure="[#6][S;X3+:1]([#6])[#8-:2]&gt;&gt;[#6][S:1]([#6])=[O:2]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Phosphonic" SearchOptions="" Structure="[#6][P+:1]([#8;X2])([#8;X2])[#8-:2]&gt;&gt;[#6][P:1]([#8])([#8])=[O:2]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Sulfoxide" SearchOptions="" Structure="[#6][S+:1]([#6])([#8-:2])=O&gt;&gt;[#6][S:1]([#6])(=[O:2])=O" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Azide" SearchOptions="" Structure="[#7;A;X2-:1][N;X2+:2]#[N;X1:3]&gt;&gt;[#7:1]=[N+:2]=[#7-:3]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Diazo" SearchOptions="" Structure="[#6;X3-:1][N;X2+:2]#[N;X1:3]&gt;&gt;[#6;A:1]=[N+:2]=[#7-:3]" format="cxsmarts"/>
+    <Transformation Exact="false" ID="Transform Aromatic N-Oxide" SearchOptions="" Structure="[#7+:1]-[#8-:2]&gt;&gt;[#7;a:1]=[O:2]" format="cxsmarts"/>
+    <RemoveExplicitH Bridgehead="false" Charged="false" Hconnected="false" ID="RemoveExplicitH" Isotopic="false" Lonely="false" Mapped="false" Polymerendgroup="false" Radical="false" Sgroup="false" Sgroupend="false" Valenceerror="false" Wedged="false"/>
+    <Clean2D ID="Clean 2D" Type="Full"/>
+  </Actions>
+</StandardizerConfiguration>
