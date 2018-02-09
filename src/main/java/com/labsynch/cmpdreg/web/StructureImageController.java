@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.SaltForm;
+import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
 import com.labsynch.cmpdreg.service.StructureImageService;
 
 @RequestMapping("/structureimage")
@@ -157,6 +158,24 @@ public class StructureImageController {
     public ResponseEntity<byte[]> displayImage(@PathVariable("corpName") String corpName) {
         Parent parent = Parent.findParentsByCorpNameEquals(corpName).getSingleResult();      
         byte[] image = structureImageService.displayImage(parent.getMolStructure());
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        headers.add("Access-Control-Allow-Headers", "Content-Type");
+        headers.add("Access-Control-Allow-Origin", "*");
+		headers.add("Cache-Control","no-store, no-cache, must-revalidate"); //HTTP 1.1
+		headers.add("Pragma","no-cache"); //HTTP 1.0
+		headers.setExpires(0); // Expire the cache
+
+       return new ResponseEntity<byte[]>(image, headers, HttpStatus.OK);
+
+    }
+    
+	@RequestMapping(value = "/standardization/{corpName}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<byte[]> displayDryrunCompoundImage(@PathVariable("corpName") String corpName) {
+        StandardizationDryrunCompound stndznCompound = StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCorpNameEquals(corpName).getSingleResult();      
+        byte[] image = structureImageService.displayImage(stndznCompound.getMolStructure());
         
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);

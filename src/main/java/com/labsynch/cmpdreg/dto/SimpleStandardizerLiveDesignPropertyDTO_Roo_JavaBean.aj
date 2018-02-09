@@ -17,6 +17,14 @@ privileged aspect SimpleStandardizerLiveDesignPropertyDTO_Roo_JavaBean {
         this.url = url;
     }
     
+    public String SimpleStandardizerLiveDesignPropertyDTO.getVersion() {
+        return this.version;
+    }
+    
+    public void SimpleStandardizerLiveDesignPropertyDTO.setVersion(String version) {
+        this.version = version;
+    }
+    
     public String SimpleStandardizerLiveDesignPropertyDTO.getToken() {
         return this.token;
     }

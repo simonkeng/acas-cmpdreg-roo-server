@@ -162,6 +162,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			plainTable = "salt_form";
 		} else if (structureTable.equalsIgnoreCase("Salt_Structure")){
 			plainTable = "salt";
+		} else if (structureTable.equalsIgnoreCase("Standardization_Dryrun_Structure")){
+			plainTable = "standardization_dryrun_compound";
 		}
 
 

@@ -16,6 +16,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class SimpleStandardizerLiveDesignPropertyDTO {
     
 	private String url;
+	private String version;
     private String token;
     private int timeout;
     private String outputFormat;
@@ -30,6 +31,7 @@ public class SimpleStandardizerLiveDesignPropertyDTO {
 //                append(timeout).
 //                append(outputFormat).
                 append(actions).
+                append(version).
           toHashCode();
       }
     
@@ -47,6 +49,7 @@ public class SimpleStandardizerLiveDesignPropertyDTO {
 //    	                 .append(timeout, rhs.timeout)
 //    	                 .append(outputFormat, rhs.outputFormat)
     	                 .append(actions, rhs.actions)
+    	                 .append(version, rhs.version)
     	                 .isEquals();
     	  }
 }

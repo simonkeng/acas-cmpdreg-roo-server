@@ -15,4 +15,12 @@ privileged aspect SimpleStandardizerJchemPropertyDTO_Roo_JavaBean {
         this.standardizerConfigFilePath = standardizerConfigFilePath;
     }
     
+    public String SimpleStandardizerJchemPropertyDTO.getJchemVersion() {
+        return this.jchemVersion;
+    }
+    
+    public void SimpleStandardizerJchemPropertyDTO.setJchemVersion(String jchemVersion) {
+        this.jchemVersion = jchemVersion;
+    }
+    
 }

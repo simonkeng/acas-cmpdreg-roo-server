@@ -36,11 +36,9 @@ public class StandardizerSettingsConfigDTO {
 	            append(type);
 		switch (type) {
 			case "livedesign":
-				logger.debug("standardizer type is livedesign");
 				hashCodeBuilder.append(livedesignSettings);
 				break;
 			case "jchem":
-				logger.debug("standardizer type is jchem");
 				hashCodeBuilder.append(jchemSettings);
 				break;
 		}

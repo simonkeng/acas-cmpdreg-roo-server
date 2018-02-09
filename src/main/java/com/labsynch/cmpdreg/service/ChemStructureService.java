@@ -2,6 +2,7 @@ package com.labsynch.cmpdreg.service;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.labsynch.cmpdreg.chemclasses.CmpdRegMolecule;
@@ -93,5 +94,12 @@ public interface ChemStructureService {
 	public boolean compareStructures(String preMolStruct, String postMolStruct, String string);
 
 	public boolean standardizedMolCompare(String queryMol, String targetMol) throws CmpdRegMolFormatException;
+
+	default boolean isIdenticalDisplay(String molStructure, String molStructure2) {
+		//strip the first 2 lines of each mol and do a string equals
+		String mol1 = molStructure.substring(StringUtils.ordinalIndexOf(molStructure, "\n", 2)+1);
+		String mol2 = molStructure2.substring(StringUtils.ordinalIndexOf(molStructure2, "\n", 2)+1);
+		return(mol1.equals(mol2));
+	}
 	
 }

@@ -20,23 +20,8 @@ public interface ParentService {
 
 	Collection<CodeTableDTO> updateParent(Parent parent);
 
-	public int restandardizeAllParentStructures() throws CmpdRegMolFormatException, StandardizerException, IOException;
 	Parent updateParentMeta(ParentEditDTO parentDTO, String modifiedByUser);
-
-	void qcCheckParentStructures() throws CmpdRegMolFormatException, StandardizerException, IOException;
-
-	void dupeCheckQCStructures() throws CmpdRegMolFormatException;
-
-	int findPotentialDupeParentStructures(String dupeCheckFile);
-
-	int findDupeParentStructures(String dupeCheckFile);
-
-	int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException, StandardizerException;
-
-	int restandardizeParentStructsWithDisplayChanges() throws CmpdRegMolFormatException, IOException, StandardizerException;
-
-
+	
 	String updateParentMetaArray(String jsonInput, String modifiedByUser);
-
 
 }

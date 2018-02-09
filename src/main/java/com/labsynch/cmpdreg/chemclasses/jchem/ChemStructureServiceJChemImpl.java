@@ -1372,9 +1372,9 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		try {
 			String[] tables = UpdateHandler.getStructureTables(ch);
 			List<String> tableList = Arrays.asList(tables); 
-			for (String table : tableList){
-				logger.info("tables: " + table);
-			}
+//			for (String table : tableList){
+//				logger.info("tables: " + table);
+//			}
 			if (tableList.contains(tableName)){
 				UpdateHandler.dropStructureTable(ch, tableName);				
 			} else {
