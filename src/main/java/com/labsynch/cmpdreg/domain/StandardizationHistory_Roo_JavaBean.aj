@@ -40,43 +40,43 @@ privileged aspect StandardizationHistory_Roo_JavaBean {
         this.structuresStandardizedCount = structuresStandardizedCount;
     }
     
-    public Long StandardizationHistory.getNewDuplicateCount() {
+    public int StandardizationHistory.getNewDuplicateCount() {
         return this.newDuplicateCount;
     }
     
-    public void StandardizationHistory.setNewDuplicateCount(Long newDuplicateCount) {
+    public void StandardizationHistory.setNewDuplicateCount(int newDuplicateCount) {
         this.newDuplicateCount = newDuplicateCount;
     }
     
-    public Long StandardizationHistory.getOldDuplicateCount() {
+    public int StandardizationHistory.getOldDuplicateCount() {
         return this.oldDuplicateCount;
     }
     
-    public void StandardizationHistory.setOldDuplicateCount(Long oldDuplicateCount) {
+    public void StandardizationHistory.setOldDuplicateCount(int oldDuplicateCount) {
         this.oldDuplicateCount = oldDuplicateCount;
     }
     
-    public Long StandardizationHistory.getDisplayChangeCount() {
+    public int StandardizationHistory.getDisplayChangeCount() {
         return this.displayChangeCount;
     }
     
-    public void StandardizationHistory.setDisplayChangeCount(Long displayChangeCount) {
+    public void StandardizationHistory.setDisplayChangeCount(int displayChangeCount) {
         this.displayChangeCount = displayChangeCount;
     }
     
-    public Long StandardizationHistory.getAsDrawnDisplayChangeCount() {
+    public int StandardizationHistory.getAsDrawnDisplayChangeCount() {
         return this.asDrawnDisplayChangeCount;
     }
     
-    public void StandardizationHistory.setAsDrawnDisplayChangeCount(Long asDrawnDisplayChangeCount) {
+    public void StandardizationHistory.setAsDrawnDisplayChangeCount(int asDrawnDisplayChangeCount) {
         this.asDrawnDisplayChangeCount = asDrawnDisplayChangeCount;
     }
     
-    public Long StandardizationHistory.getChangedStructureCount() {
+    public int StandardizationHistory.getChangedStructureCount() {
         return this.changedStructureCount;
     }
     
-    public void StandardizationHistory.setChangedStructureCount(Long changedStructureCount) {
+    public void StandardizationHistory.setChangedStructureCount(int changedStructureCount) {
         this.changedStructureCount = changedStructureCount;
     }
     

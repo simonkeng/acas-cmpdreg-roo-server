@@ -20,15 +20,15 @@ public class StandardizationHistory {
 
 	private int structuresStandardizedCount;
 
-	private Long newDuplicateCount;
+	private int newDuplicateCount;
 
-	private Long oldDuplicateCount;
+	private int oldDuplicateCount;
 
-	private Long displayChangeCount;
+	private int displayChangeCount;
 
-	private Long asDrawnDisplayChangeCount;
+	private int asDrawnDisplayChangeCount;
 
-	private Long changedStructureCount;
+	private int changedStructureCount;
 
 
 	public StandardizationHistory() {
