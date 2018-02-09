@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
-import com.labsynch.cmpdreg.domain.QcCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.StandardizerException;
 
@@ -31,7 +31,7 @@ public class ChemStructStandardizerServicesTest {
 	private ChemStructureService chemStructServ;
 
 	@Autowired
-	private QcCmpdService qcCmpdServ;
+	private StandardizationDryrunCompound standardizerService;
 
 
 	@Autowired

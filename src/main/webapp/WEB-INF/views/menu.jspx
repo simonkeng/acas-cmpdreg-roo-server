@@ -174,11 +174,6 @@
             <menu:item id="fi_bulkloadtemplate_templatenameequals" messageCode="global_menu_find" url="/bulkloadtemplates?find=ByTemplateNameEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="AhIO6QCNWITbA/A7M/zPA50Bnhk="/>
             <menu:item id="fi_bulkloadtemplate_templatenameequalsandrecordedbyequals" messageCode="global_menu_find" url="/bulkloadtemplates?find=ByTemplateNameEqualsAndRecordedByEquals&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="v7SHjCMOIdfXNz1+jErqRur89fk="/>
         </menu:category>
-        <menu:category id="c_qccompound" z="xYiBmASgLvZsBzTl4ciCL0wZpls=">
-            <menu:item id="i_qccompound_new" messageCode="global_menu_new" url="/qccompounds?form" z="44fOfP2fyH+/itfQXgUiRBBh4pY="/>
-            <menu:item id="i_qccompound_list" messageCode="global_menu_list" url="/qccompounds?page=1&amp;size=${empty param.size ? 10 : param.size}" z="ZUc8hBty5B/z7CiJAkIBF35fsqw="/>
-            <menu:item id="fi_qccompound_cdid" messageCode="global_menu_find" url="/qccompounds?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}" z="4/i15dEiEbT6fcAA4aukkxJsl8o="/>
-        </menu:category>
         <menu:category id="c_compound" z="tV3FMrJgmElWPxNS0MLSZoEG5jQ=">
             <menu:item id="i_compound_new" messageCode="global_menu_new" url="/compounds?form" z="SKe7A7xdZ8E7DuIE23B8+k3PVBI="/>
             <menu:item id="i_compound_list" messageCode="global_menu_list" url="/compounds?page=1&amp;size=${empty param.size ? 10 : param.size}" z="yMEcuqNr1pzc4xsPKcdIbsY0jbo="/>

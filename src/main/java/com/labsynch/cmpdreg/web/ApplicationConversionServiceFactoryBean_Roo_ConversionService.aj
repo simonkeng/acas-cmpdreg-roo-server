@@ -8,7 +8,6 @@ import com.labsynch.cmpdreg.domain.BulkLoadTemplate;
 import com.labsynch.cmpdreg.domain.Compound;
 import com.labsynch.cmpdreg.domain.IsoSalt;
 import com.labsynch.cmpdreg.domain.Lot;
-import com.labsynch.cmpdreg.domain.QcCompound;
 import com.labsynch.cmpdreg.domain.SaltFormAlias;
 import com.labsynch.cmpdreg.domain.SaltFormAliasKind;
 import com.labsynch.cmpdreg.domain.SaltFormAliasType;
@@ -134,30 +133,6 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
         return new org.springframework.core.convert.converter.Converter<java.lang.String, com.labsynch.cmpdreg.domain.Lot>() {
             public com.labsynch.cmpdreg.domain.Lot convert(String id) {
                 return getObject().convert(getObject().convert(id, Long.class), Lot.class);
-            }
-        };
-    }
-    
-    public Converter<QcCompound, String> ApplicationConversionServiceFactoryBean.getQcCompoundToStringConverter() {
-        return new org.springframework.core.convert.converter.Converter<com.labsynch.cmpdreg.domain.QcCompound, java.lang.String>() {
-            public String convert(QcCompound qcCompound) {
-                return new StringBuilder().append(qcCompound.getRunNumber()).append(' ').append(qcCompound.getQcDate()).append(' ').append(qcCompound.getParentId()).append(' ').append(qcCompound.getCorpName()).toString();
-            }
-        };
-    }
-    
-    public Converter<Long, QcCompound> ApplicationConversionServiceFactoryBean.getIdToQcCompoundConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.Long, com.labsynch.cmpdreg.domain.QcCompound>() {
-            public com.labsynch.cmpdreg.domain.QcCompound convert(java.lang.Long id) {
-                return QcCompound.findQcCompound(id);
-            }
-        };
-    }
-    
-    public Converter<String, QcCompound> ApplicationConversionServiceFactoryBean.getStringToQcCompoundConverter() {
-        return new org.springframework.core.convert.converter.Converter<java.lang.String, com.labsynch.cmpdreg.domain.QcCompound>() {
-            public com.labsynch.cmpdreg.domain.QcCompound convert(String id) {
-                return getObject().convert(getObject().convert(id, Long.class), QcCompound.class);
             }
         };
     }

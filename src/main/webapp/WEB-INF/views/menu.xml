@@ -215,11 +215,6 @@
         <menu-item hidden="false" id="i_saltformaliastype_new" labelCode="menu_item_saltformaliastype_new_label" messageCode="global_menu_new" roles="" url="/saltformaliastypes?form"/>
     <menu-item hidden="false" id="i_saltformaliastype_list" labelCode="menu_item_saltformaliastype_list_label" messageCode="global_menu_list" roles="" url="/saltformaliastypes?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
     </menu-item>
-<menu-item id="c_qccompound" labelCode="menu_category_qccompound_label" name="QcCompound">
-        <menu-item hidden="false" id="i_qccompound_new" labelCode="menu_item_qccompound_new_label" messageCode="global_menu_new" roles="" url="/qccompounds?form"/>
-    <menu-item hidden="false" id="i_qccompound_list" labelCode="menu_item_qccompound_list_label" messageCode="global_menu_list" roles="" url="/qccompounds?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-    <menu-item hidden="false" id="fi_qccompound_cdid" labelCode="menu_item_qccompound_cdid_label" messageCode="global_menu_find" roles="" url="/qccompounds?find=ByCdId&amp;form&amp;page=1&amp;size=${empty param.size ? 10 : param.size}"/>
-    </menu-item>
 <menu-item id="c_bulkloadfile" labelCode="menu_category_bulkloadfile_label" name="BulkLoadFile">
         <menu-item hidden="false" id="i_bulkloadfile_new" labelCode="menu_item_bulkloadfile_new_label" messageCode="global_menu_new" roles="" url="/bulkloadfiles?form"/>
     <menu-item hidden="false" id="i_bulkloadfile_list" labelCode="menu_item_bulkloadfile_list_label" messageCode="global_menu_list" roles="" url="/bulkloadfiles?page=1&amp;size=${empty param.size ? 10 : param.size}"/>
