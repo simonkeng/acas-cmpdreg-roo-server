@@ -30,7 +30,6 @@ public class StandardizationHistory {
 
 	private int changedStructureCount;
 
-
 	public StandardizationHistory() {
 	}
 

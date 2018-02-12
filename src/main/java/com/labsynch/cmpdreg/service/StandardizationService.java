@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.StandardizerException;
+import com.labsynch.cmpdreg.domain.StandardizationHistory;
+import com.labsynch.cmpdreg.domain.StandardizationSettings;
 
 public interface StandardizationService {
 
@@ -24,4 +26,8 @@ public interface StandardizationService {
 
 	String standardizeSingleMol(String mol) throws CmpdRegMolFormatException, StandardizerException, IOException;
 	
+	StandardizationSettings getStandardizationSettings();
+
+	List<StandardizationHistory> getStanardizationHistory();
+
 }

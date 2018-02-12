@@ -1,6 +1,7 @@
 package com.labsynch.cmpdreg.api;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.labsynch.cmpdreg.domain.StandardizationHistory;
 import com.labsynch.cmpdreg.domain.StandardizationSettings;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.StandardizerException;
@@ -30,7 +32,7 @@ public class ApiStandardizationServicesController {
 
 	@Autowired
 	private StandardizationService standardizationService;
-
+	
 	@Autowired
 	private ChemStructureService chemStructServ;
 
@@ -137,11 +139,20 @@ public class ApiStandardizationServicesController {
 	public ResponseEntity<String> getCurrentStandardizationSettings(){
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");		
-		StandardizationSettings standardizationSettings = StandardizationSettings.findAllStandardizationSettingses().get(0);
-		return new ResponseEntity<String>(standardizationSettings.toJson(), headers, HttpStatus.OK);
+		StandardizationSettings stndardizationSettings = standardizationService.getStandardizationSettings();
+		return new ResponseEntity<String>(stndardizationSettings.toJson(), headers, HttpStatus.OK);
 	}
 
-
+	@Transactional
+	@RequestMapping(value = "/history", method = RequestMethod.GET, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> getStandardizationHistory(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");		
+		List<StandardizationHistory> standardizationHistory = standardizationService.getStanardizationHistory();
+		return new ResponseEntity<String>(StandardizationHistory.toJsonArray(standardizationHistory), headers, HttpStatus.OK);
+	}
+	
 	@RequestMapping(method = RequestMethod.OPTIONS)
 	public ResponseEntity<String> getOptions() {
 		HttpHeaders headers= new HttpHeaders();

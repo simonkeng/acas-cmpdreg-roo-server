@@ -21,6 +21,7 @@ import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
 import com.labsynch.cmpdreg.domain.StandardizationHistory;
 import com.labsynch.cmpdreg.domain.StandardizationSettings;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
+import com.labsynch.cmpdreg.dto.configuration.StandardizerSettingsConfigDTO;
 import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.exceptions.StandardizerException;
 import com.labsynch.cmpdreg.utils.Configuration;
@@ -30,6 +31,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 
 	Logger logger = LoggerFactory.getLogger(StandardizationServiceImpl.class);
 	public static final MainConfigDTO mainConfig = Configuration.getConfigInfo();
+	private static final StandardizerSettingsConfigDTO standardizerConfigs = Configuration.getConfigInfo().getStandardizerSettings();
 	private static final boolean shouldStandardize = Configuration.getConfigInfo().getStandardizerSettings().getShouldStandardize();
     private static final String standardizerType = Configuration.getConfigInfo().getStandardizerSettings().getType();
 
@@ -323,9 +325,12 @@ public class StandardizationServiceImpl implements StandardizationService {
 		standardizationHistory.setStructuresStandardizedCount(result);
 		standardizationHistory.setDateOfStandardization(new Date());
 		standardizationHistory.persist();
-		StandardizationSettings standardizationSettings = StandardizationSettings.findAllStandardizationSettingses().get(0);
-		standardizationSettings.setNeedsStandardization(false);
-		standardizationSettings.persist();
+		StandardizationSettings stndardizationSettings = this.getStandardizationSettings();
+		stndardizationSettings.setNeedsStandardization(false);
+		stndardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
+		stndardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
+		stndardizationSettings.setModifiedDate(new Date());
+		stndardizationSettings.persist();
 		this.reset();
 		return standardizationHistory.toJson();
 	}
@@ -336,7 +341,21 @@ public class StandardizationServiceImpl implements StandardizationService {
 		return dryRunStats;
 	}
 	
+	@Override
+	public StandardizationSettings getStandardizationSettings() {
+		List<StandardizationSettings> standardizationSettingses = StandardizationSettings.findAllStandardizationSettingses();
+		StandardizationSettings standardizationSettings = new StandardizationSettings();
+		if(standardizationSettingses.size() > 0) {
+			standardizationSettings = standardizationSettingses.get(0);
+		}
+		return(standardizationSettings);
+	}
 
+	@Override
+	public List<StandardizationHistory> getStanardizationHistory() {
+		List<StandardizationHistory> standardizationSettingses = StandardizationHistory.findStandardizationHistoryEntries(0, 500, "dateOfStandardization", "dateOfStandardization");
+		return standardizationSettingses;
+	}
 
 
 }

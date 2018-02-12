@@ -29,25 +29,37 @@ public class R__check_for_standardizer_configuration_changes implements SpringJd
 	public void migrate(JdbcTemplate jdbcTemplate) throws Exception {
 		
 		String selectStandardizationSettingsSQL = "SELECT * FROM standardization_settings";
+		String selectCountParentSQL = "SELECT count(id) FROM parent";
 
 		try{
 			@SuppressWarnings("unchecked")
 			StandardizationSettings standardizationSettings = (StandardizationSettings)jdbcTemplate.queryForObject(selectStandardizationSettingsSQL, new StandardizationSettingsRowMapper());
-			logger.debug("Standardizer configs have changed");
+			logger.debug("Standardizer configs have changed, marking 'standardization needed' according to configs as " +standardizerConfigs.getShouldStandardize());
 			standardizationSettings.setNeedsStandardization(standardizerConfigs.getShouldStandardize());
-			standardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
-			standardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
-			standardizationSettings.setModifiedDate(new Date());
 			standardizationSettings.save(jdbcTemplate);
-
 		}catch(EmptyResultDataAccessException e){
+			logger.debug("No standardization settings found in database");
 			StandardizationSettings standardizationSettings = new StandardizationSettings();
-			logger.debug("Standardizer configs are empty and will be populated");
-			standardizationSettings.setNeedsStandardization(false);
-			standardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
-			standardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
-			standardizationSettings.setModifiedDate(new Date());
-			standardizationSettings.save(jdbcTemplate);
+			int numberOfParents = jdbcTemplate.queryForObject(selectCountParentSQL, Integer.class);
+			if(numberOfParents == 0) {
+				logger.debug("There are no parents registered, we can assume stanardization configs match the database standardization state so storing configs as the stanardization_settings");
+				standardizationSettings.setNeedsStandardization(false);
+				standardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
+				standardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
+				standardizationSettings.setModifiedDate(new Date());
+				standardizationSettings.save(jdbcTemplate);
+			} else {
+				if(standardizerConfigs.getShouldStandardize() == false) {
+					logger.warn("Standardization is turned off so marking the database as not requiring standardization at this time");
+					standardizationSettings.setNeedsStandardization(false);
+					standardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
+					standardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
+					standardizationSettings.setModifiedDate(new Date());
+					standardizationSettings.save(jdbcTemplate);
+				} else {
+					logger.warn("Standardization is turned on but the database has not been stanardized so we don't know the current database stanardization state, stanardization_settings will reflect the unknown state");
+				}
+			}
 		}
 
 	}

@@ -10,6 +10,9 @@ import org.springframework.roo.addon.json.RooJson;
 import org.springframework.roo.addon.tostring.RooToString;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.labsynch.cmpdreg.dto.configuration.StandardizerSettingsConfigDTO;
+import com.labsynch.cmpdreg.utils.Configuration;
+
 @RooJavaBean
 @RooToString
 @RooJson
@@ -98,9 +101,11 @@ public class StandardizationDryrunCompound {
 	public static StandardizationHistory fetchStats() {
 //		String querySQL = "SELECT o.parentId FROM StandardizationDryrunCompound o WHERE displayChange = true";
 //		Query q = StandardizationDryrunCompound.entityManager().createNativeQuery(querySQL);
+		final StandardizerSettingsConfigDTO standardizerConfigs = Configuration.getConfigInfo().getStandardizerSettings();
+
 		StandardizationHistory stats = new StandardizationHistory();
-		stats.setSettings(StandardizationDryrunCompound.entityManager().createQuery("SELECT s.currentSettings FROM StandardizationSettings s", String.class).getSingleResult());
-		stats.setSettingsHash(StandardizationDryrunCompound.entityManager().createQuery("SELECT s.currentSettingsHash FROM StandardizationSettings s", Integer.class).getSingleResult());
+		stats.setSettings(standardizerConfigs.toJson());
+		stats.setSettingsHash(standardizerConfigs.hashCode());
 		stats.setChangedStructureCount(toIntExact(StandardizationDryrunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryrunCompound s WHERE s.changedStructure = true", Long.class).getSingleResult()));
 		stats.setOldDuplicateCount(toIntExact(StandardizationDryrunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryrunCompound s WHERE s.oldDupeCount > 0", Long.class).getSingleResult()));
 		stats.setNewDuplicateCount(toIntExact(StandardizationDryrunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryrunCompound s WHERE s.newDupeCount > 0", Long.class).getSingleResult()));
