@@ -37,5 +37,7 @@ public interface ParentService {
 
 	String updateParentMetaArray(String jsonInput, String modifiedByUser);
 
+	void recalculateMolWeights(Parent parent) throws CmpdRegMolFormatException;
+
 
 }

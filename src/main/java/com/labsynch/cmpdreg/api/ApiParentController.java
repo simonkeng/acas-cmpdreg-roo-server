@@ -185,4 +185,20 @@ public class ApiParentController {
 			return new ResponseEntity<String>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@Transactional
+	@RequestMapping(value = "/recalculateMolWeight", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> recalculateMolWeight(@RequestParam(value="corpName", required = true) String corpName){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+		try{
+			Parent parent = Parent.findParentsByCorpNameEquals(corpName).getSingleResult();
+			parentService.recalculateMolWeights(parent);
+			return new ResponseEntity<String>(parent.toJson(), headers, HttpStatus.OK);
+		}catch(Exception e){
+			logger.error("Caught error trying to recalculate parent molweight",e);
+			return new ResponseEntity<String>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

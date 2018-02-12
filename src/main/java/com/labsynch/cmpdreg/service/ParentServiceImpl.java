@@ -40,6 +40,8 @@ import com.labsynch.cmpdreg.exceptions.CmpdRegMolFormatException;
 import com.labsynch.cmpdreg.utils.Configuration;
 import com.labsynch.cmpdreg.utils.MoleculeUtil;
 
+import junit.framework.Assert;
+
 
 
 @Service
@@ -580,6 +582,21 @@ public class ParentServiceImpl implements ParentService {
 		parent.setParentAliases(newParentAliases);
 		
 		return parent;
+	}
+	
+	@Override
+	public void recalculateMolWeights(Parent parent) throws CmpdRegMolFormatException{
+		logger.debug("Recalculating mol weight");
+		logger.info("corporate id:" + parent.getCorpName());
+		logger.info("formula:" + parent.getMolFormula());
+		logger.info("current molweight:" + parent.getMolWeight());
+		logger.info("current exactmass:" + parent.getExactMass());
+		CmpdRegMolecule mol = cmpdRegMoleculeFactory.getCmpdRegMolecule(parent.getMolStructure());
+		logger.info("fixed molweight:" + mol.getMass());
+		logger.info("fixed exactmass:" + mol.getExactMass());
+		parent.setMolWeight(mol.getMass());
+		parent.setExactMass(mol.getExactMass());
+		parent.merge();
 	}
 
 }
