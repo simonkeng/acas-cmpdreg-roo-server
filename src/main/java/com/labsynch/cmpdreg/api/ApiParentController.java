@@ -2,6 +2,7 @@ package com.labsynch.cmpdreg.api;
 
 import java.net.URLDecoder;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -200,5 +201,23 @@ public class ApiParentController {
 			logger.error("Caught error trying to recalculate parent molweight",e);
 			return new ResponseEntity<String>(headers, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/recalculateAllMolWeights", method = RequestMethod.POST, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> recalculateAllMolWeight(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");
+		List<Parent> parents = Parent.findAllParents();
+		for (Parent parent : parents){
+			try{
+				parentService.recalculateMolWeights(parent);
+			}
+			catch(Exception e){
+				logger.error("Caught exception recalculating mol weight of "+parent.getCorpName(),e);
+			}
+		}
+		return new ResponseEntity<String>("recalculation complete", headers, HttpStatus.OK);
 	}
 }
