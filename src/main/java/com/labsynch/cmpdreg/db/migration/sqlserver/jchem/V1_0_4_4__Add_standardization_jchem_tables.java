@@ -20,12 +20,12 @@ public class V1_0_4_4__Add_standardization_jchem_tables implements JdbcMigration
 	//create the jchem table to store the compounds
 
 	public void migrate(Connection conn) throws Exception {
-		logger.info("creating standardization_dryrun_structure table");
+		logger.info("creating standardization_dry_run_structure table");
 		conn.setAutoCommit(true);
 		logger.info("connection autocommit mode: " + conn.getAutoCommit());
 		logger.info("getTransactionIsolation  " + conn.getTransactionIsolation());
 
-		createJChemTable(conn, "compound.standardization_dryrun_structure", true);
+		createJChemTable(conn, "compound.standardization_dry_run_structure", true);
 
 		conn.setAutoCommit(false);
 		logger.info("connection autocommit mode: " + conn.getAutoCommit());

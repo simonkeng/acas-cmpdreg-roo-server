@@ -30,4 +30,6 @@ public interface StandardizationService {
 
 	List<StandardizationHistory> getStanardizationHistory();
 
+	void executeDryRun() throws CmpdRegMolFormatException, IOException, StandardizerException;
+
 }

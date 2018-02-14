@@ -21,10 +21,6 @@ public class StandardizationSettings {
 
     /**
      */
-    private String currentSettings;
-
-    /**
-     */
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date modifiedDate;
@@ -33,8 +29,4 @@ public class StandardizationSettings {
      */
     private Boolean needsStandardization;
 
-    /**
-     */
-    private int currentSettingsHash;
-    
 }

@@ -3,97 +3,97 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
-privileged aspect StandardizationDryrunCompound_Roo_Jpa_ActiveRecord {
+privileged aspect StandardizationDryRunCompound_Roo_Jpa_ActiveRecord {
     
     @PersistenceContext
-    transient EntityManager StandardizationDryrunCompound.entityManager;
+    transient EntityManager StandardizationDryRunCompound.entityManager;
     
-    public static final List<String> StandardizationDryrunCompound.fieldNames4OrderClauseFilter = java.util.Arrays.asList("runNumber", "qcDate", "parentId", "corpName", "newDuplicates", "oldDuplicates", "changedStructure", "oldMolWeight", "newMolWeight", "displayChange", "asDrawnDisplayChange", "newDupeCount", "oldDupeCount", "alias", "stereoCategory", "stereoComment", "CdId", "molStructure", "comment", "ignore");
+    public static final List<String> StandardizationDryRunCompound.fieldNames4OrderClauseFilter = java.util.Arrays.asList("runNumber", "qcDate", "parentId", "corpName", "newDuplicates", "oldDuplicates", "changedStructure", "oldMolWeight", "newMolWeight", "displayChange", "asDrawnDisplayChange", "newDupeCount", "oldDupeCount", "alias", "stereoCategory", "stereoComment", "CdId", "molStructure", "comment", "ignore");
     
-    public static final EntityManager StandardizationDryrunCompound.entityManager() {
-        EntityManager em = new StandardizationDryrunCompound().entityManager;
+    public static final EntityManager StandardizationDryRunCompound.entityManager() {
+        EntityManager em = new StandardizationDryRunCompound().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
     
-    public static long StandardizationDryrunCompound.countStandardizationDryrunCompounds() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM StandardizationDryrunCompound o", Long.class).getSingleResult();
+    public static long StandardizationDryRunCompound.countStandardizationDryRunCompounds() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM StandardizationDryRunCompound o", Long.class).getSingleResult();
     }
     
-    public static List<StandardizationDryrunCompound> StandardizationDryrunCompound.findAllStandardizationDryrunCompounds() {
-        return entityManager().createQuery("SELECT o FROM StandardizationDryrunCompound o", StandardizationDryrunCompound.class).getResultList();
+    public static List<StandardizationDryRunCompound> StandardizationDryRunCompound.findAllStandardizationDryRunCompounds() {
+        return entityManager().createQuery("SELECT o FROM StandardizationDryRunCompound o", StandardizationDryRunCompound.class).getResultList();
     }
     
-    public static List<StandardizationDryrunCompound> StandardizationDryrunCompound.findAllStandardizationDryrunCompounds(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM StandardizationDryrunCompound o";
+    public static List<StandardizationDryRunCompound> StandardizationDryRunCompound.findAllStandardizationDryRunCompounds(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM StandardizationDryRunCompound o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, StandardizationDryrunCompound.class).getResultList();
+        return entityManager().createQuery(jpaQuery, StandardizationDryRunCompound.class).getResultList();
     }
     
-    public static StandardizationDryrunCompound StandardizationDryrunCompound.findStandardizationDryrunCompound(Long id) {
+    public static StandardizationDryRunCompound StandardizationDryRunCompound.findStandardizationDryRunCompound(Long id) {
         if (id == null) return null;
-        return entityManager().find(StandardizationDryrunCompound.class, id);
+        return entityManager().find(StandardizationDryRunCompound.class, id);
     }
     
-    public static List<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM StandardizationDryrunCompound o", StandardizationDryrunCompound.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM StandardizationDryRunCompound o", StandardizationDryRunCompound.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
-    public static List<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM StandardizationDryrunCompound o";
+    public static List<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM StandardizationDryRunCompound o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, StandardizationDryrunCompound.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return entityManager().createQuery(jpaQuery, StandardizationDryRunCompound.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
-    public void StandardizationDryrunCompound.persist() {
+    public void StandardizationDryRunCompound.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
     
     @Transactional
-    public void StandardizationDryrunCompound.remove() {
+    public void StandardizationDryRunCompound.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            StandardizationDryrunCompound attached = StandardizationDryrunCompound.findStandardizationDryrunCompound(this.id);
+            StandardizationDryRunCompound attached = StandardizationDryRunCompound.findStandardizationDryRunCompound(this.id);
             this.entityManager.remove(attached);
         }
     }
     
     @Transactional
-    public void StandardizationDryrunCompound.flush() {
+    public void StandardizationDryRunCompound.flush() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.flush();
     }
     
     @Transactional
-    public void StandardizationDryrunCompound.clear() {
+    public void StandardizationDryRunCompound.clear() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.clear();
     }
     
     @Transactional
-    public StandardizationDryrunCompound StandardizationDryrunCompound.merge() {
+    public StandardizationDryRunCompound StandardizationDryRunCompound.merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        StandardizationDryrunCompound merged = this.entityManager.merge(this);
+        StandardizationDryRunCompound merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }

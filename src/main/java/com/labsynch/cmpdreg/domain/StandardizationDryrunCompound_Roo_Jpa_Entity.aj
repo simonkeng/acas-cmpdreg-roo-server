@@ -3,7 +3,7 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,32 +11,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
-privileged aspect StandardizationDryrunCompound_Roo_Jpa_Entity {
+privileged aspect StandardizationDryRunCompound_Roo_Jpa_Entity {
     
-    declare @type: StandardizationDryrunCompound: @Entity;
+    declare @type: StandardizationDryRunCompound: @Entity;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long StandardizationDryrunCompound.id;
+    private Long StandardizationDryRunCompound.id;
     
     @Version
     @Column(name = "version")
-    private Integer StandardizationDryrunCompound.version;
+    private Integer StandardizationDryRunCompound.version;
     
-    public Long StandardizationDryrunCompound.getId() {
+    public Long StandardizationDryRunCompound.getId() {
         return this.id;
     }
     
-    public void StandardizationDryrunCompound.setId(Long id) {
+    public void StandardizationDryRunCompound.setId(Long id) {
         this.id = id;
     }
     
-    public Integer StandardizationDryrunCompound.getVersion() {
+    public Integer StandardizationDryRunCompound.getVersion() {
         return this.version;
     }
     
-    public void StandardizationDryrunCompound.setVersion(Integer version) {
+    public void StandardizationDryRunCompound.setVersion(Integer version) {
         this.version = version;
     }
     

@@ -3,13 +3,13 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-privileged aspect StandardizationDryrunCompound_Roo_ToString {
+privileged aspect StandardizationDryRunCompound_Roo_ToString {
     
-    public String StandardizationDryrunCompound.toString() {
+    public String StandardizationDryRunCompound.toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     

@@ -1,6 +1,13 @@
 package com.labsynch.cmpdreg.domain;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.json.RooJson;
@@ -12,23 +19,41 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord
 public class StandardizationHistory {
 
+    @Id
+    @SequenceGenerator(name = "stndznHistGen", sequenceName = "STNDZN_HIST_PKSEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "stndznHistGen")
+    @Column(name = "id")
+    private Long id;
+    
+    private Date recordedDate;
+    
 	private String settings;
 
 	private int settingsHash;
+	
+	private String dryRunStatus;
+	
+	private Date dryRunStart;
+	
+	private Date dryRunComplete;
 
-	private Date dateOfStandardization;
+	private String standardizationStatus;
 
-	private int structuresStandardizedCount;
+	private Date standardizationStart;
+	
+	private Date standardizationComplete;
 
-	private int newDuplicateCount;
+	private Integer structuresStandardizedCount;
 
-	private int oldDuplicateCount;
+	private Integer newDuplicateCount;
 
-	private int displayChangeCount;
+	private Integer oldDuplicateCount;
 
-	private int asDrawnDisplayChangeCount;
+	private Integer displayChangeCount;
 
-	private int changedStructureCount;
+	private Integer asDrawnDisplayChangeCount;
+
+	private Integer changedStructureCount;
 
 	public StandardizationHistory() {
 	}

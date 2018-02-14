@@ -2,8 +2,6 @@ CREATE TABLE standardization_settings
 (
   id bigint NOT NULL,
   version integer,
-  current_settings_hash integer,
-  current_settings text,
   modified_date timestamp without time zone,
   needs_standardization boolean
 )
@@ -11,10 +9,19 @@ WITH (
   OIDS=FALSE
 );
 
+CREATE SEQUENCE stndzn_settings_pkseq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE stndzn_settings_pkseq OWNER TO compound_admin;
+
 ALTER TABLE standardization_settings
   OWNER TO compound_admin;
 
-CREATE TABLE standardization_dryrun_compound
+CREATE TABLE standardization_dry_run_compound
 (
   id bigint NOT NULL,
   version integer,
@@ -38,24 +45,30 @@ CREATE TABLE standardization_dryrun_compound
   mol_structure text,
   comment character varying(2000),
   ignore boolean,
-  CONSTRAINT stndzn_dryrun_pkey PRIMARY KEY (id)
+  CONSTRAINT stndzn_dry_run_pkey PRIMARY KEY (id)
 )
 WITH (
   OIDS=FALSE
 );
 
-ALTER TABLE standardization_dryrun_compound
+ALTER TABLE standardization_dry_run_compound
   OWNER TO compound_admin;
     
-CREATE INDEX stndzn_dry_run_cdid_idx ON standardization_dryrun_compound USING btree (cd_id);
+CREATE INDEX stndzn_dry_run_cdid_idx ON standardization_dry_run_compound USING btree (cd_id);
 
 CREATE TABLE standardization_history
 (
   id bigint NOT NULL,
   version integer,
+  recorded_date timestamp without time zone,
   settings_hash integer,
   settings text,
-  date_of_standardization timestamp without time zone,
+  dry_run_status character varying(20),
+  dry_run_start timestamp without time zone,
+  dry_run_complete timestamp without time zone,
+  standardization_status character varying(20),
+  standardization_start timestamp without time zone,
+  standardization_complete timestamp without time zone,
   structures_standardized_count integer,
   new_duplicate_count integer,
   old_duplicate_count integer,
@@ -70,3 +83,12 @@ WITH (
 
 ALTER TABLE standardization_history
   OWNER TO compound_admin;
+
+CREATE SEQUENCE stndzn_hist_pkseq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER TABLE stndzn_hist_pkseq OWNER TO compound_admin;

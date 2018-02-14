@@ -8,14 +8,6 @@ import java.util.Date;
 
 privileged aspect StandardizationSettings_Roo_JavaBean {
     
-    public String StandardizationSettings.getCurrentSettings() {
-        return this.currentSettings;
-    }
-    
-    public void StandardizationSettings.setCurrentSettings(String currentSettings) {
-        this.currentSettings = currentSettings;
-    }
-    
     public Date StandardizationSettings.getModifiedDate() {
         return this.modifiedDate;
     }
@@ -30,14 +22,6 @@ privileged aspect StandardizationSettings_Roo_JavaBean {
     
     public void StandardizationSettings.setNeedsStandardization(Boolean needsStandardization) {
         this.needsStandardization = needsStandardization;
-    }
-    
-    public int StandardizationSettings.getCurrentSettingsHash() {
-        return this.currentSettingsHash;
-    }
-    
-    public void StandardizationSettings.setCurrentSettingsHash(int currentSettingsHash) {
-        this.currentSettingsHash = currentSettingsHash;
     }
     
 }

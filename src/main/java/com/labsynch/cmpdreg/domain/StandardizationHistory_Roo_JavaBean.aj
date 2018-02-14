@@ -8,6 +8,22 @@ import java.util.Date;
 
 privileged aspect StandardizationHistory_Roo_JavaBean {
     
+    public Long StandardizationHistory.getId() {
+        return this.id;
+    }
+    
+    public void StandardizationHistory.setId(Long id) {
+        this.id = id;
+    }
+    
+    public Date StandardizationHistory.getRecordedDate() {
+        return this.recordedDate;
+    }
+    
+    public void StandardizationHistory.setRecordedDate(Date recordedDate) {
+        this.recordedDate = recordedDate;
+    }
+    
     public String StandardizationHistory.getSettings() {
         return this.settings;
     }
@@ -24,59 +40,99 @@ privileged aspect StandardizationHistory_Roo_JavaBean {
         this.settingsHash = settingsHash;
     }
     
-    public Date StandardizationHistory.getDateOfStandardization() {
-        return this.dateOfStandardization;
+    public String StandardizationHistory.getDryRunStatus() {
+        return this.dryRunStatus;
     }
     
-    public void StandardizationHistory.setDateOfStandardization(Date dateOfStandardization) {
-        this.dateOfStandardization = dateOfStandardization;
+    public void StandardizationHistory.setDryRunStatus(String dryRunStatus) {
+        this.dryRunStatus = dryRunStatus;
     }
     
-    public int StandardizationHistory.getStructuresStandardizedCount() {
+    public Date StandardizationHistory.getDryRunStart() {
+        return this.dryRunStart;
+    }
+    
+    public void StandardizationHistory.setDryRunStart(Date dryRunStart) {
+        this.dryRunStart = dryRunStart;
+    }
+    
+    public Date StandardizationHistory.getDryRunComplete() {
+        return this.dryRunComplete;
+    }
+    
+    public void StandardizationHistory.setDryRunComplete(Date dryRunComplete) {
+        this.dryRunComplete = dryRunComplete;
+    }
+    
+    public String StandardizationHistory.getStandardizationStatus() {
+        return this.standardizationStatus;
+    }
+    
+    public void StandardizationHistory.setStandardizationStatus(String standardizationStatus) {
+        this.standardizationStatus = standardizationStatus;
+    }
+    
+    public Date StandardizationHistory.getStandardizationStart() {
+        return this.standardizationStart;
+    }
+    
+    public void StandardizationHistory.setStandardizationStart(Date standardizationStart) {
+        this.standardizationStart = standardizationStart;
+    }
+    
+    public Date StandardizationHistory.getStandardizationComplete() {
+        return this.standardizationComplete;
+    }
+    
+    public void StandardizationHistory.setStandardizationComplete(Date standardizationComplete) {
+        this.standardizationComplete = standardizationComplete;
+    }
+    
+    public Integer StandardizationHistory.getStructuresStandardizedCount() {
         return this.structuresStandardizedCount;
     }
     
-    public void StandardizationHistory.setStructuresStandardizedCount(int structuresStandardizedCount) {
+    public void StandardizationHistory.setStructuresStandardizedCount(Integer structuresStandardizedCount) {
         this.structuresStandardizedCount = structuresStandardizedCount;
     }
     
-    public int StandardizationHistory.getNewDuplicateCount() {
+    public Integer StandardizationHistory.getNewDuplicateCount() {
         return this.newDuplicateCount;
     }
     
-    public void StandardizationHistory.setNewDuplicateCount(int newDuplicateCount) {
+    public void StandardizationHistory.setNewDuplicateCount(Integer newDuplicateCount) {
         this.newDuplicateCount = newDuplicateCount;
     }
     
-    public int StandardizationHistory.getOldDuplicateCount() {
+    public Integer StandardizationHistory.getOldDuplicateCount() {
         return this.oldDuplicateCount;
     }
     
-    public void StandardizationHistory.setOldDuplicateCount(int oldDuplicateCount) {
+    public void StandardizationHistory.setOldDuplicateCount(Integer oldDuplicateCount) {
         this.oldDuplicateCount = oldDuplicateCount;
     }
     
-    public int StandardizationHistory.getDisplayChangeCount() {
+    public Integer StandardizationHistory.getDisplayChangeCount() {
         return this.displayChangeCount;
     }
     
-    public void StandardizationHistory.setDisplayChangeCount(int displayChangeCount) {
+    public void StandardizationHistory.setDisplayChangeCount(Integer displayChangeCount) {
         this.displayChangeCount = displayChangeCount;
     }
     
-    public int StandardizationHistory.getAsDrawnDisplayChangeCount() {
+    public Integer StandardizationHistory.getAsDrawnDisplayChangeCount() {
         return this.asDrawnDisplayChangeCount;
     }
     
-    public void StandardizationHistory.setAsDrawnDisplayChangeCount(int asDrawnDisplayChangeCount) {
+    public void StandardizationHistory.setAsDrawnDisplayChangeCount(Integer asDrawnDisplayChangeCount) {
         this.asDrawnDisplayChangeCount = asDrawnDisplayChangeCount;
     }
     
-    public int StandardizationHistory.getChangedStructureCount() {
+    public Integer StandardizationHistory.getChangedStructureCount() {
         return this.changedStructureCount;
     }
     
-    public void StandardizationHistory.setChangedStructureCount(int changedStructureCount) {
+    public void StandardizationHistory.setChangedStructureCount(Integer changedStructureCount) {
         this.changedStructureCount = changedStructureCount;
     }
     

@@ -3,67 +3,67 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-privileged aspect StandardizationDryrunCompound_Roo_Finder {
+privileged aspect StandardizationDryRunCompound_Roo_Finder {
     
-    public static Long StandardizationDryrunCompound.countFindStandardizationDryrunCompoundsByCdId(int CdId) {
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM StandardizationDryrunCompound AS o WHERE o.CdId = :CdId", Long.class);
+    public static Long StandardizationDryRunCompound.countFindStandardizationDryRunCompoundsByCdId(int CdId) {
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM StandardizationDryRunCompound AS o WHERE o.CdId = :CdId", Long.class);
         q.setParameter("CdId", CdId);
         return ((Long) q.getSingleResult());
     }
     
-    public static Long StandardizationDryrunCompound.countFindStandardizationDryrunCompoundsByCorpNameEquals(String corpName) {
+    public static Long StandardizationDryRunCompound.countFindStandardizationDryRunCompoundsByCorpNameEquals(String corpName) {
         if (corpName == null || corpName.length() == 0) throw new IllegalArgumentException("The corpName argument is required");
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM StandardizationDryrunCompound AS o WHERE o.corpName = :corpName", Long.class);
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        TypedQuery q = em.createQuery("SELECT COUNT(o) FROM StandardizationDryRunCompound AS o WHERE o.corpName = :corpName", Long.class);
         q.setParameter("corpName", corpName);
         return ((Long) q.getSingleResult());
     }
     
-    public static TypedQuery<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCdId(int CdId) {
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        TypedQuery<StandardizationDryrunCompound> q = em.createQuery("SELECT o FROM StandardizationDryrunCompound AS o WHERE o.CdId = :CdId", StandardizationDryrunCompound.class);
+    public static TypedQuery<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCdId(int CdId) {
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        TypedQuery<StandardizationDryRunCompound> q = em.createQuery("SELECT o FROM StandardizationDryRunCompound AS o WHERE o.CdId = :CdId", StandardizationDryRunCompound.class);
         q.setParameter("CdId", CdId);
         return q;
     }
     
-    public static TypedQuery<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCdId(int CdId, String sortFieldName, String sortOrder) {
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM StandardizationDryrunCompound AS o WHERE o.CdId = :CdId");
+    public static TypedQuery<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCdId(int CdId, String sortFieldName, String sortOrder) {
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM StandardizationDryRunCompound AS o WHERE o.CdId = :CdId");
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
         }
-        TypedQuery<StandardizationDryrunCompound> q = em.createQuery(queryBuilder.toString(), StandardizationDryrunCompound.class);
+        TypedQuery<StandardizationDryRunCompound> q = em.createQuery(queryBuilder.toString(), StandardizationDryRunCompound.class);
         q.setParameter("CdId", CdId);
         return q;
     }
     
-    public static TypedQuery<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCorpNameEquals(String corpName) {
+    public static TypedQuery<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCorpNameEquals(String corpName) {
         if (corpName == null || corpName.length() == 0) throw new IllegalArgumentException("The corpName argument is required");
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        TypedQuery<StandardizationDryrunCompound> q = em.createQuery("SELECT o FROM StandardizationDryrunCompound AS o WHERE o.corpName = :corpName", StandardizationDryrunCompound.class);
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        TypedQuery<StandardizationDryRunCompound> q = em.createQuery("SELECT o FROM StandardizationDryRunCompound AS o WHERE o.corpName = :corpName", StandardizationDryRunCompound.class);
         q.setParameter("corpName", corpName);
         return q;
     }
     
-    public static TypedQuery<StandardizationDryrunCompound> StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCorpNameEquals(String corpName, String sortFieldName, String sortOrder) {
+    public static TypedQuery<StandardizationDryRunCompound> StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCorpNameEquals(String corpName, String sortFieldName, String sortOrder) {
         if (corpName == null || corpName.length() == 0) throw new IllegalArgumentException("The corpName argument is required");
-        EntityManager em = StandardizationDryrunCompound.entityManager();
-        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM StandardizationDryrunCompound AS o WHERE o.corpName = :corpName");
+        EntityManager em = StandardizationDryRunCompound.entityManager();
+        StringBuilder queryBuilder = new StringBuilder("SELECT o FROM StandardizationDryRunCompound AS o WHERE o.corpName = :corpName");
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             queryBuilder.append(" ORDER BY ").append(sortFieldName);
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 queryBuilder.append(" ").append(sortOrder);
             }
         }
-        TypedQuery<StandardizationDryrunCompound> q = em.createQuery(queryBuilder.toString(), StandardizationDryrunCompound.class);
+        TypedQuery<StandardizationDryRunCompound> q = em.createQuery(queryBuilder.toString(), StandardizationDryRunCompound.class);
         q.setParameter("corpName", corpName);
         return q;
     }

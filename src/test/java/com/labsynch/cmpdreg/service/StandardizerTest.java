@@ -34,9 +34,9 @@ public class StandardizerTest {
 //		String json = standardizationService.getDryRunStats();
 //		System.out.println(json);
 		
-		String json = standardizationService.executeStandardization();
-		System.out.println(json);
-		
+//		String json = standardizationService.executeStandardization();
+//		System.out.println(json);
+		standardizationService.executeDryRun();
 	}
 
 }

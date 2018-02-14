@@ -64,7 +64,6 @@ public class ApiStandardizationServicesController {
 		return new ResponseEntity<String>(" Compound check done. " + numberOfDisplayChanges, headers, HttpStatus.OK);
 	}
 	
-	@Transactional
 	@RequestMapping(value = "/dryRun", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
 	public ResponseEntity<String> dryRun(@RequestParam(value="reportOnly", required = false) Boolean reportOnly) throws CmpdRegMolFormatException, IOException, StandardizerException{
@@ -77,9 +76,7 @@ public class ApiStandardizationServicesController {
 		}
 		if(!onlyReport) {
 			logger.info("reseting dry run table, populating dryrun table, dupe checking, and returning results");
-			standardizationService.reset();
-			numberOfDisplayChanges = standardizationService.populateStanardizationDryRunTable();
-			numberOfDisplayChanges = standardizationService.dupeCheckStandardizationStructures();			
+			standardizationService.executeDryRun();
 		}
 		String jsonReport = standardizationService.getStandardizationDryRunReport();
 		return new ResponseEntity<String>(jsonReport, headers, HttpStatus.OK);
@@ -105,7 +102,6 @@ public class ApiStandardizationServicesController {
 
 	}
 	
-	@Transactional
 	@RequestMapping(value = "/execute", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
 	public ResponseEntity<String> execute(){

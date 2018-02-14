@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.SaltForm;
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import com.labsynch.cmpdreg.service.StructureImageService;
 
 @RequestMapping("/structureimage")
@@ -174,7 +174,7 @@ public class StructureImageController {
 	@RequestMapping(value = "/standardization/{corpName}", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<byte[]> displayDryrunCompoundImage(@PathVariable("corpName") String corpName) {
-        StandardizationDryrunCompound stndznCompound = StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCorpNameEquals(corpName).getSingleResult();      
+        StandardizationDryRunCompound stndznCompound = StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCorpNameEquals(corpName).getSingleResult();
         byte[] image = structureImageService.displayImage(stndznCompound.getMolStructure());
         
         HttpHeaders headers = new HttpHeaders();

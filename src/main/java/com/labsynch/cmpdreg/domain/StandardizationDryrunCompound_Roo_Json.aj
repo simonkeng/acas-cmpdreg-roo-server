@@ -3,43 +3,43 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-privileged aspect StandardizationDryrunCompound_Roo_Json {
+privileged aspect StandardizationDryRunCompound_Roo_Json {
     
-    public String StandardizationDryrunCompound.toJson() {
+    public String StandardizationDryRunCompound.toJson() {
         return new JSONSerializer()
         .exclude("*.class").serialize(this);
     }
     
-    public String StandardizationDryrunCompound.toJson(String[] fields) {
+    public String StandardizationDryRunCompound.toJson(String[] fields) {
         return new JSONSerializer()
         .include(fields).exclude("*.class").serialize(this);
     }
     
-    public static StandardizationDryrunCompound StandardizationDryrunCompound.fromJsonToStandardizationDryrunCompound(String json) {
-        return new JSONDeserializer<StandardizationDryrunCompound>()
-        .use(null, StandardizationDryrunCompound.class).deserialize(json);
+    public static StandardizationDryRunCompound StandardizationDryRunCompound.fromJsonToStandardizationDryRunCompound(String json) {
+        return new JSONDeserializer<StandardizationDryRunCompound>()
+        .use(null, StandardizationDryRunCompound.class).deserialize(json);
     }
     
-    public static String StandardizationDryrunCompound.toJsonArray(Collection<StandardizationDryrunCompound> collection) {
+    public static String StandardizationDryRunCompound.toJsonArray(Collection<StandardizationDryRunCompound> collection) {
         return new JSONSerializer()
         .exclude("*.class").serialize(collection);
     }
     
-    public static String StandardizationDryrunCompound.toJsonArray(Collection<StandardizationDryrunCompound> collection, String[] fields) {
+    public static String StandardizationDryRunCompound.toJsonArray(Collection<StandardizationDryRunCompound> collection, String[] fields) {
         return new JSONSerializer()
         .include(fields).exclude("*.class").serialize(collection);
     }
     
-    public static Collection<StandardizationDryrunCompound> StandardizationDryrunCompound.fromJsonArrayToStandardizationDryrunCompounds(String json) {
-        return new JSONDeserializer<List<StandardizationDryrunCompound>>()
-        .use("values", StandardizationDryrunCompound.class).deserialize(json);
+    public static Collection<StandardizationDryRunCompound> StandardizationDryRunCompound.fromJsonArrayToStandardizationDryRunCompounds(String json) {
+        return new JSONDeserializer<List<StandardizationDryRunCompound>>()
+        .use("values", StandardizationDryRunCompound.class).deserialize(json);
     }
     
 }

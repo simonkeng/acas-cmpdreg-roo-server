@@ -27,21 +27,9 @@ privileged aspect StandardizationSettingsDataOnDemand_Roo_DataOnDemand {
     
     public StandardizationSettings StandardizationSettingsDataOnDemand.getNewTransientStandardizationSettings(int index) {
         StandardizationSettings obj = new StandardizationSettings();
-        setCurrentSettings(obj, index);
-        setCurrentSettingsHash(obj, index);
         setModifiedDate(obj, index);
         setNeedsStandardization(obj, index);
         return obj;
-    }
-    
-    public void StandardizationSettingsDataOnDemand.setCurrentSettings(StandardizationSettings obj, int index) {
-        String currentSettings = "currentSettings_" + index;
-        obj.setCurrentSettings(currentSettings);
-    }
-    
-    public void StandardizationSettingsDataOnDemand.setCurrentSettingsHash(StandardizationSettings obj, int index) {
-        int currentSettingsHash = index;
-        obj.setCurrentSettingsHash(currentSettingsHash);
     }
     
     public void StandardizationSettingsDataOnDemand.setModifiedDate(StandardizationSettings obj, int index) {

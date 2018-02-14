@@ -3,11 +3,11 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect StandardizationDryrunCompound_Roo_Configurable {
+privileged aspect StandardizationDryRunCompound_Roo_Configurable {
     
-    declare @type: StandardizationDryrunCompound: @Configurable;
+    declare @type: StandardizationDryRunCompound: @Configurable;
     
 }

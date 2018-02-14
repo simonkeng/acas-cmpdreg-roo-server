@@ -17,7 +17,7 @@ import com.labsynch.cmpdreg.chemclasses.CmpdRegSDFWriterFactory;
 import com.labsynch.cmpdreg.domain.Lot;
 import com.labsynch.cmpdreg.domain.Parent;
 import com.labsynch.cmpdreg.domain.ParentAlias;
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import com.labsynch.cmpdreg.domain.StandardizationHistory;
 import com.labsynch.cmpdreg.domain.StandardizationSettings;
 import com.labsynch.cmpdreg.dto.configuration.MainConfigDTO;
@@ -62,14 +62,14 @@ public class StandardizationServiceImpl implements StandardizationService {
 	public int populateStanardizationDryRunTable() throws CmpdRegMolFormatException, IOException, StandardizerException{
 		List<Long> parentIds = Parent.getParentIds();
 		Parent parent;
-		StandardizationDryrunCompound stndznCompound;
+		StandardizationDryRunCompound stndznCompound;
 		int nonMatchingCmpds = 0;
 		logger.info("number of parents to check: " + parentIds.size());
 		Date qcDate = new Date();
 		String asDrawnStruct;
 		Integer cdId = 0 ;
 		List<Lot> queryLots;
-		Integer runNumber = StandardizationDryrunCompound.findMaxRunNumber().getSingleResult();
+		Integer runNumber = StandardizationDryRunCompound.findMaxRunNumber().getSingleResult();
 		if (runNumber == null){
 			runNumber = 1;
 		} else {
@@ -78,7 +78,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 
 		for  (Long parentId : parentIds){
 			parent = Parent.findParent(parentId);
-			stndznCompound = new StandardizationDryrunCompound();
+			stndznCompound = new StandardizationDryRunCompound();
 			stndznCompound.setRunNumber(runNumber);
 			stndznCompound.setQcDate(qcDate);
 			stndznCompound.setParentId(parent.getId());
@@ -117,7 +117,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 				}
 			}
 			logger.debug("time to save the struture");
-			cdId = chemStructureService.saveStructure(stndznCompound.getMolStructure(), "standardization_dryrun_structure", false);
+			cdId = chemStructureService.saveStructure(stndznCompound.getMolStructure(), "standardization_dry_run_structure", false);
 			if (cdId == -1){
 				logger.error("Bad molformat. Please fix the molfile: " + stndznCompound.getMolStructure());
 			} else {
@@ -150,13 +150,13 @@ public class StandardizationServiceImpl implements StandardizationService {
 
 	@Override
 	public int dupeCheckStandardizationStructures() throws CmpdRegMolFormatException{
-		List<Long> qcIds = StandardizationDryrunCompound.findAllIds().getResultList();
+		List<Long> qcIds = StandardizationDryRunCompound.findAllIds().getResultList();
 		logger.info("number of qcCompounds found: " + qcIds.size());
 		int totalNewDupeCount = 0;
 		int totalOldDupeCount = 0;
 		if (qcIds.size() > 0){
 			int[] hits;	
-			StandardizationDryrunCompound qcCompound;
+			StandardizationDryRunCompound qcCompound;
 			String newDupeCorpNames = "";
 			String oldDupeCorpNames = "";
 			int newDupeCount = 0;
@@ -164,19 +164,19 @@ public class StandardizationServiceImpl implements StandardizationService {
 			for (Long qcId : qcIds){
 				boolean firstNewDupeHit = true;
 				boolean firstOldDupeHit = true;
-				qcCompound = StandardizationDryrunCompound.findStandardizationDryrunCompound(qcId);
+				qcCompound = StandardizationDryRunCompound.findStandardizationDryRunCompound(qcId);
 				logger.debug("query compound: " + qcCompound.getCorpName());
 				if(qcCompound.getNewMolWeight() == 0) {
 					logger.info("mol has a weight of 0 - skipping");			
 
 				} else {
-					hits = chemStructureService.searchMolStructures(qcCompound.getMolStructure(), "standardization_dryrun_structure", "DUPLICATE_TAUTOMER");
+					hits = chemStructureService.searchMolStructures(qcCompound.getMolStructure(), "standardization_dry_run_structure", "DUPLICATE_TAUTOMER");
 					newDupeCount = hits.length;
 					logger.debug("current new dupeCount: " + newDupeCount);
 					qcCompound.setChangedStructure(true);
 					for (int hit:hits){
-						List<StandardizationDryrunCompound> searchResults = StandardizationDryrunCompound.findStandardizationDryrunCompoundsByCdId(hit).getResultList();
-						for (StandardizationDryrunCompound searchResult : searchResults){
+						List<StandardizationDryRunCompound> searchResults = StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCdId(hit).getResultList();
+						for (StandardizationDryRunCompound searchResult : searchResults){
 							if (searchResult.getCorpName().equalsIgnoreCase(qcCompound.getCorpName())){
 								qcCompound.setChangedStructure(false);
 								newDupeCount = newDupeCount-1;
@@ -259,18 +259,18 @@ public class StandardizationServiceImpl implements StandardizationService {
 	
 	@Override
 	public String getStandardizationDryRunReport() throws StandardizerException, CmpdRegMolFormatException, IOException{
-		List<StandardizationDryrunCompound> stndznCompounds = StandardizationDryrunCompound.findStandardizationChanges().getResultList();
-		String json = StandardizationDryrunCompound.toJsonArray(stndznCompounds);
+		List<StandardizationDryRunCompound> stndznCompounds = StandardizationDryRunCompound.findStandardizationChanges().getResultList();
+		String json = StandardizationDryRunCompound.toJsonArray(stndznCompounds);
 		return(json);
 	}
 	
 	@Override
 	public void reset() {
-		boolean dropTable = chemStructureService.dropJChemTable("compound.standardization_dryrun_structure");
+		boolean dropTable = chemStructureService.dropJChemTable("compound.standardization_dry_run_structure");
 		logger.info("drop table is: " + dropTable);
 		if (dropTable){
-			chemStructureService.createJChemTable("compound.standardization_dryrun_structure", true);				
-			StandardizationDryrunCompound.truncateTable();
+			chemStructureService.createJChemTable("compound.standardization_dry_run_structure", true);				
+			StandardizationDryRunCompound.truncateTable();
 		} else {
 			logger.info("unable to drop jchem table");
 		}
@@ -317,27 +317,52 @@ public class StandardizationServiceImpl implements StandardizationService {
 	}
 
 	@Override
-	@Transactional
-	public String executeStandardization() throws CmpdRegMolFormatException, IOException, StandardizerException{
-		List<Long> parentIds = StandardizationDryrunCompound.findParentIdsWithStandardizationChanges().getResultList();
-		int result = restandardizeParentStructures(parentIds);
-		StandardizationHistory standardizationHistory = StandardizationDryrunCompound.fetchStats();
-		standardizationHistory.setStructuresStandardizedCount(result);
-		standardizationHistory.setDateOfStandardization(new Date());
+	public String executeStandardization() {
+		StandardizationHistory standardizationHistory = getMostRecentStandardizationHistory();
+		if(StringUtils.equalsIgnoreCase(standardizationHistory.getStandardizationStatus(), "complete")) {
+			standardizationHistory = new StandardizationHistory();
+			standardizationHistory.setSettings(standardizerConfigs.toJson());
+			standardizationHistory.setSettingsHash(standardizerConfigs.hashCode());
+			standardizationHistory.setRecordedDate(new Date());			
+		}
+		standardizationHistory.setStandardizationStart(new Date());
+		standardizationHistory.setStandardizationComplete(null);
+		standardizationHistory.setStandardizationStatus("running");
 		standardizationHistory.persist();
+		
+		Integer result;
+		try {
+			result = this.runStandardization();
+		} catch (CmpdRegMolFormatException | IOException | StandardizerException e) {
+			standardizationHistory.setStandardizationComplete(new Date());
+			standardizationHistory.setStandardizationStatus("failed");
+			standardizationHistory.persist();
+			return(standardizationHistory.toJson());
+		}
+		
 		StandardizationSettings stndardizationSettings = this.getStandardizationSettings();
 		stndardizationSettings.setNeedsStandardization(false);
-		stndardizationSettings.setCurrentSettings(standardizerConfigs.toJson());
-		stndardizationSettings.setCurrentSettingsHash(standardizerConfigs.hashCode());
-		stndardizationSettings.setModifiedDate(new Date());
 		stndardizationSettings.persist();
-		this.reset();
+		
+		standardizationHistory = StandardizationDryRunCompound.addStatsToHistory(standardizationHistory);
+		standardizationHistory.setStructuresStandardizedCount(result);
+		standardizationHistory.setStandardizationComplete(new Date());
+		standardizationHistory.setStandardizationStatus("complete");
+		standardizationHistory.persist();
 		return standardizationHistory.toJson();
+	}
+	
+	@Transactional
+	private int runStandardization() throws CmpdRegMolFormatException, IOException, StandardizerException {
+		List<Long> parentIds = StandardizationDryRunCompound.findParentIdsWithStandardizationChanges().getResultList();
+		int result = restandardizeParentStructures(parentIds);
+		this.reset();
+		return(result);
 	}
 	
 	@Override
 	public String getDryRunStats() {
-		String dryRunStats = StandardizationDryrunCompound.fetchStats().toString();
+		String dryRunStats = StandardizationDryRunCompound.fetchStats().toString();
 		return dryRunStats;
 	}
 	
@@ -353,8 +378,43 @@ public class StandardizationServiceImpl implements StandardizationService {
 
 	@Override
 	public List<StandardizationHistory> getStanardizationHistory() {
-		List<StandardizationHistory> standardizationSettingses = StandardizationHistory.findStandardizationHistoryEntries(0, 500, "dateOfStandardization", "dateOfStandardization");
+		List<StandardizationHistory> standardizationSettingses = StandardizationHistory.findStandardizationHistoryEntries(0, 500, "dateOfStandardization", "DESC");
 		return standardizationSettingses;
+	}
+
+	@Override
+	public void executeDryRun() throws CmpdRegMolFormatException, IOException, StandardizerException {
+		StandardizationHistory stndznHistory = getMostRecentStandardizationHistory();
+		if(StringUtils.equalsIgnoreCase(stndznHistory.getStandardizationStatus(), "complete")) {
+			stndznHistory = new StandardizationHistory();
+			stndznHistory.setSettings(standardizerConfigs.toJson());
+			stndznHistory.setSettingsHash(standardizerConfigs.hashCode());
+			stndznHistory.setRecordedDate(new Date());			
+		}
+		stndznHistory.setDryRunStatus("running");
+		stndznHistory.setDryRunStart(new Date());
+		stndznHistory.setDryRunComplete(null);
+		stndznHistory.persist();
+		
+	    int numberOfDisplayChanges = this.runDryRun();
+	    
+		stndznHistory.setDryRunComplete(new Date());
+		stndznHistory.setDryRunStatus("complete");
+		stndznHistory.persist();
+	}
+	
+	@Transactional
+	private int runDryRun() throws CmpdRegMolFormatException, IOException, StandardizerException {
+		this.reset();
+		int numberOfDisplayChanges = this.populateStanardizationDryRunTable();
+	    numberOfDisplayChanges = this.dupeCheckStandardizationStructures();
+	    return(numberOfDisplayChanges);
+	}
+	
+	
+	public StandardizationHistory getMostRecentStandardizationHistory() {
+		List<StandardizationHistory> standardizationSettingses = StandardizationHistory.findStandardizationHistoryEntries(0, 1, "id", "DESC");
+		return(standardizationSettingses.get(0));
 	}
 
 

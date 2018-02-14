@@ -14,7 +14,7 @@ privileged aspect StandardizationSettings_Roo_Jpa_ActiveRecord {
     @PersistenceContext
     transient EntityManager StandardizationSettings.entityManager;
     
-    public static final List<String> StandardizationSettings.fieldNames4OrderClauseFilter = java.util.Arrays.asList("currentSettings", "modifiedDate", "needsStandardization", "currentSettingsHash");
+    public static final List<String> StandardizationSettings.fieldNames4OrderClauseFilter = java.util.Arrays.asList("modifiedDate", "needsStandardization");
     
     public static final EntityManager StandardizationSettings.entityManager() {
         EntityManager em = new StandardizationSettings().entityManager;

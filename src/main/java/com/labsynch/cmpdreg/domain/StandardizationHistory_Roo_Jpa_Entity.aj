@@ -6,31 +6,15 @@ package com.labsynch.cmpdreg.domain;
 import com.labsynch.cmpdreg.domain.StandardizationHistory;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Version;
 
 privileged aspect StandardizationHistory_Roo_Jpa_Entity {
     
     declare @type: StandardizationHistory: @Entity;
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long StandardizationHistory.id;
-    
     @Version
     @Column(name = "version")
     private Integer StandardizationHistory.version;
-    
-    public Long StandardizationHistory.getId() {
-        return this.id;
-    }
-    
-    public void StandardizationHistory.setId(Long id) {
-        this.id = id;
-    }
     
     public Integer StandardizationHistory.getVersion() {
         return this.version;

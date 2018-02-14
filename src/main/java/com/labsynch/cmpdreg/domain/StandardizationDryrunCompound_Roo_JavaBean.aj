@@ -3,168 +3,168 @@
 
 package com.labsynch.cmpdreg.domain;
 
-import com.labsynch.cmpdreg.domain.StandardizationDryrunCompound;
+import com.labsynch.cmpdreg.domain.StandardizationDryRunCompound;
 import java.util.Date;
 
-privileged aspect StandardizationDryrunCompound_Roo_JavaBean {
+privileged aspect StandardizationDryRunCompound_Roo_JavaBean {
     
-    public int StandardizationDryrunCompound.getRunNumber() {
+    public int StandardizationDryRunCompound.getRunNumber() {
         return this.runNumber;
     }
     
-    public void StandardizationDryrunCompound.setRunNumber(int runNumber) {
+    public void StandardizationDryRunCompound.setRunNumber(int runNumber) {
         this.runNumber = runNumber;
     }
     
-    public Date StandardizationDryrunCompound.getQcDate() {
+    public Date StandardizationDryRunCompound.getQcDate() {
         return this.qcDate;
     }
     
-    public void StandardizationDryrunCompound.setQcDate(Date qcDate) {
+    public void StandardizationDryRunCompound.setQcDate(Date qcDate) {
         this.qcDate = qcDate;
     }
     
-    public Long StandardizationDryrunCompound.getParentId() {
+    public Long StandardizationDryRunCompound.getParentId() {
         return this.parentId;
     }
     
-    public void StandardizationDryrunCompound.setParentId(Long parentId) {
+    public void StandardizationDryRunCompound.setParentId(Long parentId) {
         this.parentId = parentId;
     }
     
-    public String StandardizationDryrunCompound.getCorpName() {
+    public String StandardizationDryRunCompound.getCorpName() {
         return this.corpName;
     }
     
-    public void StandardizationDryrunCompound.setCorpName(String corpName) {
+    public void StandardizationDryRunCompound.setCorpName(String corpName) {
         this.corpName = corpName;
     }
     
-    public String StandardizationDryrunCompound.getNewDuplicates() {
+    public String StandardizationDryRunCompound.getNewDuplicates() {
         return this.newDuplicates;
     }
     
-    public void StandardizationDryrunCompound.setNewDuplicates(String newDuplicates) {
+    public void StandardizationDryRunCompound.setNewDuplicates(String newDuplicates) {
         this.newDuplicates = newDuplicates;
     }
     
-    public String StandardizationDryrunCompound.getOldDuplicates() {
+    public String StandardizationDryRunCompound.getOldDuplicates() {
         return this.oldDuplicates;
     }
     
-    public void StandardizationDryrunCompound.setOldDuplicates(String oldDuplicates) {
+    public void StandardizationDryRunCompound.setOldDuplicates(String oldDuplicates) {
         this.oldDuplicates = oldDuplicates;
     }
     
-    public boolean StandardizationDryrunCompound.isChangedStructure() {
+    public boolean StandardizationDryRunCompound.isChangedStructure() {
         return this.changedStructure;
     }
     
-    public void StandardizationDryrunCompound.setChangedStructure(boolean changedStructure) {
+    public void StandardizationDryRunCompound.setChangedStructure(boolean changedStructure) {
         this.changedStructure = changedStructure;
     }
     
-    public Double StandardizationDryrunCompound.getOldMolWeight() {
+    public Double StandardizationDryRunCompound.getOldMolWeight() {
         return this.oldMolWeight;
     }
     
-    public void StandardizationDryrunCompound.setOldMolWeight(Double oldMolWeight) {
+    public void StandardizationDryRunCompound.setOldMolWeight(Double oldMolWeight) {
         this.oldMolWeight = oldMolWeight;
     }
     
-    public Double StandardizationDryrunCompound.getNewMolWeight() {
+    public Double StandardizationDryRunCompound.getNewMolWeight() {
         return this.newMolWeight;
     }
     
-    public void StandardizationDryrunCompound.setNewMolWeight(Double newMolWeight) {
+    public void StandardizationDryRunCompound.setNewMolWeight(Double newMolWeight) {
         this.newMolWeight = newMolWeight;
     }
     
-    public boolean StandardizationDryrunCompound.isDisplayChange() {
+    public boolean StandardizationDryRunCompound.isDisplayChange() {
         return this.displayChange;
     }
     
-    public void StandardizationDryrunCompound.setDisplayChange(boolean displayChange) {
+    public void StandardizationDryRunCompound.setDisplayChange(boolean displayChange) {
         this.displayChange = displayChange;
     }
     
-    public boolean StandardizationDryrunCompound.isAsDrawnDisplayChange() {
+    public boolean StandardizationDryRunCompound.isAsDrawnDisplayChange() {
         return this.asDrawnDisplayChange;
     }
     
-    public void StandardizationDryrunCompound.setAsDrawnDisplayChange(boolean asDrawnDisplayChange) {
+    public void StandardizationDryRunCompound.setAsDrawnDisplayChange(boolean asDrawnDisplayChange) {
         this.asDrawnDisplayChange = asDrawnDisplayChange;
     }
     
-    public int StandardizationDryrunCompound.getNewDupeCount() {
+    public int StandardizationDryRunCompound.getNewDupeCount() {
         return this.newDupeCount;
     }
     
-    public void StandardizationDryrunCompound.setNewDupeCount(int newDupeCount) {
+    public void StandardizationDryRunCompound.setNewDupeCount(int newDupeCount) {
         this.newDupeCount = newDupeCount;
     }
     
-    public int StandardizationDryrunCompound.getOldDupeCount() {
+    public int StandardizationDryRunCompound.getOldDupeCount() {
         return this.oldDupeCount;
     }
     
-    public void StandardizationDryrunCompound.setOldDupeCount(int oldDupeCount) {
+    public void StandardizationDryRunCompound.setOldDupeCount(int oldDupeCount) {
         this.oldDupeCount = oldDupeCount;
     }
     
-    public String StandardizationDryrunCompound.getAlias() {
+    public String StandardizationDryRunCompound.getAlias() {
         return this.alias;
     }
     
-    public void StandardizationDryrunCompound.setAlias(String alias) {
+    public void StandardizationDryRunCompound.setAlias(String alias) {
         this.alias = alias;
     }
     
-    public String StandardizationDryrunCompound.getStereoCategory() {
+    public String StandardizationDryRunCompound.getStereoCategory() {
         return this.stereoCategory;
     }
     
-    public void StandardizationDryrunCompound.setStereoCategory(String stereoCategory) {
+    public void StandardizationDryRunCompound.setStereoCategory(String stereoCategory) {
         this.stereoCategory = stereoCategory;
     }
     
-    public String StandardizationDryrunCompound.getStereoComment() {
+    public String StandardizationDryRunCompound.getStereoComment() {
         return this.stereoComment;
     }
     
-    public void StandardizationDryrunCompound.setStereoComment(String stereoComment) {
+    public void StandardizationDryRunCompound.setStereoComment(String stereoComment) {
         this.stereoComment = stereoComment;
     }
     
-    public int StandardizationDryrunCompound.getCdId() {
+    public int StandardizationDryRunCompound.getCdId() {
         return this.CdId;
     }
     
-    public void StandardizationDryrunCompound.setCdId(int CdId) {
+    public void StandardizationDryRunCompound.setCdId(int CdId) {
         this.CdId = CdId;
     }
     
-    public String StandardizationDryrunCompound.getMolStructure() {
+    public String StandardizationDryRunCompound.getMolStructure() {
         return this.molStructure;
     }
     
-    public void StandardizationDryrunCompound.setMolStructure(String molStructure) {
+    public void StandardizationDryRunCompound.setMolStructure(String molStructure) {
         this.molStructure = molStructure;
     }
     
-    public String StandardizationDryrunCompound.getComment() {
+    public String StandardizationDryRunCompound.getComment() {
         return this.comment;
     }
     
-    public void StandardizationDryrunCompound.setComment(String comment) {
+    public void StandardizationDryRunCompound.setComment(String comment) {
         this.comment = comment;
     }
     
-    public boolean StandardizationDryrunCompound.isIgnore() {
+    public boolean StandardizationDryRunCompound.isIgnore() {
         return this.ignore;
     }
     
-    public void StandardizationDryrunCompound.setIgnore(boolean ignore) {
+    public void StandardizationDryRunCompound.setIgnore(boolean ignore) {
         this.ignore = ignore;
     }
     
