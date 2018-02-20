@@ -152,18 +152,18 @@ public class StandardizationServiceImpl implements StandardizationService {
 	public int dupeCheckStandardizationStructures() throws CmpdRegMolFormatException{
 		List<Long> qcIds = StandardizationDryRunCompound.findAllIds().getResultList();
 		logger.info("number of qcCompounds found: " + qcIds.size());
-		int totalNewDupeCount = 0;
-		int totalOldDupeCount = 0;
+		int totalNewDuplicateCount = 0;
+		int totalExistingDuplicateCount = 0;
 		if (qcIds.size() > 0){
 			int[] hits;	
 			StandardizationDryRunCompound qcCompound;
-			String newDupeCorpNames = "";
-			String oldDupeCorpNames = "";
+			String newDuplicateCorpNames = "";
+			String oldDuplicateCorpNames = "";
 			int newDupeCount = 0;
-			int oldDupeCount = 0;
+			int oldDuplicateCount = 0;
 			for (Long qcId : qcIds){
-				boolean firstNewDupeHit = true;
-				boolean firstOldDupeHit = true;
+				boolean firstNewDuplicateHit = true;
+				boolean firstOldDuplicateHit = true;
 				qcCompound = StandardizationDryRunCompound.findStandardizationDryRunCompound(qcId);
 				logger.debug("query compound: " + qcCompound.getCorpName());
 				if(qcCompound.getNewMolWeight() == 0) {
@@ -183,12 +183,12 @@ public class StandardizationServiceImpl implements StandardizationService {
 							} else {
 								if (StringUtils.equals(searchResult.getStereoCategory(), qcCompound.getStereoCategory())
 										&& StringUtils.equalsIgnoreCase(searchResult.getStereoComment(), qcCompound.getStereoComment())){
-									if (!firstNewDupeHit) newDupeCorpNames = newDupeCorpNames.concat(";");
-									newDupeCorpNames = newDupeCorpNames.concat(searchResult.getCorpName());
-									firstNewDupeHit = false;
+									if (!firstNewDuplicateHit) newDuplicateCorpNames = newDuplicateCorpNames.concat(";");
+									newDuplicateCorpNames = newDuplicateCorpNames.concat(searchResult.getCorpName());
+									firstNewDuplicateHit = false;
 									logger.info("found new dupe parents");
 									logger.info("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
-									totalNewDupeCount++;
+									totalNewDuplicateCount++;
 								} else {
 									logger.info("found different stereo codes and comments");
 								}
@@ -197,45 +197,45 @@ public class StandardizationServiceImpl implements StandardizationService {
 					}
 					
 					hits = chemStructureService.searchMolStructures(qcCompound.getMolStructure(), "parent_structure", "DUPLICATE_TAUTOMER");
-					oldDupeCount = hits.length;
-					logger.debug("current old dupeCount: " + oldDupeCount);
+					oldDuplicateCount = hits.length;
+					logger.debug("current old dupeCount: " + oldDuplicateCount);
 					for (int hit:hits){
 						List<Parent> searchResults = Parent.findParentsByCdId(hit).getResultList();
 						for (Parent searchResult : searchResults){
 							if (searchResult.getCorpName().equalsIgnoreCase(qcCompound.getCorpName())){
-								oldDupeCount = oldDupeCount-1;
+								oldDuplicateCount = oldDuplicateCount-1;
 							} else {
 								if (StringUtils.equals(searchResult.getStereoCategory().getName(), qcCompound.getStereoCategory())
 										&& StringUtils.equalsIgnoreCase(searchResult.getStereoComment(), qcCompound.getStereoComment())){
-									if (!firstOldDupeHit) oldDupeCorpNames = oldDupeCorpNames.concat(";");
-									oldDupeCorpNames = oldDupeCorpNames.concat(searchResult.getCorpName());
-									firstOldDupeHit = false;
+									if (!firstOldDuplicateHit) oldDuplicateCorpNames = oldDuplicateCorpNames.concat(";");
+									oldDuplicateCorpNames = oldDuplicateCorpNames.concat(searchResult.getCorpName());
+									firstOldDuplicateHit = false;
 									logger.info("found old dupe parents");
 									logger.info("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
-									totalOldDupeCount++;
+									totalExistingDuplicateCount++;
 								} else {
 									logger.info("found different stereo codes and comments");
 								}
 							}
 						}
 					}
-					qcCompound.setNewDupeCount(newDupeCount);
-					if(!newDupeCorpNames.equals("")) {
-						qcCompound.setNewDuplicates(newDupeCorpNames);
+					qcCompound.setNewDuplicateCount(newDupeCount);
+					if(!newDuplicateCorpNames.equals("")) {
+						qcCompound.setNewDuplicates(newDuplicateCorpNames);
 					}
-					qcCompound.setOldDupeCount(oldDupeCount);
-					if(!oldDupeCorpNames.equals("")) {
-						qcCompound.setOldDuplicates(oldDupeCorpNames);
+					qcCompound.setExistingDuplicateCount(oldDuplicateCount);
+					if(!oldDuplicateCorpNames.equals("")) {
+						qcCompound.setExistingDuplicates(oldDuplicateCorpNames);
 					}	
 
 				}
 
 				qcCompound.merge();
-				newDupeCorpNames = "";
-				oldDupeCorpNames = "";
+				newDuplicateCorpNames = "";
+				oldDuplicateCorpNames = "";
 			}
 		}
-		return (totalNewDupeCount);
+		return (totalNewDuplicateCount);
 	}
 	
 	@Override

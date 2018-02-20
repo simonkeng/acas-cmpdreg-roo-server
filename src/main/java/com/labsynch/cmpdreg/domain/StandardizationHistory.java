@@ -47,7 +47,7 @@ public class StandardizationHistory {
 
 	private Integer newDuplicateCount;
 
-	private Integer oldDuplicateCount;
+	private Integer existingDuplicateCount;
 
 	private Integer displayChangeCount;
 

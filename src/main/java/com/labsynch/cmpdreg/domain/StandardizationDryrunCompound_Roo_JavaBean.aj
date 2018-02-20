@@ -48,12 +48,12 @@ privileged aspect StandardizationDryRunCompound_Roo_JavaBean {
         this.newDuplicates = newDuplicates;
     }
     
-    public String StandardizationDryRunCompound.getOldDuplicates() {
-        return this.oldDuplicates;
+    public String StandardizationDryRunCompound.getExistingDuplicates() {
+        return this.existingDuplicates;
     }
     
-    public void StandardizationDryRunCompound.setOldDuplicates(String oldDuplicates) {
-        this.oldDuplicates = oldDuplicates;
+    public void StandardizationDryRunCompound.setExistingDuplicates(String existingDuplicates) {
+        this.existingDuplicates = existingDuplicates;
     }
     
     public boolean StandardizationDryRunCompound.isChangedStructure() {
@@ -96,20 +96,20 @@ privileged aspect StandardizationDryRunCompound_Roo_JavaBean {
         this.asDrawnDisplayChange = asDrawnDisplayChange;
     }
     
-    public int StandardizationDryRunCompound.getNewDupeCount() {
-        return this.newDupeCount;
+    public int StandardizationDryRunCompound.getNewDuplicateCount() {
+        return this.newDuplicateCount;
     }
     
-    public void StandardizationDryRunCompound.setNewDupeCount(int newDupeCount) {
-        this.newDupeCount = newDupeCount;
+    public void StandardizationDryRunCompound.setNewDuplicateCount(int newDuplicateCount) {
+        this.newDuplicateCount = newDuplicateCount;
     }
     
-    public int StandardizationDryRunCompound.getOldDupeCount() {
-        return this.oldDupeCount;
+    public int StandardizationDryRunCompound.getExistingDuplicateCount() {
+        return this.existingDuplicateCount;
     }
     
-    public void StandardizationDryRunCompound.setOldDupeCount(int oldDupeCount) {
-        this.oldDupeCount = oldDupeCount;
+    public void StandardizationDryRunCompound.setExistingDuplicateCount(int existingDuplicateCount) {
+        this.existingDuplicateCount = existingDuplicateCount;
     }
     
     public String StandardizationDryRunCompound.getAlias() {

@@ -104,12 +104,12 @@ privileged aspect StandardizationHistory_Roo_JavaBean {
         this.newDuplicateCount = newDuplicateCount;
     }
     
-    public Integer StandardizationHistory.getOldDuplicateCount() {
-        return this.oldDuplicateCount;
+    public Integer StandardizationHistory.getExistingDuplicateCount() {
+        return this.existingDuplicateCount;
     }
     
-    public void StandardizationHistory.setOldDuplicateCount(Integer oldDuplicateCount) {
-        this.oldDuplicateCount = oldDuplicateCount;
+    public void StandardizationHistory.setExistingDuplicateCount(Integer existingDuplicateCount) {
+        this.existingDuplicateCount = existingDuplicateCount;
     }
     
     public Integer StandardizationHistory.getDisplayChangeCount() {

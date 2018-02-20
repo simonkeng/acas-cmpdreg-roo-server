@@ -29,7 +29,7 @@ public class StandardizationDryRunCompound {
 
 	private String newDuplicates;
 	
-	private String oldDuplicates;
+	private String existingDuplicates;
 	
 	private boolean changedStructure;
 	
@@ -41,9 +41,9 @@ public class StandardizationDryRunCompound {
 
 	private boolean asDrawnDisplayChange;
 
-	private int newDupeCount;
+	private int newDuplicateCount;
 
-	private int oldDupeCount;
+	private int existingDuplicateCount;
 
 	private String alias;
 
@@ -83,12 +83,12 @@ public class StandardizationDryRunCompound {
 	}
 
 	public static TypedQuery<StandardizationDryRunCompound> findStandardizationChanges() {
-		String querySQL = "SELECT o FROM StandardizationDryRunCompound o WHERE changedStructure = true OR oldDupeCount > 0 OR newDupeCount > 0 OR displayChange = true";
+		String querySQL = "SELECT o FROM StandardizationDryRunCompound o WHERE changedStructure = true OR existingDuplicateCount > 0 OR newDuplicateCount > 0 OR displayChange = true";
 		return StandardizationDryRunCompound.entityManager().createQuery(querySQL, StandardizationDryRunCompound.class);
 	}
 	
 	public static TypedQuery<Long> findParentIdsWithStandardizationChanges() {
-		String querySQL = "SELECT o.parentId FROM StandardizationDryRunCompound o WHERE changedStructure = true OR oldDupeCount > 0 OR newDupeCount > 0 OR displayChange = true";
+		String querySQL = "SELECT o.parentId FROM StandardizationDryRunCompound o WHERE changedStructure = true OR existingDuplicateCount > 0 OR newDuplicateCount > 0 OR displayChange = true";
 		return StandardizationDryRunCompound.entityManager().createQuery(querySQL, Long.class);
 	}
 	
@@ -106,8 +106,8 @@ public class StandardizationDryRunCompound {
 		stats.setSettings(standardizerConfigs.toJson());
 		stats.setSettingsHash(standardizerConfigs.hashCode());
 		stats.setChangedStructureCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.changedStructure = true", Long.class).getSingleResult()));
-		stats.setOldDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.oldDupeCount > 0", Long.class).getSingleResult()));
-		stats.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDupeCount > 0", Long.class).getSingleResult()));
+		stats.setExistingDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.existingDuplicateCount > 0", Long.class).getSingleResult()));
+		stats.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDuplicateCount > 0", Long.class).getSingleResult()));
 		stats.setDisplayChangeCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.displayChange = true", Long.class).getSingleResult()));
 		stats.setAsDrawnDisplayChangeCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.asDrawnDisplayChange = true", Long.class).getSingleResult()));
 
@@ -116,8 +116,8 @@ public class StandardizationDryRunCompound {
 
 	public static StandardizationHistory addStatsToHistory(StandardizationHistory standardizationHistory) {
 		standardizationHistory.setChangedStructureCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.changedStructure = true", Long.class).getSingleResult()));
-		standardizationHistory.setOldDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.oldDupeCount > 0", Long.class).getSingleResult()));
-		standardizationHistory.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDupeCount > 0", Long.class).getSingleResult()));
+		standardizationHistory.setExistingDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.existingDuplicateCount > 0", Long.class).getSingleResult()));
+		standardizationHistory.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDuplicateCount > 0", Long.class).getSingleResult()));
 		standardizationHistory.setDisplayChangeCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.displayChange = true", Long.class).getSingleResult()));
 		standardizationHistory.setAsDrawnDisplayChangeCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.asDrawnDisplayChange = true", Long.class).getSingleResult()));
 		return(standardizationHistory);
