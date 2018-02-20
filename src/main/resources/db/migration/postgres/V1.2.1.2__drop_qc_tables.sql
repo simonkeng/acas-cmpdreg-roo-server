@@ -1,3 +1,3 @@
-drop table qc_compound_structure_ul;
-drop table qc_compound_structure;
-drop table qc_compound;
+drop table if exists qc_compound_structure_ul;
+drop table if exists qc_compound_structure;
+drop table if exists qc_compound;
