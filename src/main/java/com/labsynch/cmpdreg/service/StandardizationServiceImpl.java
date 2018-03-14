@@ -265,6 +265,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 	}
 	
 	@Override
+	@Transactional
 	public void reset() {
 		boolean dropTable = chemStructureService.dropJChemTable("compound.standardization_dry_run_structure");
 		logger.info("drop table is: " + dropTable);
@@ -349,6 +350,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 		standardizationHistory.setStandardizationComplete(new Date());
 		standardizationHistory.setStandardizationStatus("complete");
 		standardizationHistory.persist();
+		this.reset();
 		return standardizationHistory.toJson();
 	}
 	
@@ -356,7 +358,6 @@ public class StandardizationServiceImpl implements StandardizationService {
 	private int runStandardization() throws CmpdRegMolFormatException, IOException, StandardizerException {
 		List<Long> parentIds = StandardizationDryRunCompound.findParentIdsWithStandardizationChanges().getResultList();
 		int result = restandardizeParentStructures(parentIds);
-		this.reset();
 		return(result);
 	}
 	
