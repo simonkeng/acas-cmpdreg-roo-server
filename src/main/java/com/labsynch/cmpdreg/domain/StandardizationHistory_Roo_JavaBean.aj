@@ -96,6 +96,14 @@ privileged aspect StandardizationHistory_Roo_JavaBean {
         this.structuresStandardizedCount = structuresStandardizedCount;
     }
     
+    public Integer StandardizationHistory.getStructuresUpdatedCount() {
+        return this.structuresUpdatedCount;
+    }
+    
+    public void StandardizationHistory.setStructuresUpdatedCount(Integer structuresUpdatedCount) {
+        this.structuresUpdatedCount = structuresUpdatedCount;
+    }
+    
     public Integer StandardizationHistory.getNewDuplicateCount() {
         return this.newDuplicateCount;
     }

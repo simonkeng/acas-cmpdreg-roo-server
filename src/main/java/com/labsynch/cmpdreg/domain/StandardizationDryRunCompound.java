@@ -105,6 +105,7 @@ public class StandardizationDryRunCompound {
 		StandardizationHistory stats = new StandardizationHistory();
 		stats.setSettings(standardizerConfigs.toJson());
 		stats.setSettingsHash(standardizerConfigs.hashCode());
+		stats.setStructuresStandardizedCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s", Long.class).getSingleResult()));
 		stats.setChangedStructureCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.changedStructure = true", Long.class).getSingleResult()));
 		stats.setExistingDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.existingDuplicateCount > 0", Long.class).getSingleResult()));
 		stats.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDuplicateCount > 0", Long.class).getSingleResult()));
@@ -115,6 +116,7 @@ public class StandardizationDryRunCompound {
 	}
 
 	public static StandardizationHistory addStatsToHistory(StandardizationHistory standardizationHistory) {
+		standardizationHistory.setStructuresStandardizedCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s", Long.class).getSingleResult()));
 		standardizationHistory.setChangedStructureCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.changedStructure = true", Long.class).getSingleResult()));
 		standardizationHistory.setExistingDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.existingDuplicateCount > 0", Long.class).getSingleResult()));
 		standardizationHistory.setNewDuplicateCount(toIntExact(StandardizationDryRunCompound.entityManager().createQuery("SELECT count(s.id) FROM StandardizationDryRunCompound s WHERE s.newDuplicateCount > 0", Long.class).getSingleResult()));

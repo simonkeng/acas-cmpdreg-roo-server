@@ -346,7 +346,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 		stndardizationSettings.persist();
 		
 		standardizationHistory = StandardizationDryRunCompound.addStatsToHistory(standardizationHistory);
-		standardizationHistory.setStructuresStandardizedCount(result);
+		standardizationHistory.setStructuresUpdatedCount(result);
 		standardizationHistory.setStandardizationComplete(new Date());
 		standardizationHistory.setStandardizationStatus("complete");
 		standardizationHistory.persist();

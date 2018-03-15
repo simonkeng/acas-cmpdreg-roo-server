@@ -45,6 +45,8 @@ public class StandardizationHistory {
 
 	private Integer structuresStandardizedCount;
 
+	private Integer structuresUpdatedCount;
+
 	private Integer newDuplicateCount;
 
 	private Integer existingDuplicateCount;

@@ -70,6 +70,7 @@ CREATE TABLE standardization_history
   standardization_start timestamp without time zone,
   standardization_complete timestamp without time zone,
   structures_standardized_count integer,
+  structures_updated_count integer,
   new_duplicate_count integer,
   existing_duplicate_count integer,
   display_change_count integer,
