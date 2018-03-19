@@ -65,13 +65,13 @@ public class SecurityUtil {
 			userJson = chemist.toJson();
 
 		} catch (EmptyResultDataAccessException e){
-			logger.error("unable to find the user: " + chemistName);
+			logger.debug("unable to find the user: " + chemistName);
 			try {
 				chemistName = "adminUser";
 				chemist = Scientist.findScientistsByCodeEquals(chemistName).getSingleResult();
 				logger.debug("using the admin user");
 			} catch (EmptyResultDataAccessException e2){
-				logger.error("creating the user adminUser");
+				logger.debug("creating the user adminUser");
 				chemistName = "adminUser";
 				chemist = createUser(chemistName);
 			}

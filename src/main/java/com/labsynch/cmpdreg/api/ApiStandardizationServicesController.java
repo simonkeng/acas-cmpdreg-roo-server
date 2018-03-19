@@ -149,6 +149,16 @@ public class ApiStandardizationServicesController {
 		return new ResponseEntity<String>(StandardizationHistory.toJsonArray(standardizationHistory), headers, HttpStatus.OK);
 	}
 	
+	@Transactional
+	@RequestMapping(value = "/dryRunStats", method = RequestMethod.GET, headers = "Accept=application/json")
+	@ResponseBody
+	public ResponseEntity<String> getDryRunStats(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Type", "application/json");		
+		String dryRunStats = standardizationService.getDryRunStats();
+		return new ResponseEntity<String>(dryRunStats, headers, HttpStatus.OK);
+	}
+
 	@RequestMapping(method = RequestMethod.OPTIONS)
 	public ResponseEntity<String> getOptions() {
 		HttpHeaders headers= new HttpHeaders();

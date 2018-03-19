@@ -220,7 +220,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			ch.setConnection(conn);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
-			logger.error("the connection is closed");
+// 			logger.error("the connection is closed");
 			e1.printStackTrace();
 		}
 
@@ -286,8 +286,8 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 
 
 			String cacheID = CacheRegistrationUtil.getCacheID();
-			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
-			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
+// 			if (logger.isDebugEnabled()) logger.debug("current cache ID: " + cacheID);
+// 			if (logger.isDebugEnabled()) logger.debug("cache status: " + cru.isCacheIDRegistered(cacheID));
 
 			uh2 = new UpdateHandler(ch,
 					UpdateHandler.INSERT, structureTable, "");
@@ -322,7 +322,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		} 
 
 
-		System.out.println("here is the new saved cdId  " + cdId);		
+// 		System.out.println("here is the new saved cdId  " + cdId);		
 		return cdId;
 
 
@@ -346,7 +346,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 			}
 
 
-			System.out.println("closed the connection");		
+// 			System.out.println("closed the connection");		
 		}
 
 	}
@@ -1502,7 +1502,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		boolean updatedStructure = false;
 
 		try {
-			logger.info("the connection closed: " + conn.isClosed());
+			logger.debug("the connection closed: " + conn.isClosed());
 			conn.setAutoCommit(true);
 			ch.setConnection(conn);
 		} catch (SQLException e1) {
@@ -1610,7 +1610,7 @@ public class ChemStructureServiceJChemImpl implements ChemStructureService {
 		boolean updatedStructure = false;
 
 		try {
-			logger.info("the connection closed: " + conn.isClosed());
+			logger.debug("the connection closed: " + conn.isClosed());
 			conn.setAutoCommit(true);
 			ch.setConnection(conn);
 		} catch (SQLException e1) {

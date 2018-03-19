@@ -64,7 +64,8 @@ public class StandardizationServiceImpl implements StandardizationService {
 		Parent parent;
 		StandardizationDryRunCompound stndznCompound;
 		int nonMatchingCmpds = 0;
-		logger.info("number of parents to check: " + parentIds.size());
+		int totalCount = parentIds.size();
+		logger.info("number of parents to check: " + totalCount);
 		Date qcDate = new Date();
 		String asDrawnStruct;
 		Integer cdId = 0 ;
@@ -75,7 +76,10 @@ public class StandardizationServiceImpl implements StandardizationService {
 		} else {
 			runNumber++;
 		}
-
+		float percent = 0;
+		int p = 1;
+	    float previousPercent = percent;
+		previousPercent = percent;
 		for  (Long parentId : parentIds){
 			parent = Parent.findParent(parentId);
 			stndznCompound = new StandardizationDryRunCompound();
@@ -100,34 +104,41 @@ public class StandardizationServiceImpl implements StandardizationService {
 			stndznCompound.setNewMolWeight(chemStructureService.getMolWeight(stndznCompound.getMolStructure()));
 			
 			if(parent.getMolWeight() == 0 && stndznCompound.getNewMolWeight() == 0) {
-				logger.info("mol weight 0 before and after standardization - skipping");
+				logger.debug("mol weight 0 before and after standardization - skipping");
 
 			} else {
 				boolean displayTheSame = chemStructureService.isIdenticalDisplay(parent.getMolStructure(), stndznCompound.getMolStructure());
 				if (!displayTheSame){
 					stndznCompound.setDisplayChange(true);
-					logger.info("the compounds are NOT matching: " + parent.getCorpName());
+					logger.debug("the compounds are NOT matching: " + parent.getCorpName());
 					nonMatchingCmpds++;
 				}
 				boolean asDrawnDisplaySame = chemStructureService.isIdenticalDisplay(asDrawnStruct, stndznCompound.getMolStructure());
 				if (!asDrawnDisplaySame){
 					stndznCompound.setAsDrawnDisplayChange(true);
-					logger.info("the compounds are NOT matching: " + parent.getCorpName());
+					logger.debug("the compounds are NOT matching: " + parent.getCorpName());
 					nonMatchingCmpds++;
 				}
 			}
-			logger.debug("time to save the struture");
 			cdId = chemStructureService.saveStructure(stndznCompound.getMolStructure(), "standardization_dry_run_structure", false);
 			if (cdId == -1){
 				logger.error("Bad molformat. Please fix the molfile: " + stndznCompound.getMolStructure());
 			} else {
-				logger.debug("here is the cdId: " + cdId);
 				stndznCompound.setCdId(cdId);
 				stndznCompound.persist();
 			}
-
+			// Compute your percentage.
+			percent = (float)Math.floor(p * 100f / totalCount);
+			if(percent != previousPercent)
+			{
+			    // Output if different from the last time.
+			    logger.info("populating standardization dry run table " + percent + "% complete");
+			}
+			// Update the percentage.
+			previousPercent = percent;
+			p++;
 		}
-		logger.info("total number of nonMatching compounds: " + nonMatchingCmpds);
+		logger.info("total number of non matching; structure, display or as drawn display changes: " + nonMatchingCmpds);
 		return (nonMatchingCmpds);
 	}
 
@@ -151,7 +162,8 @@ public class StandardizationServiceImpl implements StandardizationService {
 	@Override
 	public int dupeCheckStandardizationStructures() throws CmpdRegMolFormatException{
 		List<Long> qcIds = StandardizationDryRunCompound.findAllIds().getResultList();
-		logger.info("number of qcCompounds found: " + qcIds.size());
+		int totalCount = qcIds.size();
+		logger.debug("number of compounds found in dry run table: " + totalCount);
 		int totalNewDuplicateCount = 0;
 		int totalExistingDuplicateCount = 0;
 		if (qcIds.size() > 0){
@@ -161,18 +173,21 @@ public class StandardizationServiceImpl implements StandardizationService {
 			String oldDuplicateCorpNames = "";
 			int newDupeCount = 0;
 			int oldDuplicateCount = 0;
+			
+			float percent = 0;
+			int p = 1;
+		    float previousPercent = percent;
+			previousPercent = percent;
 			for (Long qcId : qcIds){
 				boolean firstNewDuplicateHit = true;
 				boolean firstOldDuplicateHit = true;
 				qcCompound = StandardizationDryRunCompound.findStandardizationDryRunCompound(qcId);
 				logger.debug("query compound: " + qcCompound.getCorpName());
 				if(qcCompound.getNewMolWeight() == 0) {
-					logger.info("mol has a weight of 0 - skipping");			
-
+					logger.debug("mol has a weight of 0 - skipping");			
 				} else {
 					hits = chemStructureService.searchMolStructures(qcCompound.getMolStructure(), "standardization_dry_run_structure", "DUPLICATE_TAUTOMER");
 					newDupeCount = hits.length;
-					logger.debug("current new dupeCount: " + newDupeCount);
 					qcCompound.setChangedStructure(true);
 					for (int hit:hits){
 						List<StandardizationDryRunCompound> searchResults = StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCdId(hit).getResultList();
@@ -186,11 +201,11 @@ public class StandardizationServiceImpl implements StandardizationService {
 									if (!firstNewDuplicateHit) newDuplicateCorpNames = newDuplicateCorpNames.concat(";");
 									newDuplicateCorpNames = newDuplicateCorpNames.concat(searchResult.getCorpName());
 									firstNewDuplicateHit = false;
-									logger.info("found new dupe parents");
-									logger.info("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
+									logger.debug("found new dupe parents");
+									logger.debug("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
 									totalNewDuplicateCount++;
 								} else {
-									logger.info("found different stereo codes and comments");
+									logger.debug("found different stereo codes and comments");
 								}
 							}
 						}
@@ -198,7 +213,6 @@ public class StandardizationServiceImpl implements StandardizationService {
 					
 					hits = chemStructureService.searchMolStructures(qcCompound.getMolStructure(), "parent_structure", "DUPLICATE_TAUTOMER");
 					oldDuplicateCount = hits.length;
-					logger.debug("current old dupeCount: " + oldDuplicateCount);
 					for (int hit:hits){
 						List<Parent> searchResults = Parent.findParentsByCdId(hit).getResultList();
 						for (Parent searchResult : searchResults){
@@ -210,11 +224,11 @@ public class StandardizationServiceImpl implements StandardizationService {
 									if (!firstOldDuplicateHit) oldDuplicateCorpNames = oldDuplicateCorpNames.concat(";");
 									oldDuplicateCorpNames = oldDuplicateCorpNames.concat(searchResult.getCorpName());
 									firstOldDuplicateHit = false;
-									logger.info("found old dupe parents");
-									logger.info("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
+									logger.debug("found old dupe parents");
+									logger.debug("query: " + qcCompound.getCorpName() + "     dupe: " + searchResult.getCorpName());
 									totalExistingDuplicateCount++;
 								} else {
-									logger.info("found different stereo codes and comments");
+									logger.debug("found different stereo codes and comments");
 								}
 							}
 						}
@@ -233,7 +247,20 @@ public class StandardizationServiceImpl implements StandardizationService {
 				qcCompound.merge();
 				newDuplicateCorpNames = "";
 				oldDuplicateCorpNames = "";
+				
+				// Compute your percentage.
+				percent = (float)Math.floor(p * 100f / totalCount);
+				if(percent != previousPercent)
+				{
+				    // Output if different from the last time.
+				    logger.info("checking for standardization duplicates " + percent + "% complete");
+				}
+				// Update the percentage.
+				previousPercent = percent;
+				p++;
+
 			}
+						
 		}
 		return (totalNewDuplicateCount);
 	}
@@ -285,7 +312,12 @@ public class StandardizationServiceImpl implements StandardizationService {
 			Lot lot;
 			String originalStructure = null;
 			String result;
-			logger.info("number of parents to restandardize: " + parentIds.size());
+			int totalCount = parentIds.size();
+			logger.info("number of parents to restandardize: " + totalCount);
+			float percent = 0;
+			int p = 1;
+		    float previousPercent = percent;
+			previousPercent = percent;
 			for  (Long parentId : parentIds){
 				parent = Parent.findParent(parentId);
 				lots = Lot.findLotsByParent(parent).getResultList();
@@ -309,6 +341,17 @@ public class StandardizationServiceImpl implements StandardizationService {
 					parent = parentStructureService.update(parent);
 					break;
 				}
+				// Compute your percentage.
+				percent = (float)Math.floor(p * 100f / totalCount);
+				if(percent != previousPercent)
+				{
+				    // Output if different from the last time.
+				    logger.info("standardization " + percent + "% complete");
+				}
+				// Update the percentage.
+				previousPercent = percent;
+				p++;
+
 			}
 			return parentIds.size();
 		} else {
@@ -357,13 +400,15 @@ public class StandardizationServiceImpl implements StandardizationService {
 	@Transactional
 	private int runStandardization() throws CmpdRegMolFormatException, IOException, StandardizerException {
 		List<Long> parentIds = StandardizationDryRunCompound.findParentIdsWithStandardizationChanges().getResultList();
+		logger.info("standardization initialized");
 		int result = restandardizeParentStructures(parentIds);
+		logger.info("standardization complete");
 		return(result);
 	}
 	
 	@Override
 	public String getDryRunStats() {
-		String dryRunStats = StandardizationDryRunCompound.fetchStats().toString();
+		String dryRunStats = StandardizationDryRunCompound.fetchStats().toJson();
 		return dryRunStats;
 	}
 	
@@ -406,9 +451,16 @@ public class StandardizationServiceImpl implements StandardizationService {
 	
 	@Transactional
 	private int runDryRun() throws CmpdRegMolFormatException, IOException, StandardizerException {
+		logger.info("standardization dry run initialized");
+		logger.info("step 1/3: resetting dry run table");
 		this.reset();
+		logger.info("standardization dry run 1% complete");
+		logger.info("step 2/3: populating dry run table");
 		int numberOfDisplayChanges = this.populateStanardizationDryRunTable();
+		logger.info("standardization dry run 20% complete");
+		logger.info("step 3/3: checking for standardization duplicates");
 	    numberOfDisplayChanges = this.dupeCheckStandardizationStructures();
+		logger.info("standardization dry run complete");
 	    return(numberOfDisplayChanges);
 	}
 	
