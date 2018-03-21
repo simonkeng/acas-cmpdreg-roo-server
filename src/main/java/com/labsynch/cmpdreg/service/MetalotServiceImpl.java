@@ -225,7 +225,7 @@ public class MetalotServiceImpl implements MetalotService {
 									//parent structure and stereo category matches
 									//determine if Stereo Comment is different
 									boolean parentHasStereoComment = (parent.getStereoComment() != null && parent.getStereoComment().length() > 0);
-									boolean queryParentHasStereoComment = (queryParent.getStereoComment() == null && queryParent.getStereoComment().length() > 0);
+									boolean queryParentHasStereoComment = (queryParent.getStereoComment() != null && queryParent.getStereoComment().length() > 0);
 									if (!parentHasStereoComment & !queryParentHasStereoComment){
 										//both stereo comments are null => dupes
 										dupeParentCount++;
