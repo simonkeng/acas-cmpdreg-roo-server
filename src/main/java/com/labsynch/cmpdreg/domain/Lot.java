@@ -167,6 +167,9 @@ public class Lot {
     @org.hibernate.annotations.Index(name = "Lot_Vendor_IDX")
     private Vendor vendor;
 
+    @Size(max = 255)
+    private String vendorID;
+
     @ManyToOne
     @org.hibernate.annotations.Index(name = "Lot_SaltForm_IDX")
     private SaltForm saltForm;

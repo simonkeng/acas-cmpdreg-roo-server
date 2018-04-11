@@ -63,6 +63,9 @@ Freezer #1 Top Shelf
 >  <Lot Observed Mass #2>
 124.45
 
+>  <Lot Vendor ID>
+VENDID-002
+
 $$$$
 
   Mrv0541 11211113452D          
@@ -154,6 +157,9 @@ Freezer #3 Top Shelf
 >  <Lot Observed Mass #2>
 334.49
 
+>  <Lot Vendor ID>
+VENDID-002
+
 $$$$
 
   Mrv0541 11211113452D          
@@ -225,6 +231,9 @@ Cabinet #3
 >  <Lot Retain Location>
 Freezer #3 Top Shelf
 
+>  <Lot Vendor ID>
+VENDID-003
+
 $$$$
 
   Mrv0541 11211113452D          
@@ -276,6 +285,9 @@ Cabinet #4
 
 >  <Lot Retain Location>
 Freezer #4 Top Shelf
+
+>  <Lot Vendor ID>
+VENDID-005
 
 $$$$
 
@@ -336,6 +348,9 @@ A
 
 >  <Parent Comment>
 Parent Comment #5
+
+>  <Lot Vendor ID>
+VENDID-005
 
 $$$$
 
@@ -409,6 +424,9 @@ M  END
 >  <Formula>
 C20H10Br2O5
 
+>  <Lot Vendor ID>
+VENDID-006
+
 $$$$
 
   Mrv0541 11211113452D          
@@ -456,6 +474,9 @@ M  END
 
 >  <Formula>
 C12H10ClNO2
+
+>  <Lot Vendor ID>
+VENDID-007
 
 $$$$
 
@@ -514,6 +535,9 @@ M  END
 
 >  <Formula>
 C15H9NO4
+
+>  <Lot Vendor ID>
+VENDID-008
 
 $$$$
 

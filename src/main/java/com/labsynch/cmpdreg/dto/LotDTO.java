@@ -78,6 +78,7 @@ public class LotDTO {
 	private Double totalAmountStored;
 	private String totalAmountStoredUnitsCode;
 	private String vendorCode;
+	private String vendorID;
 	private String saltFormCorpName;
 	private String casNumber;
 	private String saltAbbrevs;
@@ -125,8 +126,6 @@ public class LotDTO {
 		this.observedMassOne = lot.getObservedMassOne();
 		this.observedMassTwo = lot.getObservedMassTwo();
 		this.notebookPage = lot.getNotebookPage();
-		this.observedMassOne = lot.getObservedMassOne();
-		this.observedMassTwo = lot.getObservedMassTwo();
 		this.percentEE = lot.getPercentEE();
 		if (lot.getPhysicalState() != null) this.physicalStateCode = lot.getPhysicalState().getCode();
 		if (lot.getProject() != null) this.project = lot.getProject().getCode();
