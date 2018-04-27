@@ -13,9 +13,9 @@ import chemaxon.jchem.db.StructureTableOptions;
 import chemaxon.jchem.db.UpdateHandler;
 import chemaxon.util.ConnectionHandler;
 
-public class V1_0_8_1_2__Add_standardization_jchem_tables implements JdbcMigration {
+public class V1_3_0_2__Add_standardization_jchem_tables implements JdbcMigration {
  
-	Logger logger = LoggerFactory.getLogger(V1_0_8_1_2__Add_standardization_jchem_tables.class);
+	Logger logger = LoggerFactory.getLogger(V1_3_0_2__Add_standardization_jchem_tables.class);
 
 	//create the jchem table to store the compounds
 
