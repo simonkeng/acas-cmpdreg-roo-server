@@ -218,6 +218,26 @@ public class CorpName {
 		Matcher matcher = pattern.matcher(corpName);
 		return (matcher.replaceFirst("$1"));
 	}
+	
+	/**
+	 * Takes a string and returns the numeric value of the longest numeric substring, or 0 if the string has no numerals
+	 * @param corpName The corporate ID string
+	 * @return the Long value of the corp number parsed
+	 */
+	public static Long parseParentNumber(String corpName){
+		//Returns the numeric value of the largest numeric substring of the input string, or 0 if one cannot be parsed
+		String longestSub = "";
+		for (String sub : corpName.split("[^0-9]")){
+			if (sub.length() > longestSub.length()){
+				longestSub = sub;
+			}
+		}
+		if (longestSub.length() > 0){
+			return Long.parseLong(longestSub);
+		}else {
+			return 0L;
+		}
+	}
 
 	public static Long parseCorpNumber(String corpName) {
 		corpName = corpName.trim();

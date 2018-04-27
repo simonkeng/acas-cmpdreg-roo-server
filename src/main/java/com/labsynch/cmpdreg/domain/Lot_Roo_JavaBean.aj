@@ -256,6 +256,14 @@ privileged aspect Lot_Roo_JavaBean {
         this.vendor = vendor;
     }
     
+    public String Lot.getVendorID() {
+        return this.vendorID;
+    }
+    
+    public void Lot.setVendorID(String vendorID) {
+        this.vendorID = vendorID;
+    }
+    
     public Set<FileList> Lot.getFileLists() {
         return this.fileLists;
     }
