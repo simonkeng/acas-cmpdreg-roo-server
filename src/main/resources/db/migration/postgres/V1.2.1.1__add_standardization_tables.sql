@@ -67,6 +67,8 @@ CREATE TABLE standardization_history
   dry_run_start timestamp without time zone,
   dry_run_complete timestamp without time zone,
   standardization_status character varying(20),
+  standardization_user text,
+  standardization_reason text,
   standardization_start timestamp without time zone,
   standardization_complete timestamp without time zone,
   structures_standardized_count integer,

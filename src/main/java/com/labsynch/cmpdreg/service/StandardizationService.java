@@ -20,7 +20,7 @@ public interface StandardizationService {
 	
 	String getDryRunStats();
 
-	String executeStandardization() throws IOException, CmpdRegMolFormatException, StandardizerException;
+	String executeStandardization(String username, String reason) throws IOException, CmpdRegMolFormatException, StandardizerException;
 
 	int restandardizeParentStructures(List<Long> parentIds) throws CmpdRegMolFormatException, IOException, StandardizerException;
 

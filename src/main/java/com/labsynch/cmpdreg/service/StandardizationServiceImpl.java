@@ -361,7 +361,7 @@ public class StandardizationServiceImpl implements StandardizationService {
 	}
 
 	@Override
-	public String executeStandardization() {
+	public String executeStandardization(String username, String reason) {
 		StandardizationHistory standardizationHistory = getMostRecentStandardizationHistory();
 		if(StringUtils.equalsIgnoreCase(standardizationHistory.getStandardizationStatus(), "complete")) {
 			standardizationHistory = new StandardizationHistory();
@@ -392,6 +392,8 @@ public class StandardizationServiceImpl implements StandardizationService {
 		standardizationHistory.setStructuresUpdatedCount(result);
 		standardizationHistory.setStandardizationComplete(new Date());
 		standardizationHistory.setStandardizationStatus("complete");
+		standardizationHistory.setStandardizationUser(username);
+		standardizationHistory.setStandardizationReason(reason);
 		standardizationHistory.persist();
 		this.reset();
 		return standardizationHistory.toJson();

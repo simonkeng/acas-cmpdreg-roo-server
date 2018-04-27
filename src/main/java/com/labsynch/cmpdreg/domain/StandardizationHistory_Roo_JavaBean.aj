@@ -72,6 +72,22 @@ privileged aspect StandardizationHistory_Roo_JavaBean {
         this.standardizationStatus = standardizationStatus;
     }
     
+    public String StandardizationHistory.getStandardizationUser() {
+        return this.standardizationUser;
+    }
+    
+    public void StandardizationHistory.setStandardizationUser(String standardizationUser) {
+        this.standardizationUser = standardizationUser;
+    }
+    
+    public String StandardizationHistory.getStandardizationReason() {
+        return this.standardizationReason;
+    }
+    
+    public void StandardizationHistory.setStandardizationReason(String standardizationReason) {
+        this.standardizationReason = standardizationReason;
+    }
+    
     public Date StandardizationHistory.getStandardizationStart() {
         return this.standardizationStart;
     }

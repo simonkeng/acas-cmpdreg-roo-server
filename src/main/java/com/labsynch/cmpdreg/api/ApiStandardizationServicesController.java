@@ -104,12 +104,12 @@ public class ApiStandardizationServicesController {
 	
 	@RequestMapping(value = "/execute", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> execute(){
+	public ResponseEntity<String> execute(@RequestParam(value="username", required = true) String username, @RequestParam(value="reason", required = true) String reason){
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 		logger.info("standardizing parent structs");
 		try{
-			String summary = standardizationService.executeStandardization();
+			String summary = standardizationService.executeStandardization(username, reason);
 			return new ResponseEntity<String>(summary, headers, HttpStatus.OK);
 		}catch(Exception e){
 			logger.error("Caught error trying to standardize parent structures: ",e);

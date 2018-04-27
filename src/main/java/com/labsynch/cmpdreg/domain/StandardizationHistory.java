@@ -39,6 +39,10 @@ public class StandardizationHistory {
 
 	private String standardizationStatus;
 
+	private String standardizationUser;
+
+	private String standardizationReason;
+
 	private Date standardizationStart;
 	
 	private Date standardizationComplete;

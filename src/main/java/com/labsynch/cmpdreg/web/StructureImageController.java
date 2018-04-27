@@ -173,10 +173,13 @@ public class StructureImageController {
     
 	@RequestMapping(value = "/standardization/{corpName}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> displayDryrunCompoundImage(@PathVariable("corpName") String corpName) {
+    public ResponseEntity<byte[]> displayDryrunCompoundImage(@PathVariable("corpName") String corpName,
+			@RequestParam(value = "hSize", required=false) Integer hSize,
+			@RequestParam(value = "wSize", required=false) Integer wSize,
+			@RequestParam(value = "format", required=false) String format) {
         StandardizationDryRunCompound stndznCompound = StandardizationDryRunCompound.findStandardizationDryRunCompoundsByCorpNameEquals(corpName).getSingleResult();
-        byte[] image = structureImageService.displayImage(stndznCompound.getMolStructure());
-        
+        byte[] image = structureImageService.convertMolToImage(stndznCompound.getMolStructure(), hSize, wSize, format);
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
         headers.add("Access-Control-Allow-Headers", "Content-Type");
@@ -191,7 +194,10 @@ public class StructureImageController {
 
 	@RequestMapping(value = "/originallydrawnas/{corpName}", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<byte[]> displayOriginallyDrawnAsCompoundImage(@PathVariable("corpName") String corpName) {
+    public ResponseEntity<byte[]> displayOriginallyDrawnAsCompoundImage(@PathVariable("corpName") String corpName,
+			@RequestParam(value = "hSize", required=false) Integer hSize,
+			@RequestParam(value = "wSize", required=false) Integer wSize,
+			@RequestParam(value = "format", required=false) String format) {
 		Parent parent = Parent.findParentsByCorpNameEquals(corpName).getSingleResult();
 		List<Lot> queryLots;
 		String asDrawnStruct;
@@ -201,7 +207,7 @@ public class StructureImageController {
 		} else {
 			asDrawnStruct = parent.getMolStructure();
 		}
-        byte[] image = structureImageService.displayImage(asDrawnStruct);
+        byte[] image = structureImageService.convertMolToImage(asDrawnStruct, hSize, wSize, format);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_PNG);
