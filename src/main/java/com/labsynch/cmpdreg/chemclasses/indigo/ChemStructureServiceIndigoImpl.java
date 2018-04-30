@@ -391,7 +391,12 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		//Indigo: the structures in the plainTable are being used. Ignore structureTable from here on out.
 		logger.debug("Search table is  " + plainTable);		
 		logger.debug("Search type is  " + searchType);		
-		logger.debug("Max number of results is  " + maxResults);		
+		logger.debug("Max number of results is  " + maxResults);	
+		
+		logger.debug("Dissimilarity similarity is  " + simlarityPercent);		
+
+		float indSimilarity = 1.0f - simlarityPercent;
+		logger.debug("Indigo search similarity is  " + indSimilarity);		
 
 
 		if (searchType.equalsIgnoreCase("EXACT")){
@@ -450,8 +455,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
 				query.setParameter("parameters", "");
 			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
-				query.setParameter("minSimilarity", simlarityPercent);
-				query.setParameter("maxSimilarity", null);
+				query.setParameter("minSimilarity", indSimilarity);
+				query.setParameter("maxSimilarity", 1.0);
 				query.setParameter("metric", "Tanimoto");
 			}else {
 				String parameters = null;
