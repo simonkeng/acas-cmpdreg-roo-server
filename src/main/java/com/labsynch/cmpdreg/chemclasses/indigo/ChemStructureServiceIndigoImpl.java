@@ -208,6 +208,11 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		logger.debug("Search type is  " + searchType);		
 		logger.debug("Max number of results is  " + maxResults);		
 
+		logger.debug("Dissimilarity similarity is  " + simlarityPercent);		
+
+		float indSimilarity = 1.0f - simlarityPercent;
+		logger.debug("Indigo search similarity is  " + indSimilarity);		
+
 
 		if (searchType.equalsIgnoreCase("EXACT")){
 			searchType = exactSearchDef;
@@ -259,8 +264,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
 				query.setParameter("parameters", "");
 			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
-				query.setParameter("minSimilarity", simlarityPercent);
-				query.setParameter("maxSimilarity", null);
+				query.setParameter("minSimilarity", indSimilarity);
+				query.setParameter("maxSimilarity", 1.0);
 				query.setParameter("metric", "Tanimoto");
 			}else {
 				String parameters = null;
@@ -393,7 +398,12 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 		//Indigo: the structures in the plainTable are being used. Ignore structureTable from here on out.
 		logger.debug("Search table is  " + plainTable);		
 		logger.debug("Search type is  " + searchType);		
-		logger.debug("Max number of results is  " + maxResults);		
+		logger.debug("Max number of results is  " + maxResults);	
+		
+		logger.debug("Dissimilarity similarity is  " + simlarityPercent);		
+
+		float indSimilarity = 1.0f - simlarityPercent;
+		logger.debug("Indigo search similarity is  " + indSimilarity);		
 
 
 		if (searchType.equalsIgnoreCase("EXACT")){
@@ -437,8 +447,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			query.setParameter("queryMol", mol.molfile());
 			query.setMaxResults(maxResults);
 			
-			if (inputCdIdHitList != null && inputCdIdHitList.length > 0) query.setParameter("filterCdIds", Arrays.asList(inputCdIdHitList));
-			
+			if (inputCdIdHitList != null && inputCdIdHitList.length > 0) query.setParameter("filterCdIds", Arrays.asList(ArrayUtils.toObject(inputCdIdHitList)));
+
 			//May need additional research / decisions around which options to use
 			//Basic Indigo search types corresponding to JChem search types
 			//CReg: "DUPLICATE" or "DUPLICATE_NO_TAUTOMER" :: JChem: "DUPLICATE", "TAUTOMER_SEARCH_OFF" :: Bingo.Exact, "ALL"
@@ -452,8 +462,8 @@ public class ChemStructureServiceIndigoImpl implements ChemStructureService {
 			if (searchType.equalsIgnoreCase("SUBSTRUCTURE")) {
 				query.setParameter("parameters", "");
 			}else if (searchType.equalsIgnoreCase("SIMILARITY")) {
-				query.setParameter("minSimilarity", simlarityPercent);
-				query.setParameter("maxSimilarity", null);
+				query.setParameter("minSimilarity", indSimilarity);
+				query.setParameter("maxSimilarity", 1.0);
 				query.setParameter("metric", "Tanimoto");
 			}else {
 				String parameters = null;
