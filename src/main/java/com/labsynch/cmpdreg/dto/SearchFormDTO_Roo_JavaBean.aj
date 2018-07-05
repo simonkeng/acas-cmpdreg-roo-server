@@ -6,8 +6,25 @@ package com.labsynch.cmpdreg.dto;
 import com.labsynch.cmpdreg.domain.Scientist;
 import com.labsynch.cmpdreg.dto.SearchFormDTO;
 import java.util.Date;
+import java.util.List;
 
 privileged aspect SearchFormDTO_Roo_JavaBean {
+    
+    public String SearchFormDTO.getCorpNameList() {
+        return this.corpNameList;
+    }
+    
+    public void SearchFormDTO.setCorpNameList(String corpNameList) {
+        this.corpNameList = corpNameList;
+    }
+    
+    public List<String> SearchFormDTO.getFormattedCorpNameList() {
+        return this.formattedCorpNameList;
+    }
+    
+    public void SearchFormDTO.setFormattedCorpNameList(List<String> formattedCorpNameList) {
+        this.formattedCorpNameList = formattedCorpNameList;
+    }
     
     public String SearchFormDTO.getCorpNameFrom() {
         return this.corpNameFrom;

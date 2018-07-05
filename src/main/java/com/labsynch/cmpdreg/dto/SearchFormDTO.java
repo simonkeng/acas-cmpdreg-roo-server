@@ -20,8 +20,12 @@ import flexjson.transformer.DateTransformer;
 @RooJson
 public class SearchFormDTO{
 
+	private String corpNameList;
+
+	private List<String> formattedCorpNameList;
+
 	private String corpNameFrom;
-	
+
 	private String corpNameTo;
 	
 	private String aliasContSelect;

@@ -190,7 +190,19 @@ public class SearchFormServiceImpl implements SearchFormService {
 		logger.debug("here is the self built query string: " + this.buildMetaQuery(searchParams, "Parent"));
 
 
-		// 1. Check if corpNameFrom and corpNameTo are both set  -- will search for a range of parents if both set
+		if (!searchParams.getCorpNameList().equals("")) {
+			logger.info("got a corp name list search!");
+			String[] inputListArray = searchParams.getCorpNameList().split("[\\s,;\\n\\r]+");
+			List<String> formattedCorpNameList = new ArrayList<String>();
+			for (String corpName : inputListArray){
+				logger.info(CorpName.formatCorpName(CorpName.parseParentNumber(corpName)));
+				formattedCorpNameList.add(CorpName.formatCorpName(CorpName.parseParentNumber(corpName)));
+
+			}
+			searchParams.setFormattedCorpNameList(formattedCorpNameList);
+			logger.info(formattedCorpNameList.toString());
+		}
+		//    Check if corpNameFrom and corpNameTo are both set  -- will search for a range of parents if both set
 		//    Check if single corpName is submitted. Convert corpName to either parent, saltForm, or Lot name
 
 		if (!searchParams.getCorpNameFrom().equals("") && !searchParams.getCorpNameTo().equals("")){
