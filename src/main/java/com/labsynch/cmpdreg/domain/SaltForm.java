@@ -1,6 +1,7 @@
 package com.labsynch.cmpdreg.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -255,6 +256,11 @@ public class SaltForm implements Comparable {
 		if (searchParams.getParentCorpName() != null) {
 			logger.debug("incoming parentCorpName :" + searchParams.getParentCorpName());
 			Predicate predicate = criteriaBuilder.equal(saltFormParent.get("corpName"), searchParams.getParentCorpName());
+			predicateList.add(predicate);
+		}
+		if (searchParams.getFormattedCorpNameList() != null) {
+			logger.debug("incoming corpNameList :" + searchParams.getFormattedCorpNameList().toString());
+			Predicate predicate = saltFormParent.get("corpName").in(searchParams.getFormattedCorpNameList());
 			predicateList.add(predicate);
 		}
 		if (searchParams.getAlias() != null && !searchParams.getAlias().equals("")) {
