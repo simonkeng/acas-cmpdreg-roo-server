@@ -42,12 +42,23 @@ public class ApiParentLotController {
 	@Transactional
 	@RequestMapping(value = "/getLotsByParent", method = RequestMethod.GET, headers = "Accept=application/json")
 	@ResponseBody
-	public ResponseEntity<String> getParentByAliasName(@RequestParam String parentCorpName){
+	public ResponseEntity<String> getParentByAliasName(@RequestParam String parentCorpName, @RequestParam(value = "with", required = false) String with){
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 		try{
-			Collection<CodeTableDTO> codeTableLots = parentLotService.getCodeTableLotsByParentCorpName(parentCorpName);
-			return new ResponseEntity<String>(CodeTableDTO.toJsonArray(codeTableLots), headers, HttpStatus.OK);
+	        boolean fullObject = false;
+	        if (with != null) {
+	            if (with.equalsIgnoreCase("fullobject")) {
+	                fullObject = true;
+	            }
+	        }
+	        if(fullObject) {
+				Collection<Lot> lots = parentLotService.getLotsByParentCorpName(parentCorpName);
+				return new ResponseEntity<String>(Lot.toJsonArray(lots), headers, HttpStatus.OK);	        	
+	        } else {
+				Collection<CodeTableDTO> codeTableLots = parentLotService.getCodeTableLotsByParentCorpName(parentCorpName);
+				return new ResponseEntity<String>(CodeTableDTO.toJsonArray(codeTableLots), headers, HttpStatus.OK);	        	
+	        }
 		}catch(Exception e){
 			return new ResponseEntity<String>(headers, HttpStatus.NOT_FOUND);
 		}

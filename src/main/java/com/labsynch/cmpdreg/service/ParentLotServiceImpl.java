@@ -40,6 +40,18 @@ public class ParentLotServiceImpl implements ParentLotService {
 		}
 		return codeTableLots;
 	}
+	
+	@Override
+	@Transactional
+	public Collection<Lot> getLotsByParentCorpName(String parentCorpName) throws NoResultException{
+		Parent parent = Parent.findParentsByCorpNameEquals(parentCorpName).getSingleResult();
+		Collection<Lot> lots = new HashSet<Lot>();
+		for (SaltForm saltForm : parent.getSaltForms()){
+			lots.addAll(saltForm.getLots());
+		}
+		return lots;
+	}
+
 
 	@Override
 	@Transactional
