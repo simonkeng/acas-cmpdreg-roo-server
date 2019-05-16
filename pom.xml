@@ -495,6 +495,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.]]>
 			</exclusions>
 		</dependency>
 		<dependency>
+		    <groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-core</artifactId>
+     		<version>0.9.3</version>
+  		</dependency>
+    	<dependency>
+     	 	<groupId>com.github.dandelion</groupId>
+     	 	<artifactId>datatables-jsp</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+    	<dependency>
+      		<groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-servlet2</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+    	<dependency>
+      		<groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-export-itext</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+    	<dependency>
+      		<groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-export-poi</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+    	<dependency>
+     		<groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-export-poi-ooxml</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+    	<dependency>
+      		<groupId>com.github.dandelion</groupId>
+      		<artifactId>datatables-spring3</artifactId>
+      		<version>0.9.3</version>
+    	</dependency>
+		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${spring-security.version}</version>
